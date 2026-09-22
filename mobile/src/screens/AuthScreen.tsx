@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, Pressable } from 'react-native'
+import { View, Text, ScrollView, Image, Pressable, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
@@ -8,6 +8,38 @@ import { AuthInput } from '../components/AuthInput'
 
 export function AuthScreen({ onAuthenticated }: any) {
   const [isLogin, setIsLogin] = useState(true)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleAuth = () => {
+    // Aquí iría la validación y llamada a API
+    if (isLogin) {
+      if (!formData.email || !formData.password) {
+        Alert.alert('Error', 'Por favor completa todos los campos')
+        return
+      }
+      onAuthenticated(formData.email.split('@')[0]) // Ejemplo: usa el nombre del email
+    } else {
+      if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+        Alert.alert('Error', 'Por favor completa todos los campos')
+        return
+      }
+      if (formData.password !== formData.confirmPassword) {
+        Alert.alert('Error', 'Las contraseñas no coinciden')
+        return
+      }
+      onAuthenticated(formData.name)
+    }
+  }
+
   return (
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
@@ -16,17 +48,44 @@ export function AuthScreen({ onAuthenticated }: any) {
       <ScrollView contentContainerStyle={styles.authScroll}>
         <View style={styles.authBrand}>
           <Image source={require('../../assets/normalized/Logo-oficial-Colombia-GO.jpeg')} style={styles.authLogoLarge} />
-          <Text style={styles.authTagline}>EXPLORA, CONNECTA Y VIVE COLOMBIA.</Text>
+          <Text style={styles.authTagline}>EXPLORA, CONECTA Y VIVE COLOMBIA.</Text>
         </View>
 
         <Text style={styles.authTitle}>{isLogin ? '¡Bienvenido!' : 'Crea tu cuenta'}</Text>
         <Text style={styles.authSubtitle}>{isLogin ? 'Inicia sesión y continúa explorando las maravillas de Colombia.' : 'Únete a Colombia GO y empieza a vivir experiencias únicas.'}</Text>
 
         <View style={styles.authForm}>
-          {!isLogin && <AuthInput icon="person-outline" placeholder="Nombre completo" />}
-          <AuthInput icon="mail-outline" placeholder="Correo electrónico" />
-          {!isLogin && <AuthInput icon="call-outline" placeholder="Número de teléfono" />}
-          <AuthInput icon="lock-closed-outline" placeholder="Contraseña" secure />
+          {!isLogin && (
+            <AuthInput
+              icon="person-outline"
+              placeholder="Nombre completo"
+              value={formData.name}
+              onChangeText={(text: string) => handleInputChange('name', text)}
+            />
+          )}
+          <AuthInput
+            icon="mail-outline"
+            placeholder="Correo electrónico"
+            keyboardType="email-address"
+            value={formData.email}
+            onChangeText={(text: string) => handleInputChange('email', text)}
+          />
+          <AuthInput
+            icon="lock-closed-outline"
+            placeholder="Contraseña"
+            secure
+            value={formData.password}
+            onChangeText={(text: string) => handleInputChange('password', text)}
+          />
+          {!isLogin && (
+            <AuthInput
+              icon="lock-closed-outline"
+              placeholder="Confirmar Contraseña"
+              secure
+              value={formData.confirmPassword}
+              onChangeText={(text: string) => handleInputChange('confirmPassword', text)}
+            />
+          )}
 
           {isLogin && (
              <View style={styles.authOptions}>
@@ -38,8 +97,8 @@ export function AuthScreen({ onAuthenticated }: any) {
              </View>
           )}
 
-          <Pressable style={[styles.authSubmit, !isLogin && { backgroundColor: COLORS.YELLOW }]} onPress={() => onAuthenticated("Camilo Restrepo")}>
-            <Text style={[styles.authSubmitText, !isLogin && { color: COLORS.BLUE }]}>{isLogin ? 'Iniciar sesión' : 'Registrarse'}</Text>
+          <Pressable style={[styles.authSubmit, !isLogin && { backgroundColor: COLORS.YELLOW }]} onPress={handleAuth}>
+            <Text style={[styles.authSubmitText, !isLogin && { color: COLORS.BLUE }]}>{isLogin ? 'Iniciar sesión' : 'Registrarme'}</Text>
             <Ionicons name="arrow-forward" size={18} color={isLogin ? "#FFF" : COLORS.BLUE} />
           </Pressable>
         </View>
@@ -51,7 +110,7 @@ export function AuthScreen({ onAuthenticated }: any) {
         </Pressable>
 
         <Pressable style={styles.switchAuth} onPress={() => setIsLogin(!isLogin)}>
-           <Text style={styles.switchText}>{isLogin ? '¿No tienes una cuenta? ' : '¿Ya tienes una cuenta? '}<Text style={styles.switchLink}>{isLogin ? 'Regístrate' : 'Inicia sesión'}</Text></Text>
+           <Text style={styles.switchText}>{isLogin ? '¿No tienes una cuenta? ' : '¿Ya tienes una cuenta? '}<Text style={styles.switchLink}>{isLogin ? 'Regístrarme' : 'Inicia sesión'}</Text></Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
