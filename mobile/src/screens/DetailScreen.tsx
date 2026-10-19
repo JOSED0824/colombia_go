@@ -1,16 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image, Pressable, Linking } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { FactItemCol } from '../components/FactItemCol'
+import { apiGet } from '../lib/api'
+import { toDestinationDetail } from '../lib/mappers'
+import type { Destination, LugarDetalleDto } from '../lib/types'
 
-export function DetailScreen({ destination, favorite, inRoute, onBack, onFavorite, onToggleRoute }: any) {
+export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, onFavorite, onToggleRoute }: any) {
+  // Se muestra de una vez lo que ya se tiene (nombre, foto, calificación) y se completa con el detalle de la API.
+  const [detalle, setDetalle] = useState<Destination | null>(null)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    setDetalle(null)
+    setError(false)
+    apiGet<LugarDetalleDto>(`/api/v1/lugares/${encodeURIComponent(resumen.id)}`)
+      .then((dto) => setDetalle(toDestinationDetail(dto)))
+      .catch(() => setError(true))
+  }, [resumen.id])
+
+  const destination: Destination = detalle ?? resumen
+
   const openMaps = () => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination.name + ' ' + destination.city)}`
-    Linking.openURL(url)
+    const query = destination.latitude != null && destination.longitude != null
+      ? `${destination.latitude},${destination.longitude}`
+      : `${destination.name} ${destination.city}`
+    Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`)
   }
+
+  const descripcion = detalle
+    ? destination.description
+    : error ? 'No pudimos cargar la información de este lugar.' : 'Cargando…'
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.WHITE }}>
@@ -37,10 +60,10 @@ export function DetailScreen({ destination, favorite, inRoute, onBack, onFavorit
           <View style={styles.handle} />
           <View style={styles.detailLogoRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detailName}>{destination.name}: Arte y{"\n"}Transformación</Text>
+              <Text style={styles.detailName}>{destination.name}</Text>
               <View style={styles.detailStars}>
                 <Ionicons name="star" size={18} color={COLORS.YELLOW} />
-                <Text style={styles.detailRatingTxt}>{destination.rating} <Text style={{ color: COLORS.TEXT_MUTED, fontWeight: '400', fontSize: 13 }}>(2k reviews)</Text></Text>
+                <Text style={styles.detailRatingTxt}>{destination.rating} <Text style={{ color: COLORS.TEXT_MUTED, fontWeight: '400', fontSize: 13 }}>({destination.reviewsLabel})</Text></Text>
               </View>
             </View>
             <View style={styles.brandContainer}>
@@ -49,22 +72,26 @@ export function DetailScreen({ destination, favorite, inRoute, onBack, onFavorit
             </View>
           </View>
 
-          <Text style={styles.detailDesc}>{destination.description} <Text style={styles.verMas}>Ver más</Text></Text>
+          <Text style={styles.detailDesc}>{descripcion}</Text>
 
           <View style={styles.mapContainer}>
              <View style={styles.mapCard}>
                 <View style={styles.mapInfo}>
                   <Text style={styles.mapPlaceName}>{destination.name}</Text>
-                  <Text style={styles.mapPlaceSub}>San Javier</Text>
-                  <Text style={styles.mapPlaceCity}>Medellín, Antioquia</Text>
+                  {!!destination.address && <Text style={styles.mapPlaceSub} numberOfLines={2}>{destination.address}</Text>}
+                  <Text style={styles.mapPlaceCity}>{destination.city}, {destination.region}</Text>
                 </View>
                 <View style={styles.mapGraphic}>
                    <View style={styles.mapLine} />
                    <View style={styles.mapPinContainer}>
                      <Ionicons name="location" size={24} color="#3B82F6" />
                    </View>
-                   <View style={styles.landmark1}><Ionicons name="body" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Escaleras{"\n"}Eléctricas</Text></View>
-                   <View style={styles.landmark2}><Ionicons name="bus" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Metrocable</Text></View>
+                   {destination.id === 'comuna-13' && (
+                     <>
+                       <View style={styles.landmark1}><Ionicons name="body" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Escaleras{"\n"}Eléctricas</Text></View>
+                       <View style={styles.landmark2}><Ionicons name="bus" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Metrocable</Text></View>
+                     </>
+                   )}
                 </View>
              </View>
           </View>

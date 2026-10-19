@@ -1,11 +1,11 @@
 import { DestinationCard } from '../components/DestinationCard'
 import { Button } from '../components/Button'
 import { useFavorites } from '../context/FavoritesContext'
-import { DESTINATIONS } from '../data/destinations'
+import { useDestinationsByIds } from '../lib/useDestinationsByIds'
 
 export function FavoritesPage() {
   const { ids } = useFavorites()
-  const saved = DESTINATIONS.filter((d) => ids.includes(d.id))
+  const { destinations: saved, loading } = useDestinationsByIds(ids)
 
   return (
     <div className="page">
@@ -14,7 +14,9 @@ export function FavoritesPage() {
         <p>Solo los lugares que marcaste con el corazón❤️</p>
       </header>
       <section className="section">
-        {saved.length === 0 ? (
+        {loading ? (
+          <p className="empty">Cargando...</p>
+        ) : saved.length === 0 ? (
           <div className="empty-state">
             <p>Aún no has guardado destinos.</p>
             <Button to="/explorar">Explorar Colombia</Button>

@@ -1,53 +1,91 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeHeader } from '../components/HomeHeader'
 import { SpotlightCard } from '../components/SpotlightCard'
-import { DESTINATIONS, FEATURED, HOME_CATEGORIES, type Category } from '../data/destinations'
+import { HOME_CATEGORIES, type Category, type Destination } from '../data/destinations'
+import { apiGet } from '../lib/api'
+import { toDestination } from '../lib/mappers'
+import type { LugarResumenDto, PagedResult } from '../lib/types'
+
+type FeaturedSlide = {
+  id: string
+  city: string
+  title: string
+  text: string
+  cta: string
+  image: string
+}
+
+function toFeaturedSlide(dto: LugarResumenDto): FeaturedSlide {
+  return {
+    id: dto.id,
+    city: dto.city,
+    title: dto.name,
+    text: dto.tagline ?? '',
+    cta: `Explorar ${dto.city}`,
+    image: dto.image ?? '',
+  }
+}
 
 export function HomePage() {
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
-  const featured = FEATURED[slide]
+  const [featuredSlides, setFeaturedSlides] = useState<FeaturedSlide[]>([])
+  const [medellinSpots, setMedellinSpots] = useState<Destination[]>([])
+
+  useEffect(() => {
+    apiGet<LugarResumenDto[]>('/api/v1/lugares/destacados?take=3')
+      .then((dtos) => setFeaturedSlides(dtos.map(toFeaturedSlide)))
+      .catch(() => setFeaturedSlides([]))
+
+    apiGet<PagedResult<LugarResumenDto>>(`/api/v1/lugares?ciudad=${encodeURIComponent('Medellín')}&pageSize=4`)
+      .then((page) => setMedellinSpots(page.items.map(toDestination)))
+      .catch(() => setMedellinSpots([]))
+  }, [])
+
+  const featured = featuredSlides[slide]
 
   const spots = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return DESTINATIONS.filter(
+    return medellinSpots.filter(
       (d) =>
-        d.city.toLowerCase() === 'medellín' && (!q ||
+        !q ||
         d.name.toLowerCase().includes(q) ||
         d.city.toLowerCase().includes(q) ||
-        d.tagline.toLowerCase().includes(q)),
+        d.tagline.toLowerCase().includes(q),
     )
-  }, [query])
+  }, [query, medellinSpots])
 
   return (
     <div className="page">
       <HomeHeader value={query} onChange={setQuery} />
 
-      <article className="feature">
-        <img src={featured.image} alt="" />
-        <div className="feature__panel">
-          <p className="feature__city">
-            {featured.city.toUpperCase()} 📍
-          </p>
-          <h2>{featured.title}</h2>
-          <p>{featured.text}</p>
-          <Link className="btn btn--primary btn--compact" to={`/explorar?ciudad=${featured.id}`}>
-            {featured.cta} ›
-          </Link>
-        </div>
-        <div className="feature__dots">
-          {FEATURED.map((item, i) => (
-            <button
-              key={item.id}
-              type="button"
-              className={i === slide ? 'is-on' : ''}
-              aria-label={`Destacado ${item.city}`}
-              onClick={() => setSlide(i)}
-            />
-          ))}
-        </div>
-      </article>
+      {featured && (
+        <article className="feature">
+          <img src={featured.image} alt="" />
+          <div className="feature__panel">
+            <p className="feature__city">
+              {featured.city.toUpperCase()} 📍
+            </p>
+            <h2>{featured.title}</h2>
+            <p>{featured.text}</p>
+            <Link className="btn btn--primary btn--compact" to={`/destino/${featured.id}`}>
+              {featured.cta} ›
+            </Link>
+          </div>
+          <div className="feature__dots">
+            {featuredSlides.map((item, i) => (
+              <button
+                key={item.id}
+                type="button"
+                className={i === slide ? 'is-on' : ''}
+                aria-label={`Destacado ${item.city}`}
+                onClick={() => setSlide(i)}
+              />
+            ))}
+          </div>
+        </article>
+      )}
 
       <section className="cat-row" aria-label="Categorías">
         {HOME_CATEGORIES.map((cat) => (

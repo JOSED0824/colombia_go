@@ -1,14 +1,15 @@
-import { CATEGORIES, type Category } from '../data/destinations'
+import type { Category } from '../data/destinations'
 
 type Props = {
   active: Category
   onChange: (category: Category) => void
+  categories: { id: Category; label: string }[]
 }
 
-export function CategoryChips({ active, onChange }: Props) {
+export function CategoryChips({ active, onChange, categories }: Props) {
   return (
     <div className="chips" role="tablist" aria-label="Categorías">
-      {CATEGORIES.map((cat) => (
+      {categories.map((cat) => (
         <button
           key={cat.id}
           type="button"

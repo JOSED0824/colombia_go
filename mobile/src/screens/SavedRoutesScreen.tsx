@@ -3,10 +3,10 @@ import { View, Text, ScrollView, Pressable, Image } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
-import { destinations } from '../data/mockData'
+import type { Destination } from '../lib/types'
 
-export function SavedRoutesScreen({ favorites, onSelect, onNavigate }: any) {
-  const saved = destinations.filter((item) => favorites.includes(item.id))
+export function SavedRoutesScreen({ paradas, onSelect, onNavigate }: any) {
+  const saved: Destination[] = paradas
 
   return (
     <View style={{ flex: 1 }}>
@@ -53,8 +53,8 @@ export function SavedRoutesScreen({ favorites, onSelect, onNavigate }: any) {
                     <Text style={styles.routeName}>{item.name}</Text>
                     <Text style={styles.routeLoc}>{item.city} · {item.category}</Text>
                     <View style={styles.routeBadges}>
-                      <View style={styles.routeBadge}><Text style={styles.routeBadgeText}>8am - 6pm</Text></View>
-                      <View style={[styles.routeBadge, { backgroundColor: '#E8F5E9' }]}><Text style={[styles.routeBadgeText, { color: '#2E7D32' }]}>Visitado</Text></View>
+                      <View style={styles.routeBadge}><Text style={styles.routeBadgeText}>★ {item.rating}</Text></View>
+                      <View style={[styles.routeBadge, { backgroundColor: '#E8F5E9' }]}><Text style={[styles.routeBadgeText, { color: '#2E7D32' }]}>{item.reviewsLabel}</Text></View>
                     </View>
                   </View>
                   <Ionicons name="chevron-forward" size={20} color={COLORS.BLUE} />

@@ -1,13 +1,53 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, Pressable } from 'react-native'
+import { View, Text, ScrollView, Image, Pressable, Alert, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { AuthInput } from '../components/AuthInput'
+import { supabase } from '../lib/supabase'
 
-export function AuthScreen({ onAuthenticated }: any) {
+// No recibe callback: al iniciar sesión, App.tsx detecta la nueva sesión vía onAuthStateChange.
+export function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true)
+  const [nombre, setNombre] = useState('')
+  const [email, setEmail] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function submit() {
+    if (!email.trim() || !password) {
+      Alert.alert('Faltan datos', 'Escribe tu correo y tu contraseña.')
+      return
+    }
+    if (!isLogin && !nombre.trim()) {
+      Alert.alert('Faltan datos', 'Escribe tu nombre completo.')
+      return
+    }
+
+    setLoading(true)
+    const { data, error } = isLogin
+      ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      : await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          // full_name lo lee el trigger handle_new_user para llenar usuarios.nombre_completo.
+          options: { data: { full_name: nombre.trim(), phone: telefono.trim() || undefined } },
+        })
+    setLoading(false)
+
+    if (error) {
+      Alert.alert(isLogin ? 'No se pudo iniciar sesión' : 'No se pudo crear la cuenta', traducirError(error.message))
+      return
+    }
+    if (!isLogin && !data.session) {
+      // Supabase tiene activado "Confirm email": la cuenta existe pero falta confirmar el correo.
+      Alert.alert('Revisa tu correo', 'Te enviamos un enlace para confirmar tu cuenta. Después inicia sesión.')
+      setIsLogin(true)
+    }
+  }
+
   return (
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
@@ -23,10 +63,10 @@ export function AuthScreen({ onAuthenticated }: any) {
         <Text style={styles.authSubtitle}>{isLogin ? 'Inicia sesión y continúa explorando las maravillas de Colombia.' : 'Únete a Colombia GO y empieza a vivir experiencias únicas.'}</Text>
 
         <View style={styles.authForm}>
-          {!isLogin && <AuthInput icon="person-outline" placeholder="Nombre completo" />}
-          <AuthInput icon="mail-outline" placeholder="Correo electrónico" />
-          {!isLogin && <AuthInput icon="call-outline" placeholder="Número de teléfono" />}
-          <AuthInput icon="lock-closed-outline" placeholder="Contraseña" secure />
+          {!isLogin && <AuthInput icon="person-outline" placeholder="Nombre completo" value={nombre} onChangeText={setNombre} autoCapitalize="words" />}
+          <AuthInput icon="mail-outline" placeholder="Correo electrónico" value={email} onChangeText={setEmail} keyboardType="email-address" />
+          {!isLogin && <AuthInput icon="call-outline" placeholder="Número de teléfono" value={telefono} onChangeText={setTelefono} keyboardType="phone-pad" />}
+          <AuthInput icon="lock-closed-outline" placeholder="Contraseña" secure value={password} onChangeText={setPassword} />
 
           {isLogin && (
              <View style={styles.authOptions}>
@@ -38,9 +78,11 @@ export function AuthScreen({ onAuthenticated }: any) {
              </View>
           )}
 
-          <Pressable style={[styles.authSubmit, !isLogin && { backgroundColor: COLORS.YELLOW }]} onPress={() => onAuthenticated("Camilo Restrepo")}>
+          <Pressable style={[styles.authSubmit, !isLogin && { backgroundColor: COLORS.YELLOW }, loading && { opacity: 0.7 }]} onPress={submit} disabled={loading}>
             <Text style={[styles.authSubmitText, !isLogin && { color: COLORS.BLUE }]}>{isLogin ? 'Iniciar sesión' : 'Registrarse'}</Text>
-            <Ionicons name="arrow-forward" size={18} color={isLogin ? "#FFF" : COLORS.BLUE} />
+            {loading
+              ? <ActivityIndicator size="small" color={isLogin ? '#FFF' : COLORS.BLUE} />
+              : <Ionicons name="arrow-forward" size={18} color={isLogin ? "#FFF" : COLORS.BLUE} />}
           </Pressable>
         </View>
 
@@ -56,4 +98,13 @@ export function AuthScreen({ onAuthenticated }: any) {
       </ScrollView>
     </SafeAreaView>
   )
+}
+
+function traducirError(message: string): string {
+  if (message.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.'
+  if (message.includes('Email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.'
+  if (message.includes('User already registered')) return 'Ya existe una cuenta con ese correo.'
+  if (message.includes('Password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.'
+  if (message.includes('Unable to validate email address')) return 'El correo no es válido.'
+  return message
 }

@@ -1,16 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useFavorites } from '../context/FavoritesContext'
 import { useSavedRoutes } from '../context/SavedRoutesContext'
-import { DESTINATIONS } from '../data/destinations'
+import type { Destination } from '../data/destinations'
+import { apiGet } from '../lib/api'
+import { toDestinationDetail } from '../lib/mappers'
+import type { LugarDetalleDto } from '../lib/types'
 
 export function DestinationPage() {
   const { id } = useParams()
   const nav = useNavigate()
-  const dest = DESTINATIONS.find((d) => d.id === id)
+  const [dest, setDest] = useState<Destination | null>(null)
+  const [loading, setLoading] = useState(true)
   const { has, toggle } = useFavorites()
   const { has: isInRoute, toggle: toggleRoute } = useSavedRoutes()
   const [more, setMore] = useState(false)
+
+  useEffect(() => {
+    if (!id) return
+    setLoading(true)
+    setDest(null)
+    apiGet<LugarDetalleDto>(`/api/v1/lugares/${id}`)
+      .then((dto) => setDest(toDestinationDetail(dto)))
+      .catch(() => setDest(null))
+      .finally(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
+    return (
+      <section className="section">
+        <p className="empty">Cargando...</p>
+      </section>
+    )
+  }
 
   if (!dest) {
     return (

@@ -1,11 +1,11 @@
 import React from 'react'
-import { View, Text, TextInput, ScrollView, Pressable } from 'react-native'
+import { View, Text, TextInput, ScrollView, Pressable, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { DestinationRow } from '../components/DestinationRow'
 
-export function ExploreScreen({ category, setCategory, query, setQuery, destinations: items, favorites, savedRoutes, onSelect, onFavorite, onToggleRoute }: any) {
+export function ExploreScreen({ category, setCategory, query, setQuery, destinations: items, loading, error, favorites, savedRoutes, onSelect, onFavorite, onToggleRoute }: any) {
   return (
     <View>
        <Text style={styles.pageTitle}>Explorar</Text>
@@ -26,6 +26,17 @@ export function ExploreScreen({ category, setCategory, query, setQuery, destinat
           </Pressable>
         ))}
       </ScrollView>
+      {loading && items.length === 0 && <ActivityIndicator color={COLORS.BLUE} style={{ marginTop: 30 }} />}
+      {!loading && error && (
+        <Text style={{ textAlign: 'center', color: COLORS.TEXT_MUTED, marginTop: 30 }}>
+          No pudimos conectar con el servidor. Revisa tu conexión.
+        </Text>
+      )}
+      {!loading && !error && items.length === 0 && (
+        <Text style={{ textAlign: 'center', color: COLORS.TEXT_MUTED, marginTop: 30 }}>
+          No encontramos lugares con esa búsqueda.
+        </Text>
+      )}
       {items.map((item: any) => (
         <DestinationRow
           key={item.id}

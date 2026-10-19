@@ -1,9 +1,40 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { GUIDES } from '../data/guides'
+import type { Guide } from '../data/guides'
+import { apiGet } from '../lib/api'
+import { toGuide } from '../lib/mappers'
+import type { GuiaDto } from '../lib/types'
 
 export function GuidesPage() {
-  const featured = GUIDES.find((g) => g.featured) ?? GUIDES[0]
-  const others = GUIDES.filter((g) => g.id !== featured.id)
+  const [guides, setGuides] = useState<Guide[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    apiGet<GuiaDto[]>('/api/v1/guias')
+      .then((dtos) => setGuides(dtos.map(toGuide)))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="page">
+        <p className="empty">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (error || guides.length === 0) {
+    return (
+      <div className="page">
+        <p className="empty">{error ? 'No pudimos cargar los guías.' : 'Aún no hay guías disponibles.'}</p>
+      </div>
+    )
+  }
+
+  const featured = guides.find((g) => g.featured) ?? guides[0]
+  const others = guides.filter((g) => g.id !== featured.id)
 
   return (
     <div className="page">

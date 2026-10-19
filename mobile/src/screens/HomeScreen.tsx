@@ -1,18 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Pressable, TextInput, ScrollView, Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
-import { destinations } from '../data/mockData'
+import { apiGet } from '../lib/api'
+import { toDestination } from '../lib/mappers'
+import type { Destination, LugarResumenDto, PagedResult } from '../lib/types'
 
 const { width } = Dimensions.get('window')
 
 export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: any) {
   const [activeSlide, setActiveSlide] = useState(0)
-  const featured = [
-    { id: 'metrocable', name: 'Medellín', city: 'MEDELLÍN', title: 'Conéctate con\nlo que te mueve', sub: 'Naturaleza, cultura y energía que inspiran.', img: require('../../assets/normalized/Medellin.jpg') },
-    { id: 'cartagena-hero', name: 'Cartagena', city: 'CARTAGENA', title: 'Historia y Mar\nen un solo lugar', sub: 'Camina por las murallas y vive el Caribe.', img: require('../../assets/normalized/Cartagena.jpg') },
-  ]
+  const [featured, setFeatured] = useState<Destination[]>([])
+  const [destinations, setDestinations] = useState<Destination[]>([])
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    apiGet<LugarResumenDto[]>('/api/v1/lugares/destacados?take=3')
+      .then((dtos) => setFeatured(dtos.map(toDestination)))
+      .catch(() => setError(true))
+
+    apiGet<PagedResult<LugarResumenDto>>(`/api/v1/lugares?ciudad=${encodeURIComponent('Medellín')}&pageSize=6`)
+      .then((page) => setDestinations(page.items.map(toDestination)))
+      .catch(() => setError(true))
+  }, [])
 
   const handleScroll = (event: any) => {
     const slide = Math.round(event.nativeEvent.contentOffset.x / (width - 40))
@@ -47,17 +58,17 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
         >
           {featured.map((item) => (
             <View key={item.id} style={styles.heroCard}>
-              <Image source={item.img} style={styles.heroImage} />
+              <Image source={item.image} style={styles.heroImage} />
               <View style={styles.heroOverlay}>
                 <View style={styles.heroPanel}>
                   <View style={styles.heroCityRow}>
-                    <Text style={styles.heroCity}>{item.city}</Text>
+                    <Text style={styles.heroCity}>{item.city.toUpperCase()}</Text>
                     <Ionicons name="location" size={10} color={COLORS.YELLOW} style={{ marginLeft: 5 }} />
                   </View>
-                  <Text style={styles.heroTitle}>{item.title}</Text>
-                  <Text style={styles.heroSubtitle}>{item.sub}</Text>
-                  <Pressable style={styles.heroButton} onPress={() => onExplore(item.name)}>
-                    <Text style={styles.heroButtonText}>Explorar {item.name}</Text>
+                  <Text style={styles.heroTitle}>{item.name}</Text>
+                  <Text style={styles.heroSubtitle}>{item.tagline}</Text>
+                  <Pressable style={styles.heroButton} onPress={() => onSelect(item)}>
+                    <Text style={styles.heroButtonText}>Descubrir {item.name}</Text>
                     <Ionicons name="chevron-forward" size={14} color={COLORS.BLUE} />
                   </Pressable>
                 </View>
@@ -90,8 +101,14 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Imperdibles de Medellín</Text>
-        <Pressable><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
+        <Pressable onPress={() => onExplore('Medellín')}><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
       </View>
+
+      {error && destinations.length === 0 && (
+        <Text style={{ color: COLORS.TEXT_MUTED, marginBottom: 12 }}>
+          No pudimos conectar con el servidor. Revisa que la API esté encendida.
+        </Text>
+      )}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizList}>
         {destinations.map((item) => (

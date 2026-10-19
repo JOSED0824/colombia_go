@@ -1,11 +1,11 @@
 import { DestinationCard } from '../components/DestinationCard'
 import { Button } from '../components/Button'
 import { useSavedRoutes } from '../context/SavedRoutesContext'
-import { DESTINATIONS } from '../data/destinations'
+import { useDestinationsByIds } from '../lib/useDestinationsByIds'
 
 export function SavedRoutesPage() {
   const { ids } = useSavedRoutes()
-  const saved = DESTINATIONS.filter((destination) => ids.includes(destination.id))
+  const { destinations: saved, loading } = useDestinationsByIds(ids)
 
   return (
     <div className="page">
@@ -21,7 +21,9 @@ export function SavedRoutesPage() {
             <p>Guarda lugares desde Explorar y crea tu ruta a tu ritmo.</p>
           </div>
         </div>
-        {saved.length === 0 ? (
+        {loading ? (
+          <p className="empty">Cargando...</p>
+        ) : saved.length === 0 ? (
           <div className="empty-state">
             <p>Tu ruta todavía está vacía.</p>
             <Button to="/explorar">Explorar destinos</Button>
