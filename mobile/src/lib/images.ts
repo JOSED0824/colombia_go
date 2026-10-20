@@ -7,14 +7,22 @@ const LOGO = require('../../assets/normalized/Logo-oficial-Colombia-GO.jpeg')
 const FOTOS_LUGARES: Record<string, any> = {
   'comuna-13': require('../../assets/normalized/comuna13.jpg'),
   'parque-arvi': require('../../assets/normalized/Arvi.jpg'),
-  'pueblito-paisa': require('../../assets/normalized/Medellin.jpg'),
-  'museo-de-antioquia': require('../../assets/normalized/Medellin.jpg'),
-  provenza: require('../../assets/normalized/Medellin.jpg'),
-  guatape: require('../../assets/normalized/Arvi.jpg'),
+  'pueblito-paisa': require('../../assets/normalized/Pueblito paisa.jpg'),
+  'museo-de-antioquia': require('../../assets/normalized/Museo Antioquia.jpg'),
+  provenza: require('../../assets/normalized/provenza.jpg'),
+  guatape: require('../../assets/normalized/guatape.jpg'),
   cartagena: require('../../assets/normalized/Cartagena.jpg'),
-  mompox: require('../../assets/normalized/Cartagena.jpg'),
+  mompox: require('../../assets/normalized/Santa-Cruz-de-Mompox.jpg'),
   salento: require('../../assets/normalized/salento.jpg'),
-  jardin: require('../../assets/normalized/salento.jpg'),
+  jardin: require('../../assets/normalized/jardin.jpg'),
+  tayrona: require('../../assets/normalized/Tayrona.jpg'),
+  cali: require('../../assets/normalized/Cali.jpg'),
+  bogota: require('../../assets/normalized/Bogota.jpg'),
+  'san-andres': require('../../assets/normalized/San-Andres.jpg'),
+  'villa-de-leyva': require('../../assets/normalized/villadeLeyva.jpg'),
+  barichara: require('../../assets/normalized/barichara.jpg'),
+  'santa-marta': require('../../assets/normalized/Santa-Marta.jpg'),
+  popayan: require('../../assets/normalized/Popayan.jpg'),
 }
 
 const FOTOS_GUIAS: Record<string, any> = {

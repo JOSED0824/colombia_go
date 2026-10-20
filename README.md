@@ -1,66 +1,76 @@
-# Colombia GO 
+# Colombia Go
 
-La aplicación es diseñada para descubrir destinos mágicos, conectar con guías expertos y planificar tus rutas por el país más maravilloso del mundo.
+Colombia Go es una guía visual para descubrir lugares, planes y destinos de Colombia. La aplicación reúne recomendaciones de gastronomía, cultura, naturaleza y vida nocturna en una interfaz pensada para explorar sin complicaciones.
 
-# Características Principales
+# Qué incluye
 
-- Carrusel de Destinos: Explora lugares icónicos como Medellín, Cartagena y Guatapé con integración de mapas (futuras actualizaciones con MapBox).
-- Guías Locales: Conecta con expertos (como Mateo, nuestro experto en café) para vivir experiencias auténticas.
-- Mis Rutas: Planificador de viajes inteligente con línea de tiempo y paradas secuenciales.
-- Favoritos: Guarda tus lugares preferidos para volver a ellos en cualquier momento.
-- Sistema de Logros: Gana medallas como "Experto en Arepas" o "Amigo del Metrocable" mientras exploras (Mejoras en futuras versiones).
-- ADN Colombiano: Interfaz vibrante basada en los colores de nuestra bandera y tipografía moderna.
+- Página de inicio con destinos destacados y categorías.
+- Exploración de destinos con filtros por categoría.
+- Fichas individuales con descripción, horario, precio, transporte y dirección.
+- Guías de viaje y rutas guardadas.
+- Sección de favoritos persistida durante la sesión.
+- Perfil y configuración de la experiencia.
+- Diseño responsive para escritorio y móvil.
 
-# Stack Tecnológico
+# Tecnologías
 
-- Frontend: React Native (https://reactnative.dev/) con TypeScript (https://www.typescriptlang.org/)
-- Plataforma: Expo (https://expo.dev/)
-- Fuentes: Poppins (Google Fonts)
-- Iconografía: Ionicons
+- React 19
+- TypeScript
+- Vite
+- React Router
+- CSS
+  
+Posible adaptación en futuras versiones 
 
-# 📁 Estructura del Proyecto
+Los destinos y las guías están definidos como datos locales dentro de `src/data`. No hay una API ni una base de datos conectada en esta versión.
 
-El código ha sido refactorizado siguiendo las mejores prácticas de arquitectura:
+# Empezar
 
-```
-[mobile/](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/mobile/)
-├── [assets/](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/src/assets/)             // Recursos visuales y logos
-├── [src/](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/src/)
-│   ├── [components/](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/src/components/)     // Elementos UI reutilizables (Botones, Tarjetas, Inputs)
-│   ├── screens/        # Pantallas principales (Home, Detail, Profile, etc.)
-│   ├── [data/](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/src/data/)           // Mock data y modelos de destinos
-│   └── theme/          # Sistema de diseño (Colores y Estilos globales)
-└── [App.tsx](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/src/App.tsx)             // Orquestador de navegación
+Necesitas tener Node.js instalado.
 
-
-Instalación y Uso
-Para correr el proyecto localmente:
-
-1. Clona el repositorio:
-Shell Script
-git clone https://github.com/JOSED0824/colombia_go.git
-
-2. Entra a la carpeta del proyecto móvil:
-Shell Script
-cd [colombia_go/mobile](file:///C:/Users/User/OneDrive/Desktop/Colombia%20Go/colombia_go/mobile/)
-
-3. Instala las dependencias:
-Shell Script
+```bash
 npm install
-
-4. Inicia la aplicación:
-Shell Script
-npx expo start
-
-5. Escanea el código QR con la app Expo Go en tu dispositivo Android o iOS (Por verificar en iOS).
-
- Guía de Estilo
-
-Amarillo Vibrante: #FFD100 (Energía y Oro)
-Azul Profundo: #003B7D (Nuestros mares y cielos)
-Rojo Pasión: #E63946 (Nuestra cultura y corazón)
-Fondo Crema: #FFF8ED (Suavidad y elegancia)
-Bordes: 35px para una interfaz amigable y moderna.
+npm run dev
 ```
 
-Hecho con ❤️ por Sujey2006 CO 
+Vite mostrará en la terminal la dirección local para abrir la aplicación, normalmente `http://localhost:5173`.
+
+Para generar una versión de producción:
+
+```bash
+npm run build
+npm run preview
+```
+
+# Estructura principal
+
+```text
+src/
+├── components/   Componentes reutilizables de la interfaz
+├── context/      Estado de favoritos y rutas guardadas
+├── data/         Destinos y guías de ejemplo
+├── pages/        Vistas principales de la aplicación
+├── App.tsx       Rutas de la aplicación
+└── styles.css    Estilos globales
+```
+
+Las imágenes utilizadas por los destinos están en `public/images`.
+
+# Rutas disponibles
+
+| Ruta | Vista |
+| --- | --- |
+| `/` | Inicio |
+| `/explorar` | Explorar destinos |
+| `/guias` | Guías |
+| `/viajes` | Rutas guardadas |
+| `/favoritos` | Favoritos |
+| `/perfil` | Perfil |
+| `/configuracion` | Configuración |
+| `/destino/:id` | Detalle de un destino |
+
+# Scripts
+
+- `npm run dev`: inicia el servidor de desarrollo.
+- `npm run build`: comprueba TypeScript y crea el build de producción.
+- `npm run preview`: sirve localmente el build generado.
