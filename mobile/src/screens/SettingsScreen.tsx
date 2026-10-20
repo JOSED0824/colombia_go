@@ -104,7 +104,7 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
 
         <Text style={styles.settingsSectionLabel}>Seguridad</Text>
         <View style={styles.settingsCard}>
-          <SettingLink icon="person-outline" label="Editar Información" onPress={() => setIsEditing(!isEditing)} />
+          <SettingLink icon="person-outline" label="Editar Información" onPress={() => alert('Función para cambiar contraseña en desarrollo')} />
           <View style={styles.settingsDivider} />
           <SettingLink icon="lock-closed-outline" label="Cambiar Contraseña" onPress={() => alert('Función para cambiar contraseña en desarrollo')} />
         </View>

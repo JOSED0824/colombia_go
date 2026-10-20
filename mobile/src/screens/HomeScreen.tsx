@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, Image, Pressable, TextInput, ScrollView, Dimensions } from 'react-native'
+import { View, Text, Image, Pressable, TextInput, ScrollView, Dimensions, ImageBackground } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
@@ -10,8 +10,10 @@ const { width } = Dimensions.get('window')
 export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: any) {
   const [activeSlide, setActiveSlide] = useState(0)
   const featured = [
-    { id: 'metrocable', name: 'Medellín', city: 'MEDELLÍN', title: 'Conéctate con\nlo que te mueve', sub: 'Naturaleza, cultura y energía que inspiran.', img: require('../../assets/normalized/Medellin.jpg') },
+    { id: 'metrocable', name: 'Medellín', city: 'MEDELLÍN', title: 'Conéctate con\nlo que te mueve', sub: 'Naturaleza, cultura y energía\nque inspiran.', img: require('../../assets/normalized/Medellin.jpg') },
     { id: 'cartagena-hero', name: 'Cartagena', city: 'CARTAGENA', title: 'Historia y Mar\nen un solo lugar', sub: 'Camina por las murallas y vive el Caribe.', img: require('../../assets/normalized/Cartagena.jpg') },
+    { id: 'guatape-hero', name: 'Guatapé', city: 'ANTIOQUIA', title: 'Colores, paisajes\ny mucha magia', sub: 'Visita el pueblo más colorido de Colombia.', img: require('../../assets/normalized/Arvi.jpg') },
+    { id: 'salento-hero', name: 'Salento', city: 'QUINDÍO', title: 'El corazón del\nEje Cafetero', sub: 'Palmas de cera y el Valle de Cocora.', img: require('../../assets/normalized/salento.jpg') },
   ]
 
   const handleScroll = (event: any) => {
@@ -20,7 +22,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View style={styles.homeHeader}>
         <View style={styles.userSection}>
           <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.avatarHeader} />
@@ -46,8 +48,12 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
           scrollEventThrottle={16}
         >
           {featured.map((item) => (
-            <View key={item.id} style={styles.heroCard}>
-              <Image source={item.img} style={styles.heroImage} />
+            <ImageBackground
+              key={item.id}
+              source={item.img}
+              style={styles.heroCard}
+              imageStyle={{ borderRadius: 35, opacity: 0.85 }}
+            >
               <View style={styles.heroOverlay}>
                 <View style={styles.heroPanel}>
                   <View style={styles.heroCityRow}>
@@ -56,13 +62,16 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
                   </View>
                   <Text style={styles.heroTitle}>{item.title}</Text>
                   <Text style={styles.heroSubtitle}>{item.sub}</Text>
-                  <Pressable style={styles.heroButton} onPress={() => onExplore(item.name)}>
+                  <Pressable
+                    style={styles.heroButton}
+                    onPress={() => onExplore(item.name)}
+                  >
                     <Text style={styles.heroButtonText}>Explorar {item.name}</Text>
                     <Ionicons name="chevron-forward" size={14} color={COLORS.BLUE} />
                   </Pressable>
                 </View>
               </View>
-            </View>
+            </ImageBackground>
           ))}
         </ScrollView>
         <View style={styles.heroDots}>
@@ -71,6 +80,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
           ))}
         </View>
       </View>
+
 
       <View style={styles.catRow}>
         {[
@@ -90,11 +100,11 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Imperdibles de Medellín</Text>
-        <Pressable><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
+        <Pressable onPress={() => onExplore('Medellín')}><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizList}>
-        {destinations.map((item) => (
+        {destinations.filter(d => d.city === 'Medellín').map((item) => (
           <Pressable key={item.id} style={styles.card} onPress={() => onSelect(item)}>
             <Image source={item.image} style={styles.cardImage} />
             <View style={styles.cardRating}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image, Pressable } from 'react-native'
+import { View, Text, Image, Pressable, ImageBackground, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
@@ -8,7 +8,7 @@ import { guides } from '../data/mockData'
 export function GuidesScreen() {
   const featured = guides[0]
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View style={styles.guidesHeader}>
         <View>
           <Text style={styles.guidesTitle}>Guías Locales</Text>
@@ -21,8 +21,11 @@ export function GuidesScreen() {
         <Ionicons name="search-outline" size={24} color={COLORS.BLUE} />
       </View>
 
-      <View style={styles.guideHeroCard}>
-        <Image source={featured.image} style={styles.guideHeroImg} />
+      <ImageBackground
+        source={featured.image}
+        style={styles.guideHeroCard}
+        imageStyle={{ borderRadius: 35 }}
+      >
         <View style={styles.guideHeroContent}>
           <View style={styles.pillExp}>
             <Ionicons name="cafe" size={14} color="#5D4037" />
@@ -30,20 +33,24 @@ export function GuidesScreen() {
           </View>
           <Text style={styles.guideHeroName}>{featured.name},</Text>
           <Text style={styles.guideHeroSub}>Experto en Café</Text>
-          <View style={styles.guideHeroLoc}>
-            <Ionicons name="location" size={16} color="#FFF" />
-            <Text style={styles.guideHeroLocText}>{featured.place}</Text>
+
+          <View style={styles.guideHeroInfoRow}>
+            <View style={styles.guideHeroLoc}>
+              <Ionicons name="location" size={16} color="#FFF" />
+              <Text style={styles.guideHeroLocText}>{featured.place}</Text>
+            </View>
+            <View style={styles.ratingRowHero}>
+              <Ionicons name="star" size={16} color={COLORS.YELLOW} />
+              <Text style={styles.guideHeroRate}> 5.0 (128 reseñas)</Text>
+            </View>
           </View>
-          <View style={styles.ratingRowHero}>
-            <Ionicons name="star" size={16} color={COLORS.YELLOW} />
-            <Text style={styles.guideHeroRate}> 5.0 (128 reseñas)</Text>
-          </View>
+
           <Pressable style={styles.reserveBtn}>
             <Ionicons name="calendar-outline" size={20} color={COLORS.BLUE} />
             <Text style={styles.reserveBtnText}>Reservar Experiencia</Text>
           </Pressable>
         </View>
-      </View>
+      </ImageBackground>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>👒 Otros Guías Auténticos</Text>
@@ -74,3 +81,4 @@ export function GuidesScreen() {
     </View>
   )
 }
+

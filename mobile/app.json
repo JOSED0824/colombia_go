@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Colombia Go",
+    "slug": "colombia-go",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "colombiago",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "package": "com.colombiago.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.colombiago.app"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-status-bar"
+    ]
+  }
+}
