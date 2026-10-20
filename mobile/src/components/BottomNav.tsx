@@ -8,6 +8,7 @@ const TABS = [
   { id: 'Inicio', label: 'Inicio', icon: 'home' },
   { id: 'Explorar', label: 'Explorar', icon: 'compass' },
   { id: 'Guías', label: 'Guías', icon: 'book' },
+  { id: 'IA', label: 'IA', icon: 'sparkles' },
   { id: 'Favoritos', label: 'Favoritos', icon: 'heart' },
   { id: 'Perfil', label: 'Perfil', icon: 'person' },
 ] as const

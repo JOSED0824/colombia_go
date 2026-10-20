@@ -17,7 +17,9 @@ import { supabase } from './src/lib/supabase'
 import { apiGet, apiSend } from './src/lib/api'
 import { CATEGORIA_SLUG, toDestination } from './src/lib/mappers'
 import type { Destination, LugarResumenDto, PagedResult, RutaDto } from './src/lib/types'
+import { getAssuranceLevel, listFactors } from './src/lib/mfa'
 import { AuthScreen } from './src/screens/AuthScreen'
+import { MfaChallengeScreen } from './src/screens/MfaChallengeScreen'
 import { HomeScreen } from './src/screens/HomeScreen'
 import { ExploreScreen } from './src/screens/ExploreScreen'
 import { GuidesScreen } from './src/screens/GuidesScreen'
@@ -26,13 +28,15 @@ import { ProfileScreen } from './src/screens/ProfileScreen'
 import { SavedRoutesScreen } from './src/screens/SavedRoutesScreen'
 import { SettingsScreen } from './src/screens/SettingsScreen'
 import { DetailScreen } from './src/screens/DetailScreen'
+import { MapScreen } from './src/screens/MapScreen'
+import { AiRoutePlannerScreen } from './src/screens/AiRoutePlannerScreen'
 import { BottomNav } from './src/components/BottomNav'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
-const TABS = ['Inicio', 'Explorar', 'Guías', 'Favoritos', 'Perfil'] as const
+const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as const
 type Tab = (typeof TABS)[number]
-type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | null
+type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | null
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -51,6 +55,28 @@ export default function App() {
     const { data } = supabase.auth.onAuthStateChange((_event, newSession) => setSession(newSession))
     return () => data.subscription.unsubscribe()
   }, [])
+
+  // Si el usuario tiene verificación en dos pasos activada, la sesión arranca en aal1 y hay
+  // que resolver un challenge de TOTP antes de dejarlo entrar (nextLevel sube a aal2).
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!session) {
+      setMfaFactorId(null)
+      return
+    }
+    getAssuranceLevel()
+      .then((aal) => {
+        if (aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2') {
+          return listFactors().then((factors) => {
+            const verified = factors.find((f) => f.status === 'verified')
+            setMfaFactorId(verified?.id ?? null)
+          })
+        }
+        setMfaFactorId(null)
+      })
+      .catch(() => setMfaFactorId(null))
+  }, [session?.user?.id])
 
   useEffect(() => {
     if (fontsLoaded && session !== undefined) SplashScreen.hideAsync().catch(() => {})
@@ -80,6 +106,18 @@ export default function App() {
   const [favoriteItems, setFavoriteItems] = useState<Destination[]>([])
   const [savedRoutes, setSavedRoutes] = useState<string[]>([])
   const [routeItems, setRouteItems] = useState<Destination[]>([])
+
+  // Para la pantalla de Mapa genérica: qué puntos mostrar y si se dibujan conectados (ruta IA).
+  const [mapPoints, setMapPoints] = useState<Destination[]>([])
+  const [mapTitle, setMapTitle] = useState('Mapa')
+  const [mapDrawRoute, setMapDrawRoute] = useState(false)
+
+  function showOnMap(points: Destination[], title: string, drawRoute = false) {
+    setMapPoints(points)
+    setMapTitle(title)
+    setMapDrawRoute(drawRoute)
+    setStackScreen('Mapa')
+  }
 
   async function loadFavorites() {
     const dtos = await apiGet<LugarResumenDto[]>('/api/v1/favoritos/lugares')
@@ -174,6 +212,14 @@ export default function App() {
     )
   }
 
+  if (mfaFactorId) {
+    return (
+      <SafeAreaProvider>
+        <MfaChallengeScreen factorId={mfaFactorId} onVerified={() => setMfaFactorId(null)} />
+      </SafeAreaProvider>
+    )
+  }
+
   let content: React.ReactNode
   let wrapInScroll = true
 
@@ -220,6 +266,17 @@ export default function App() {
         paradas={routeItems.filter((d) => savedRoutes.includes(d.id))}
         onSelect={selectDestination}
         onNavigate={navigate}
+        onViewMap={() => showOnMap(routeItems.filter((d) => savedRoutes.includes(d.id)), 'Mis rutas')}
+      />
+    )
+  } else if (stackScreen === 'Mapa') {
+    wrapInScroll = false
+    content = <MapScreen title={mapTitle} points={mapPoints} drawRoute={mapDrawRoute} onBack={() => setStackScreen(null)} />
+  } else if (activeTab === 'IA') {
+    content = (
+      <AiRoutePlannerScreen
+        candidatos={favoriteItems.filter((d) => favorites.includes(d.id))}
+        onViewOnMap={(points, title) => showOnMap(points, title, true)}
       />
     )
   } else if (activeTab === 'Inicio') {
@@ -259,6 +316,7 @@ export default function App() {
         onFavorite={toggleFavorite}
         onToggleRoute={toggleRoute}
         onNavigate={navigate}
+        onViewMap={() => showOnMap(favoriteItems.filter((d) => favorites.includes(d.id)), 'Mis favoritos')}
       />
     )
   } else {

@@ -248,4 +248,11 @@ export const styles = StyleSheet.create({
   emptyDesc: { fontSize: 13, fontFamily: 'Poppins_400Regular', color: COLORS.TEXT_MUTED, textAlign: 'center', marginTop: 8 },
   emptyButton: { backgroundColor: COLORS.BLUE, borderRadius: 20, paddingHorizontal: 25, paddingVertical: 12, marginTop: 20 },
   emptyButtonText: { color: '#FFF', fontFamily: 'Poppins_700Bold' },
+
+  // MFA
+  mfaContainer: { flex: 1, padding: 30, alignItems: 'center', justifyContent: 'center' },
+  mfaIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: COLORS.GRAY_LIGHT, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  mfaCodeInput: { width: '100%', backgroundColor: '#FFF', borderWidth: 1, borderColor: '#CBD8E5', borderRadius: 15, paddingVertical: 16, marginTop: 25, marginBottom: 10, textAlign: 'center', fontSize: 24, letterSpacing: 8, fontFamily: 'Poppins_700Bold', color: COLORS.BLUE },
+  mfaStatusRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
+  mfaSecret: { fontSize: 15, fontFamily: 'Poppins_700Bold', color: COLORS.BLUE, backgroundColor: COLORS.GRAY_LIGHT, borderRadius: 10, padding: 12, marginTop: 10, textAlign: 'center', letterSpacing: 1 },
 })

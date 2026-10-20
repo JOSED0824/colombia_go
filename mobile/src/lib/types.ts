@@ -20,6 +20,8 @@ export type LugarResumenDto = {
   categoryLabel: string // "Cultura"
   image: string | null
   tagline: string | null
+  latitude: number
+  longitude: number
 }
 
 export type LugarDetalleDto = LugarResumenDto & {
@@ -28,8 +30,6 @@ export type LugarDetalleDto = LugarResumenDto & {
   price: string
   transport: string | null
   address: string
-  latitude: number
-  longitude: number
   gallery: string[]
   features: string[]
   isFavorite: boolean
@@ -58,6 +58,17 @@ export type RutaDto = {
   fechaGeneracion: string | null
   tiempoEstimadoMin: number | null
   paradas: LugarResumenDto[]
+}
+
+export type GenerarRutaIaRequest = {
+  lugarSlugs: string[]
+  presupuesto: number
+}
+
+export type RutaIaDto = {
+  paradas: LugarResumenDto[]
+  costoEstimado: number
+  explicacion: string
 }
 
 export type PerfilDto = {

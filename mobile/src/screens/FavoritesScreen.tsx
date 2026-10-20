@@ -5,10 +5,17 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { DestinationRow } from '../components/DestinationRow'
 
-export function FavoritesScreen({ destinations: items, onSelect, onFavorite, onToggleRoute, inRoutes, onNavigate }: any) {
+export function FavoritesScreen({ destinations: items, onSelect, onFavorite, onToggleRoute, inRoutes, onNavigate, onViewMap }: any) {
   return (
     <View>
-      <Text style={styles.pageTitle}>Mis Favoritos</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.pageTitle}>Mis Favoritos</Text>
+        {items.length > 0 && (
+          <Pressable onPress={onViewMap}>
+            <Ionicons name="map-outline" size={24} color={COLORS.BLUE} />
+          </Pressable>
+        )}
+      </View>
       {items.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="heart-outline" size={60} color={COLORS.GRAY_LIGHT} />

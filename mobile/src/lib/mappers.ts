@@ -26,6 +26,8 @@ export function toDestination(dto: LugarResumenDto): Destination {
     hours: '',
     transport: '',
     address: '',
+    latitude: Number(dto.latitude),
+    longitude: Number(dto.longitude),
   }
 }
 
@@ -37,7 +39,5 @@ export function toDestinationDetail(dto: LugarDetalleDto): Destination {
     hours: dto.hours ?? '',
     transport: dto.transport ?? '',
     address: dto.address,
-    latitude: Number(dto.latitude),
-    longitude: Number(dto.longitude),
   }
 }

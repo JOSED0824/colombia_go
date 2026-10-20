@@ -5,7 +5,7 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import type { Destination } from '../lib/types'
 
-export function SavedRoutesScreen({ paradas, onSelect, onNavigate }: any) {
+export function SavedRoutesScreen({ paradas, onSelect, onNavigate, onViewMap }: any) {
   const saved: Destination[] = paradas
 
   return (
@@ -19,7 +19,11 @@ export function SavedRoutesScreen({ paradas, onSelect, onNavigate }: any) {
             <View style={[styles.flagColor, { backgroundColor: COLORS.RED }]} />
           </View>
         </View>
-        <Ionicons name="map-outline" size={24} color={COLORS.BLUE} />
+        {saved.length > 0 && (
+          <Pressable onPress={onViewMap}>
+            <Ionicons name="map-outline" size={24} color={COLORS.BLUE} />
+          </Pressable>
+        )}
       </View>
 
       {saved.length === 0 ? (

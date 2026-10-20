@@ -6,6 +6,7 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { SettingToggle } from '../components/SettingToggle'
 import { SettingLink } from '../components/SettingLink'
+import { MfaSettings } from '../components/MfaSettings'
 
 export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout, onNavigate, onProfileUpdate }: any) {
   const [notifications, setNotifications] = useState(true)
@@ -107,6 +108,8 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
           <SettingLink icon="person-outline" label="Editar Información" onPress={() => setIsEditing(!isEditing)} />
           <View style={styles.settingsDivider} />
           <SettingLink icon="lock-closed-outline" label="Cambiar Contraseña" onPress={() => alert('Función para cambiar contraseña en desarrollo')} />
+          <View style={styles.settingsDivider} />
+          <MfaSettings />
         </View>
 
         <Pressable style={styles.logoutBtnAction} onPress={onLogout}>
