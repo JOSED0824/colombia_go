@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets / Expo local state (never commit)
+.env
+.env.*
+!.env.example
+.expo/
+mobile/.env
