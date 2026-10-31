@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
+import { useTranslation } from 'react-i18next'
 import { buildMapHtml } from '../lib/mapHtml'
 import { MapBody } from '../components/MapBody'
 import type { Destination } from '../lib/types'
@@ -17,6 +18,7 @@ type Props = {
 }
 
 export function MapScreen({ title, points, onBack, drawRoute }: Props) {
+  const { t } = useTranslation()
   const ubicados = points.filter(
     (p): p is Destination & { latitude: number; longitude: number } =>
       typeof p.latitude === 'number' && typeof p.longitude === 'number' && !Number.isNaN(p.latitude),
@@ -40,7 +42,7 @@ export function MapScreen({ title, points, onBack, drawRoute }: Props) {
       {ubicados.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="location-outline" size={60} color={COLORS.GRAY_LIGHT} />
-          <Text style={styles.emptyTitle}>Todavía no hay lugares con ubicación para mostrar aquí.</Text>
+          <Text style={styles.emptyTitle}>{t('map.empty')}</Text>
         </View>
       ) : (
         <>
@@ -55,8 +57,7 @@ export function MapScreen({ title, points, onBack, drawRoute }: Props) {
                 textAlign: 'center',
               }}
             >
-              {sinUbicacion} lugar{sinUbicacion > 1 ? 'es' : ''} sin coordenadas registradas no se muestra en el
-              mapa.
+              {t('map.hidden', { count: sinUbicacion })}
             </Text>
           )}
         </>

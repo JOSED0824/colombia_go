@@ -3,6 +3,7 @@ import { View, Text, Image, Pressable, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
+import { useTranslation } from 'react-i18next'
 import { apiGet } from '../lib/api'
 import { fotoGuia } from '../lib/images'
 import type { GuiaDto } from '../lib/types'
@@ -28,7 +29,7 @@ function toGuia(dto: GuiaDto): Guia {
     place: dto.place,
     rating: Number(dto.rating).toFixed(1),
     reviews: String(dto.reviews),
-    price: dto.price.replace(/\s*por hora$/i, ''), // la pantalla ya muestra "por hora" aparte
+    price: dto.price.match(/\$[\d.,]+/)?.[0] ?? dto.price, // la pantalla muestra "por hora" (traducido) aparte
     image: fotoGuia(dto.name, dto.image),
     tags: dto.languages,
     featured: dto.featured,
@@ -36,6 +37,7 @@ function toGuia(dto: GuiaDto): Guia {
 }
 
 export function GuidesScreen() {
+  const { t, i18n } = useTranslation()
   const [guides, setGuides] = useState<Guia[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -45,13 +47,13 @@ export function GuidesScreen() {
       .then((dtos) => setGuides(dtos.map(toGuia)))
       .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [])
+  }, [i18n.language])
 
   if (loading) return <ActivityIndicator color={COLORS.BLUE} style={{ marginTop: 60 }} />
   if (error || guides.length === 0) {
     return (
       <Text style={{ textAlign: 'center', color: COLORS.TEXT_MUTED, marginTop: 60 }}>
-        {error ? 'No pudimos conectar con el servidor. Revisa tu conexión.' : 'Aún no hay guías disponibles.'}
+        {error ? t('common.noConnection') : t('guides.empty')}
       </Text>
     )
   }
@@ -62,7 +64,7 @@ export function GuidesScreen() {
     <View>
       <View style={styles.guidesHeader}>
         <View>
-          <Text style={styles.guidesTitle}>Guías Locales</Text>
+          <Text style={styles.guidesTitle}>{t('guides.title')}</Text>
           <View style={styles.flagLine}>
             <View style={[styles.flagColor, { backgroundColor: COLORS.YELLOW }]} />
             <View style={[styles.flagColor, { backgroundColor: COLORS.BLUE }]} />
@@ -87,18 +89,18 @@ export function GuidesScreen() {
           </View>
           <View style={styles.ratingRowHero}>
             <Ionicons name="star" size={16} color={COLORS.YELLOW} />
-            <Text style={styles.guideHeroRate}> {featured.rating} ({featured.reviews} reseñas)</Text>
+            <Text style={styles.guideHeroRate}> {featured.rating} ({t('guides.reviews', { count: Number(featured.reviews) })})</Text>
           </View>
           <Pressable style={styles.reserveBtn}>
             <Ionicons name="calendar-outline" size={20} color={COLORS.BLUE} />
-            <Text style={styles.reserveBtnText}>Reservar Experiencia</Text>
+            <Text style={styles.reserveBtnText}>{t('guides.reserve')}</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>👒 Otros Guías Auténticos</Text>
-        <Pressable><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
+        <Text style={styles.sectionTitle}>{t('guides.others')}</Text>
+        <Pressable><Text style={styles.seeAllText}>{t('common.viewAll')}</Text></Pressable>
       </View>
 
       {others.map((item) => (
@@ -112,12 +114,12 @@ export function GuidesScreen() {
             </View>
             <View style={styles.ratingRowSmall}>
               <Ionicons name="star" size={12} color={COLORS.YELLOW} />
-              <Text style={styles.ratingValueSmall}>{item.rating} ({item.reviews} reseñas)</Text>
+              <Text style={styles.ratingValueSmall}>{item.rating} ({t('guides.reviews', { count: Number(item.reviews) })})</Text>
             </View>
           </View>
           <View style={styles.guidePriceArea}>
             <Text style={styles.guidePriceVal}>{item.price}</Text>
-            <Text style={styles.guidePriceSub}>por hora</Text>
+            <Text style={styles.guidePriceSub}>{t('guides.perHour')}</Text>
             <Ionicons name="chevron-forward" size={18} color={COLORS.BLUE} />
           </View>
         </Pressable>

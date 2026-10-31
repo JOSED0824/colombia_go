@@ -16,6 +16,7 @@ export function toDestination(dto: LugarResumenDto): Destination {
     city: dto.city,
     region: dto.region,
     category: dto.categoryLabel,
+    categorySlug: dto.category,
     categoryLabel: dto.categoryLabel,
     rating: Number(dto.rating),
     reviewsLabel: dto.reviewsLabel,

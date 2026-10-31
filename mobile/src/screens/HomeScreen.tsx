@@ -3,6 +3,7 @@ import { View, Text, Image, Pressable, TextInput, ScrollView, Dimensions } from 
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
+import { useTranslation } from 'react-i18next'
 import { apiGet } from '../lib/api'
 import { toDestination } from '../lib/mappers'
 import type { Destination, LugarResumenDto, PagedResult } from '../lib/types'
@@ -10,6 +11,7 @@ import type { Destination, LugarResumenDto, PagedResult } from '../lib/types'
 const { width } = Dimensions.get('window')
 
 export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: any) {
+  const { t, i18n } = useTranslation()
   const [activeSlide, setActiveSlide] = useState(0)
   const [featured, setFeatured] = useState<Destination[]>([])
   const [destinations, setDestinations] = useState<Destination[]>([])
@@ -23,7 +25,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
     apiGet<PagedResult<LugarResumenDto>>(`/api/v1/lugares?ciudad=${encodeURIComponent('Medellín')}&pageSize=6`)
       .then((page) => setDestinations(page.items.map(toDestination)))
       .catch(() => setError(true))
-  }, [])
+  }, [i18n.language])
 
   const handleScroll = (event: any) => {
     const slide = Math.round(event.nativeEvent.contentOffset.x / (width - 40))
@@ -35,7 +37,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
       <View style={styles.homeHeader}>
         <View style={styles.userSection}>
           <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.avatarHeader} />
-          <Text style={styles.greetingText}>¡Hola, {profileName.split(' ')[0]}! 🇨🇴</Text>
+          <Text style={styles.greetingText}>{t('home.hello', { name: profileName.split(' ')[0] })}</Text>
         </View>
         <Pressable style={styles.notifBtn}>
           <Ionicons name="notifications-outline" size={24} color={COLORS.BLUE} />
@@ -45,7 +47,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
 
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color={COLORS.TEXT_MUTED} />
-        <TextInput placeholder="¿Qué quieres descubrir hoy?" placeholderTextColor={COLORS.TEXT_MUTED} style={styles.searchInput} />
+        <TextInput placeholder={t('home.search')} placeholderTextColor={COLORS.TEXT_MUTED} style={styles.searchInput} />
       </View>
 
       <View style={styles.heroContainer}>
@@ -68,7 +70,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
                   <Text style={styles.heroTitle}>{item.name}</Text>
                   <Text style={styles.heroSubtitle}>{item.tagline}</Text>
                   <Pressable style={styles.heroButton} onPress={() => onSelect(item)}>
-                    <Text style={styles.heroButtonText}>Descubrir {item.name}</Text>
+                    <Text style={styles.heroButtonText}>{t('home.discover', { name: item.name })}</Text>
                     <Ionicons name="chevron-forward" size={14} color={COLORS.BLUE} />
                   </Pressable>
                 </View>
@@ -85,28 +87,28 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
 
       <View style={styles.catRow}>
         {[
-          { id: 'Gastronomía', icon: 'restaurant', color: '#FFD100' },
-          { id: 'Cultura', icon: 'home', color: '#003B7D' },
-          { id: 'Naturaleza', icon: 'leaf', color: '#4CAF50' },
-          { id: 'Vida Nocturna', icon: 'musical-notes', color: '#E63946' },
+          { id: 'food', icon: 'restaurant', color: '#FFD100' },
+          { id: 'culture', icon: 'home', color: '#003B7D' },
+          { id: 'nature', icon: 'leaf', color: '#4CAF50' },
+          { id: 'nightlife', icon: 'musical-notes', color: '#E63946' },
         ].map((item) => (
           <View key={item.id} style={styles.catItem}>
             <View style={[styles.catIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.BLUE : item.color }]}>
               <Ionicons name={item.icon as any} size={24} color={item.color === '#FFD100' ? COLORS.BLUE : '#FFF'} />
             </View>
-            <Text style={styles.catLabel}>{item.id}</Text>
+            <Text style={styles.catLabel}>{t(`categories.${item.id}`)}</Text>
           </View>
         ))}
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Imperdibles de Medellín</Text>
-        <Pressable onPress={() => onExplore('Medellín')}><Text style={styles.seeAllText}>Ver todos ›</Text></Pressable>
+        <Text style={styles.sectionTitle}>{t('home.highlights', { city: 'Medellín' })}</Text>
+        <Pressable onPress={() => onExplore('Medellín')}><Text style={styles.seeAllText}>{t('common.viewAll')}</Text></Pressable>
       </View>
 
       {error && destinations.length === 0 && (
         <Text style={{ color: COLORS.TEXT_MUTED, marginBottom: 12 }}>
-          No pudimos conectar con el servidor. Revisa que la API esté encendida.
+          {t('common.noConnectionApi')}
         </Text>
       )}
 
@@ -119,7 +121,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
               <Text style={styles.ratingValue}>{item.rating}</Text>
             </View>
             <View style={styles.cardContent}>
-              <View style={styles.cardTag}><Text style={styles.cardTagText}>{item.category}</Text></View>
+              <View style={styles.cardTag}><Text style={styles.cardTagText}>{t(`categories.${item.categorySlug}`, { defaultValue: item.category })}</Text></View>
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.cardTagline}>{item.tagline}</Text>
               <View style={styles.cardLocation}>

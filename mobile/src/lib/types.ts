@@ -98,7 +98,8 @@ export type Destination = {
   name: string
   city: string
   region: string
-  category: string // etiqueta en español, ej. "Cultura"
+  category: string // etiqueta que manda la API (español), ej. "Cultura"
+  categorySlug: string // culture | nature | food | nightlife — se traduce con t(`categories.${slug}`)
   categoryLabel: string
   rating: number
   reviewsLabel: string
@@ -111,4 +112,62 @@ export type Destination = {
   address: string
   latitude?: number
   longitude?: number
+}
+
+// --- Configuración, onboarding, guía de viaje con IA ---------------------------------------------
+
+export type ConfiguracionDto = {
+  notifications: boolean
+  location: boolean
+  reduceMotion: boolean
+  language: string // es | en | pt | zh | fr
+  onboardingCompleted: boolean
+}
+
+export type PreferenciasDto = { categorias: string[] } // slugs: food | culture | nature | nightlife
+
+export type CiudadDto = { nombre: string; totalLugares: number }
+
+export type GenerarGuiaViajeRequest = {
+  ciudad: string
+  dias: number
+  presupuesto: number
+  intereses: string[]
+}
+
+export type GuiaViajeParadaDto = {
+  lugar: LugarResumenDto
+  hora: string
+  duracionMin: number
+  costoAprox: number
+  consejo: string
+}
+
+export type GuiaViajeDiaDto = { dia: number; tema: string; paradas: GuiaViajeParadaDto[] }
+
+export type GuiaViajeDto = {
+  id: number
+  ciudad: string
+  dias: number
+  presupuesto: number
+  intereses: string[]
+  idioma: string
+  titulo: string
+  resumen: string
+  planDiario: GuiaViajeDiaDto[]
+  costoTotalEstimado: number
+  presupuestoRestante: number
+  excedePresupuesto: boolean
+  consejosGenerales: string[]
+  queLlevar: string[]
+  fechaCreacion: string
+}
+
+export type GuiaViajeResumenDto = {
+  id: number
+  titulo: string
+  ciudad: string
+  dias: number
+  presupuesto: number
+  fechaCreacion: string
 }

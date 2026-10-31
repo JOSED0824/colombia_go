@@ -5,11 +5,13 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { FactItemCol } from '../components/FactItemCol'
+import { useTranslation } from 'react-i18next'
 import { apiGet } from '../lib/api'
 import { toDestinationDetail } from '../lib/mappers'
 import type { Destination, LugarDetalleDto } from '../lib/types'
 
 export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, onFavorite, onToggleRoute }: any) {
+  const { t, i18n } = useTranslation()
   // Se muestra de una vez lo que ya se tiene (nombre, foto, calificación) y se completa con el detalle de la API.
   const [detalle, setDetalle] = useState<Destination | null>(null)
   const [error, setError] = useState(false)
@@ -20,7 +22,7 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
     apiGet<LugarDetalleDto>(`/api/v1/lugares/${encodeURIComponent(resumen.id)}`)
       .then((dto) => setDetalle(toDestinationDetail(dto)))
       .catch(() => setError(true))
-  }, [resumen.id])
+  }, [resumen.id, i18n.language])
 
   const destination: Destination = detalle ?? resumen
 
@@ -33,7 +35,7 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
 
   const descripcion = detalle
     ? destination.description
-    : error ? 'No pudimos cargar la información de este lugar.' : 'Cargando…'
+    : error ? t('detail.cantLoad') : t('detail.loading')
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.WHITE }}>
@@ -88,8 +90,8 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
                    </View>
                    {destination.id === 'comuna-13' && (
                      <>
-                       <View style={styles.landmark1}><Ionicons name="body" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Escaleras{"\n"}Eléctricas</Text></View>
-                       <View style={styles.landmark2}><Ionicons name="bus" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>Metrocable</Text></View>
+                       <View style={styles.landmark1}><Ionicons name="body" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>{t('detail.escalators')}</Text></View>
+                       <View style={styles.landmark2}><Ionicons name="bus" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>{t('detail.metrocable')}</Text></View>
                      </>
                    )}
                 </View>
@@ -97,13 +99,13 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
           </View>
 
           <View style={styles.factRow}>
-            <FactItemCol icon="time-outline" color="#3B82F6" label="Horarios:" value={destination.hours} />
-            <FactItemCol icon="pricetag-outline" color="#10B981" label="Precio:" value={destination.price} />
-            <FactItemCol icon="bus-outline" color="#8B5CF6" label="Cómo llegar:" value={destination.transport} />
+            <FactItemCol icon="time-outline" color="#3B82F6" label={t('detail.hours')} value={destination.hours} />
+            <FactItemCol icon="pricetag-outline" color="#10B981" label={t('detail.price')} value={destination.price} />
+            <FactItemCol icon="bus-outline" color="#8B5CF6" label={t('detail.howToGet')} value={destination.transport} />
           </View>
 
           <Pressable style={styles.primaryBtnLarge} onPress={openMaps}>
-            <Text style={styles.primaryBtnText}>Ir a este lugar</Text>
+            <Text style={styles.primaryBtnText}>{t('detail.goThere')}</Text>
             <Ionicons name="arrow-forward" size={24} color={COLORS.BLUE} />
           </Pressable>
         </View>

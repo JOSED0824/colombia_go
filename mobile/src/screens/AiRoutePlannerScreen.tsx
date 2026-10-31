@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, TextInput, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, Pressable, TextInput, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { formatCop } from '../i18n'
+import { apiErrorMessage } from '../lib/errors'
+import { notify } from '../lib/notify'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { apiGet, apiSend } from '../lib/api'
@@ -15,6 +19,7 @@ type Props = {
 type Modo = 'favoritos' | 'recomendado'
 
 export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
+  const { t } = useTranslation()
   const [modo, setModo] = useState<Modo>(candidatos.length > 0 ? 'favoritos' : 'recomendado')
   const [seleccionados, setSeleccionados] = useState<string[]>([])
   const [pool, setPool] = useState<Destination[]>([])
@@ -41,17 +46,15 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
   async function generar() {
     const monto = Number(presupuesto.replace(/[^0-9]/g, ''))
     if (!monto || monto <= 0) {
-      Alert.alert('Presupuesto inválido', 'Escribe el presupuesto en pesos, por ejemplo 150000.')
+      notify(t('ai.invalidBudgetTitle'), t('ai.invalidBudgetMsg'))
       return
     }
 
     const slugs = modo === 'favoritos' ? seleccionados : pool.map((d) => d.id)
     if (slugs.length === 0) {
-      Alert.alert(
-        modo === 'favoritos' ? 'Elige al menos un lugar' : 'Sin lugares disponibles',
-        modo === 'favoritos'
-          ? 'Selecciona los lugares que quieres considerar para la ruta.'
-          : 'No pudimos traer lugares para recomendar. Intenta de nuevo.',
+      notify(
+        modo === 'favoritos' ? t('ai.pickOneTitle') : t('ai.noPlacesTitle'),
+        modo === 'favoritos' ? t('ai.pickOneMsg') : t('ai.noPlacesMsg'),
       )
       return
     }
@@ -63,7 +66,7 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
       const data = await apiSend<RutaIaDto>('/api/v1/rutas/generar-ia', 'POST', body)
       setResultado(data)
     } catch (error: any) {
-      Alert.alert('No se pudo generar la ruta', error?.message ?? 'Intenta de nuevo en un momento.')
+      notify(t('ai.failedTitle'), apiErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -71,23 +74,23 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
 
   return (
     <View>
-      <Text style={styles.pageTitle}>Planificador con IA</Text>
+      <Text style={styles.pageTitle}>{t('ai.title')}</Text>
 
       <View>
-        <Text style={styles.settingsSectionLabel}>Tu presupuesto (COP)</Text>
+        <Text style={styles.settingsSectionLabel}>{t('ai.budget')}</Text>
         <View style={styles.authInputWrapper}>
           <Ionicons name="cash-outline" size={20} color={COLORS.BLUE} />
           <TextInput
             style={styles.authTextInput}
             value={presupuesto}
             onChangeText={(text) => setPresupuesto(text.replace(/[^0-9]/g, ''))}
-            placeholder="Ej: 150000"
+            placeholder={t('ai.budgetPlaceholder')}
             placeholderTextColor={COLORS.TEXT_MUTED}
             keyboardType="number-pad"
           />
         </View>
 
-        <Text style={styles.settingsSectionLabel}>¿Quién elige los lugares?</Text>
+        <Text style={styles.settingsSectionLabel}>{t('ai.whoPicks')}</Text>
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 15 }}>
           <Pressable
             style={[
@@ -98,14 +101,14 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
             disabled={candidatos.length === 0}
             onPress={() => setModo('favoritos')}
           >
-            <Text style={[styles.filterText, modo === 'favoritos' && styles.filterTextActive]}>Yo elijo</Text>
+            <Text style={[styles.filterText, modo === 'favoritos' && styles.filterTextActive]}>{t('ai.iPick')}</Text>
           </Pressable>
           <Pressable
             style={[styles.filterChip, modo === 'recomendado' && styles.filterChipActive]}
             onPress={() => setModo('recomendado')}
           >
             <Text style={[styles.filterText, modo === 'recomendado' && styles.filterTextActive]}>
-              Que la IA me recomiende
+              {t('ai.aiPicks')}
             </Text>
           </Pressable>
         </View>
@@ -113,8 +116,7 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
         {modo === 'favoritos' ? (
           candidatos.length === 0 ? (
             <Text style={styles.editSubText}>
-              Todavía no tienes favoritos guardados. Marca algunos lugares con ♥ en Explorar, o usa "Que la IA me
-              recomiende".
+              {t('ai.noFavorites')}
             </Text>
           ) : (
             <View style={styles.settingsCard}>
@@ -143,23 +145,22 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
           <ActivityIndicator color={COLORS.BLUE} style={{ marginVertical: 15 }} />
         ) : (
           <Text style={styles.editSubText}>
-            La IA elegirá la mejor combinación entre {pool.length} lugares destacados de toda Colombia según tu
-            presupuesto.
+            {t('ai.aiWillChoose', { count: pool.length })}
           </Text>
         )}
 
         <Pressable style={[styles.authSubmit, { marginTop: 25 }, loading && { opacity: 0.7 }]} onPress={generar} disabled={loading}>
-          <Text style={styles.authSubmitText}>Generar ruta con IA</Text>
+          <Text style={styles.authSubmitText}>{t('ai.generate')}</Text>
           {loading ? <ActivityIndicator size="small" color="#FFF" /> : <Ionicons name="sparkles" size={18} color="#FFF" />}
         </Pressable>
 
         {resultado && (
           <View style={{ marginTop: 25 }}>
-            <Text style={styles.settingsSectionLabel}>Ruta sugerida</Text>
+            <Text style={styles.settingsSectionLabel}>{t('ai.suggestedRoute')}</Text>
             <View style={styles.settingsCard}>
               <Text style={styles.editSubText}>{resultado.explicacion}</Text>
               <Text style={[styles.mfaSecret, { marginTop: 12 }]}>
-                Costo estimado: ${resultado.costoEstimado.toLocaleString('es-CO')}
+                {t('ai.estimatedCost', { cost: formatCop(resultado.costoEstimado) })}
               </Text>
 
               {resultado.paradas.map((parada, index) => (
@@ -176,9 +177,9 @@ export function AiRoutePlannerScreen({ candidatos, onViewOnMap }: Props) {
 
               <Pressable
                 style={[styles.emptyBtn, { marginTop: 10, alignSelf: 'stretch', alignItems: 'center' }]}
-                onPress={() => onViewOnMap(resultado.paradas.map(toDestination), 'Ruta sugerida')}
+                onPress={() => onViewOnMap(resultado.paradas.map(toDestination), t('map.suggested'))}
               >
-                <Text style={styles.emptyBtnText}>Ver ruta en el mapa</Text>
+                <Text style={styles.emptyBtnText}>{t('ai.viewOnMap')}</Text>
               </Pressable>
             </View>
           </View>

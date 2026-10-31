@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, TextInput, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, Pressable, TextInput, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { notify } from '../lib/notify'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { enrollTotp, listFactors, unenroll, verifyEnrollment, type Factor } from '../lib/mfa'
 
 export function MfaSettings() {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [factor, setFactor] = useState<Factor | null>(null)
   const [pending, setPending] = useState<{ id: string; secret: string } | null>(null)
@@ -34,7 +37,7 @@ export function MfaSettings() {
       const data = await enrollTotp()
       setPending({ id: data.id, secret: data.totp.secret })
     } catch (error: any) {
-      Alert.alert('No se pudo activar', error?.message ?? 'Intenta de nuevo.')
+      notify(t('mfa.enrollFailed'), error?.message ?? t('apiErrors.generic'))
     } finally {
       setBusy(false)
     }
@@ -42,7 +45,7 @@ export function MfaSettings() {
 
   async function confirmEnroll() {
     if (!pending || code.trim().length !== 6) {
-      Alert.alert('Código inválido', 'Ingresa el código de 6 dígitos de tu app de autenticación.')
+      notify(t('mfa.invalidTitle'), t('mfa.invalidMsg'))
       return
     }
     setBusy(true)
@@ -50,10 +53,10 @@ export function MfaSettings() {
       await verifyEnrollment(pending.id, code.trim())
       setPending(null)
       setCode('')
-      Alert.alert('Listo', 'La verificación en dos pasos quedó activada.')
+      notify(t('mfa.doneTitle'), t('mfa.doneMsg'))
       await refresh()
     } catch (error: any) {
-      Alert.alert('Código incorrecto', error?.message ?? 'Intenta de nuevo.')
+      notify(t('mfa.wrongTitle'), t('mfa.wrongMsg'))
     } finally {
       setBusy(false)
     }
@@ -66,7 +69,7 @@ export function MfaSettings() {
       await unenroll(factor.id)
       await refresh()
     } catch (error: any) {
-      Alert.alert('No se pudo desactivar', error?.message ?? 'Intenta de nuevo.')
+      notify(t('mfa.disableFailed'), error?.message ?? t('apiErrors.generic'))
     } finally {
       setBusy(false)
     }
@@ -80,11 +83,11 @@ export function MfaSettings() {
     return (
       <View style={styles.mfaStatusRow}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.editNameText}>Verificación en dos pasos</Text>
-          <Text style={styles.editSubText}>Activada — pedimos un código extra al iniciar sesión.</Text>
+          <Text style={styles.editNameText}>{t('mfa.settingsTitle')}</Text>
+          <Text style={styles.editSubText}>{t('mfa.enabled')}</Text>
         </View>
         <Pressable onPress={disable} disabled={busy}>
-          <Text style={{ color: COLORS.RED, fontFamily: 'Poppins_700Bold' }}>{busy ? '...' : 'Desactivar'}</Text>
+          <Text style={{ color: COLORS.RED, fontFamily: 'Poppins_700Bold' }}>{busy ? '...' : t('mfa.disable')}</Text>
         </Pressable>
       </View>
     )
@@ -94,8 +97,7 @@ export function MfaSettings() {
     return (
       <View>
         <Text style={styles.editSubText}>
-          Agrega esta cuenta en Google Authenticator, Authy u otra app de autenticación (entrada manual), con esta
-          clave:
+          {t('mfa.enrollHelp')}
         </Text>
         <Text selectable style={styles.mfaSecret}>
           {pending.secret}
@@ -104,7 +106,7 @@ export function MfaSettings() {
           style={[styles.editInput, { marginTop: 10 }]}
           value={code}
           onChangeText={(text) => setCode(text.replace(/[^0-9]/g, '').slice(0, 6))}
-          placeholder="Código de 6 dígitos"
+          placeholder={t('mfa.codePlaceholder')}
           placeholderTextColor={COLORS.TEXT_MUTED}
           keyboardType="number-pad"
           maxLength={6}
@@ -114,7 +116,7 @@ export function MfaSettings() {
           onPress={confirmEnroll}
           disabled={busy}
         >
-          <Text style={styles.emptyBtnText}>{busy ? 'Verificando...' : 'Confirmar'}</Text>
+          <Text style={styles.emptyBtnText}>{busy ? t('mfa.verifying') : t('mfa.confirm')}</Text>
         </Pressable>
       </View>
     )
@@ -123,8 +125,8 @@ export function MfaSettings() {
   return (
     <Pressable onPress={startEnroll} disabled={busy} style={styles.mfaStatusRow}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.editNameText}>Verificación en dos pasos</Text>
-        <Text style={styles.editSubText}>{busy ? 'Generando clave...' : 'Desactivada — tócala para activarla.'}</Text>
+        <Text style={styles.editNameText}>{t('mfa.settingsTitle')}</Text>
+        <Text style={styles.editSubText}>{busy ? t('mfa.generating') : t('mfa.disabledHint')}</Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color={COLORS.BLUE} />
     </Pressable>

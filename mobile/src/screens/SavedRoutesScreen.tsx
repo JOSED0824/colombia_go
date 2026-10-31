@@ -3,16 +3,18 @@ import { View, Text, ScrollView, Pressable, Image } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
+import { useTranslation } from 'react-i18next'
 import type { Destination } from '../lib/types'
 
 export function SavedRoutesScreen({ paradas, onSelect, onNavigate, onViewMap }: any) {
+  const { t } = useTranslation()
   const saved: Destination[] = paradas
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.guidesHeader}>
         <View>
-          <Text style={styles.guidesTitle}>Mis Rutas</Text>
+          <Text style={styles.guidesTitle}>{t('routes.title')}</Text>
           <View style={styles.flagLine}>
             <View style={[styles.flagColor, { backgroundColor: COLORS.YELLOW }]} />
             <View style={[styles.flagColor, { backgroundColor: COLORS.BLUE }]} />
@@ -31,17 +33,17 @@ export function SavedRoutesScreen({ paradas, onSelect, onNavigate, onViewMap }: 
           <View style={styles.emptyIconContainer}>
             <Ionicons name="navigate-outline" size={60} color={COLORS.GRAY_LIGHT} />
           </View>
-          <Text style={styles.emptyTitle}>¡Tu brújula está lista!</Text>
-          <Text style={styles.emptyDesc}>Guarda tus lugares favoritos para crear tu ruta personalizada por Colombia.</Text>
+          <Text style={styles.emptyTitle}>{t('routes.emptyTitle')}</Text>
+          <Text style={styles.emptyDesc}>{t('routes.emptyDesc')}</Text>
           <Pressable style={styles.emptyButton} onPress={() => onNavigate('Explorar')}>
-            <Text style={styles.emptyButtonText}>Explorar Lugares</Text>
+            <Text style={styles.emptyButtonText}>{t('routes.explorePlaces')}</Text>
           </Pressable>
         </View>
       ) : (
         <View>
           <View style={styles.routeInfoCard}>
             <Ionicons name="sparkles" size={20} color={COLORS.YELLOW} />
-            <Text style={styles.routeInfoText}>Tienes {saved.length} paradas en tu recorrido actual.</Text>
+            <Text style={styles.routeInfoText}>{t('routes.stops', { count: saved.length })}</Text>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -55,7 +57,7 @@ export function SavedRoutesScreen({ paradas, onSelect, onNavigate, onViewMap }: 
                   <Image source={item.image} style={styles.routeImg} />
                   <View style={styles.routeContent}>
                     <Text style={styles.routeName}>{item.name}</Text>
-                    <Text style={styles.routeLoc}>{item.city} · {item.category}</Text>
+                    <Text style={styles.routeLoc}>{item.city} · {t(`categories.${item.categorySlug}`, { defaultValue: item.category })}</Text>
                     <View style={styles.routeBadges}>
                       <View style={styles.routeBadge}><Text style={styles.routeBadgeText}>★ {item.rating}</Text></View>
                       <View style={[styles.routeBadge, { backgroundColor: '#E8F5E9' }]}><Text style={[styles.routeBadgeText, { color: '#2E7D32' }]}>{item.reviewsLabel}</Text></View>
