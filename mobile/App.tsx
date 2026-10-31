@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, ScrollView, View } from 'react-native'
+import React, { useEffect, useState, useSyncExternalStore } from 'react'
+import { ActivityIndicator, ScrollView, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
 import {
@@ -10,16 +10,23 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
 } from '@expo-google-fonts/poppins'
+import { useTranslation } from 'react-i18next'
 
 import type { Session } from '@supabase/supabase-js'
+import './src/i18n'
+import { getLanguage, hasSavedLanguage, loadSavedLanguage, normalizeLanguage, setLanguage } from './src/i18n'
+import { COLORS } from './src/theme/colors'
 import { styles } from './src/theme/styles'
 import { supabase } from './src/lib/supabase'
 import { apiGet, apiSend } from './src/lib/api'
-import { CATEGORIA_SLUG, toDestination } from './src/lib/mappers'
-import type { Destination, LugarResumenDto, PagedResult, RutaDto } from './src/lib/types'
+import { authFlow } from './src/lib/authFlow'
+import { notify } from './src/lib/notify'
+import { toDestination } from './src/lib/mappers'
+import type { ConfiguracionDto, Destination, LugarResumenDto, PagedResult, RutaDto } from './src/lib/types'
 import { getAssuranceLevel, listFactors } from './src/lib/mfa'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { MfaChallengeScreen } from './src/screens/MfaChallengeScreen'
+import { OnboardingScreen } from './src/screens/OnboardingScreen'
 import { HomeScreen } from './src/screens/HomeScreen'
 import { ExploreScreen } from './src/screens/ExploreScreen'
 import { GuidesScreen } from './src/screens/GuidesScreen'
@@ -29,8 +36,9 @@ import { SavedRoutesScreen } from './src/screens/SavedRoutesScreen'
 import { SettingsScreen } from './src/screens/SettingsScreen'
 import { DetailScreen } from './src/screens/DetailScreen'
 import { MapScreen } from './src/screens/MapScreen'
-import { AiRoutePlannerScreen } from './src/screens/AiRoutePlannerScreen'
+import { AiHubScreen } from './src/screens/AiHubScreen'
 import { BottomNav } from './src/components/BottomNav'
+import { CoachMarks } from './src/components/CoachMarks'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
@@ -38,7 +46,12 @@ const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as co
 type Tab = (typeof TABS)[number]
 type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | null
 
+// loading: leyendo la configuración del servidor · onboarding: bienvenida + tour + intereses ·
+// coach: tooltips sobre la barra inferior · done: app normal.
+type Phase = 'loading' | 'onboarding' | 'coach' | 'done'
+
 export default function App() {
+  const { t, i18n } = useTranslation()
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -46,6 +59,12 @@ export default function App() {
     Poppins_700Bold,
     Poppins_800ExtraBold,
   })
+
+  // El idioma elegido en una visita anterior se aplica antes de pintar la primera pantalla.
+  const [languageReady, setLanguageReady] = useState(false)
+  useEffect(() => {
+    loadSavedLanguage().finally(() => setLanguageReady(true))
+  }, [])
 
   // undefined = todavía leyendo la sesión guardada; null = no hay sesión (mostrar login).
   const [session, setSession] = useState<Session | null | undefined>(undefined)
@@ -55,6 +74,10 @@ export default function App() {
     const { data } = supabase.auth.onAuthStateChange((_event, newSession) => setSession(newSession))
     return () => data.subscription.unsubscribe()
   }, [])
+
+  // Mientras la persona cambia su contraseña con el código del correo, Supabase ya le abrió sesión;
+  // se mantiene la pantalla de acceso hasta que termine.
+  const recovering = useSyncExternalStore(authFlow.subscribe, authFlow.isRecovering)
 
   // Si el usuario tiene verificación en dos pasos activada, la sesión arranca en aal1 y hay
   // que resolver un challenge de TOTP antes de dejarlo entrar (nextLevel sube a aal2).
@@ -79,8 +102,8 @@ export default function App() {
   }, [session?.user?.id])
 
   useEffect(() => {
-    if (fontsLoaded && session !== undefined) SplashScreen.hideAsync().catch(() => {})
-  }, [fontsLoaded, session])
+    if (fontsLoaded && languageReady && session !== undefined) SplashScreen.hideAsync().catch(() => {})
+  }, [fontsLoaded, languageReady, session])
 
   const [profileName, setProfileName] = useState('Viajero')
 
@@ -88,7 +111,8 @@ export default function App() {
     const user = session?.user
     if (user) setProfileName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Viajero')
   }, [session?.user?.id])
-  const [profileBio, setProfileBio] = useState('Explorando Colombia un lugar a la vez 🇨🇴')
+  // null = usar el texto traducido por defecto; si la persona escribe su propia bio, se respeta.
+  const [profileBio, setProfileBio] = useState<string | null>(null)
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
 
   const [activeTab, setActiveTab] = useState<Tab>('Inicio')
@@ -96,7 +120,7 @@ export default function App() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
 
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState('Todos')
+  const [category, setCategory] = useState('all')
   const [exploreResults, setExploreResults] = useState<Destination[]>([])
   const [exploreLoading, setExploreLoading] = useState(false)
   const [exploreError, setExploreError] = useState(false)
@@ -109,8 +133,12 @@ export default function App() {
 
   // Para la pantalla de Mapa genérica: qué puntos mostrar y si se dibujan conectados (ruta IA).
   const [mapPoints, setMapPoints] = useState<Destination[]>([])
-  const [mapTitle, setMapTitle] = useState('Mapa')
+  const [mapTitle, setMapTitle] = useState('')
   const [mapDrawRoute, setMapDrawRoute] = useState(false)
+
+  // Onboarding: se decide con la configuración guardada en el servidor (así no se repite al cambiar de teléfono).
+  const [phase, setPhase] = useState<Phase>('loading')
+  const [tabLayouts, setTabLayouts] = useState<Record<string, { x: number; width: number }>>({})
 
   function showOnMap(points: Destination[], title: string, drawRoute = false) {
     setMapPoints(points)
@@ -130,19 +158,53 @@ export default function App() {
     setSavedRoutes(ruta.paradas.map((p) => p.id))
   }
 
-  // Al iniciar sesión (o cambiar de usuario) se cargan los favoritos y la ruta guardados en la base.
+  // Idioma y onboarding al iniciar sesión: en un dispositivo nuevo se usa el idioma guardado en la cuenta;
+  // si la persona ya eligió uno aquí (p. ej. en la pantalla de acceso), ese manda y se sincroniza a la cuenta.
+  useEffect(() => {
+    if (!session?.user) {
+      setPhase('loading')
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      try {
+        const config = await apiGet<ConfiguracionDto>('/api/v1/perfil/configuracion')
+        if (cancelled) return
+        const serverLanguage = normalizeLanguage(config.language)
+        if (!(await hasSavedLanguage())) {
+          await setLanguage(serverLanguage)
+        } else if (serverLanguage !== getLanguage()) {
+          apiSend('/api/v1/perfil/configuracion', 'PUT', {
+            notifications: config.notifications,
+            location: config.location,
+            reduceMotion: config.reduceMotion,
+            language: getLanguage(),
+          }).catch(() => {})
+        }
+        if (!cancelled) setPhase(config.onboardingCompleted ? 'done' : 'onboarding')
+      } catch {
+        // Sin conexión con la API: no se bloquea la app con un tutorial que no se podría marcar como visto.
+        if (!cancelled) setPhase('done')
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [session?.user?.id])
+
+  // Al iniciar sesión (o cambiar de usuario o de idioma) se cargan los favoritos y la ruta guardados en la base.
   useEffect(() => {
     if (!session?.user) return
     loadFavorites().catch(() => {})
     apiGet<RutaDto>('/api/v1/rutas/mis-paradas').then(applyRuta).catch(() => {})
-  }, [session?.user?.id])
+  }, [session?.user?.id, i18n.language])
 
-  // Explorar: consulta la API cada vez que cambia la búsqueda o la categoría (con una pequeña espera
-  // para no hacer una llamada por cada letra).
+  // Explorar: consulta la API cada vez que cambia la búsqueda, la categoría o el idioma (con una pequeña
+  // espera para no hacer una llamada por cada letra).
   useEffect(() => {
     const params = new URLSearchParams({ pageSize: '50' })
     if (query.trim()) params.set('q', query.trim())
-    if (category !== 'Todos' && CATEGORIA_SLUG[category]) params.set('categoria', CATEGORIA_SLUG[category])
+    if (category !== 'all') params.set('categoria', category)
 
     setExploreLoading(true)
     const timer = setTimeout(() => {
@@ -155,9 +217,9 @@ export default function App() {
         .finally(() => setExploreLoading(false))
     }, 350)
     return () => clearTimeout(timer)
-  }, [query, category])
+  }, [query, category, i18n.language])
 
-  if (!fontsLoaded || session === undefined) return null
+  if (!fontsLoaded || !languageReady || session === undefined) return null
 
   function navigate(target: string) {
     if ((TABS as readonly string[]).includes(target)) {
@@ -182,7 +244,7 @@ export default function App() {
       await loadFavorites()
     } catch {
       setFavorites((current) => (wasFavorite ? [...current, id] : current.filter((x) => x !== id)))
-      Alert.alert('Sin conexión', 'No se pudo actualizar tus favoritos. Intenta de nuevo.')
+      notify(t('common.offlineTitle'), t('favorites.updateFailed'))
     }
   }
 
@@ -194,7 +256,24 @@ export default function App() {
       applyRuta(ruta)
     } catch {
       setSavedRoutes((current) => (wasInRoute ? [...current, id] : current.filter((x) => x !== id)))
-      Alert.alert('Sin conexión', 'No se pudo actualizar tu ruta. Intenta de nuevo.')
+      notify(t('common.offlineTitle'), t('routes.updateFailed'))
+    }
+  }
+
+  // "Guardar paradas en mis rutas" de la guía de viaje: agrega las que aún no están y deja la ruta al día.
+  async function saveStops(ids: string[]): Promise<boolean> {
+    try {
+      let latest: RutaDto | null = null
+      for (const id of ids) {
+        if (savedRoutes.includes(id)) continue
+        latest = await apiSend<RutaDto>(`/api/v1/rutas/mis-paradas/${encodeURIComponent(id)}`, 'POST')
+      }
+      if (latest) applyRuta(latest)
+      notify(t('guide.stopsSaved'))
+      return true
+    } catch {
+      notify(t('common.offlineTitle'), t('routes.updateFailed'))
+      return false
     }
   }
 
@@ -204,7 +283,14 @@ export default function App() {
     setActiveTab('Explorar')
   }
 
-  if (!session) {
+  function finishOnboarding() {
+    setPhase('done')
+    setStackScreen(null)
+    setActiveTab('Inicio')
+    apiSend('/api/v1/perfil/onboarding/completar', 'POST').catch(() => {})
+  }
+
+  if (!session || recovering) {
     return (
       <SafeAreaProvider>
         <AuthScreen />
@@ -216,6 +302,34 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <MfaChallengeScreen factorId={mfaFactorId} onVerified={() => setMfaFactorId(null)} />
+      </SafeAreaProvider>
+    )
+  }
+
+  if (phase === 'loading') {
+    return (
+      <SafeAreaProvider>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.CREAM }}>
+          <ActivityIndicator size="large" color={COLORS.BLUE} />
+        </View>
+      </SafeAreaProvider>
+    )
+  }
+
+  if (phase === 'onboarding') {
+    return (
+      <SafeAreaProvider>
+        <OnboardingScreen
+          onFinish={(skipped) => {
+            if (skipped) {
+              finishOnboarding()
+            } else {
+              setStackScreen(null)
+              setActiveTab('Inicio')
+              setPhase('coach')
+            }
+          }}
+        />
       </SafeAreaProvider>
     )
   }
@@ -252,6 +366,10 @@ export default function App() {
           setStackScreen(null)
         }}
         onNavigate={navigate}
+        onShowTutorial={() => {
+          setStackScreen(null)
+          setPhase('onboarding')
+        }}
         onProfileUpdate={(patch: { name?: string; bio?: string; photo?: string }) => {
           if (patch.name) setProfileName(patch.name)
           if (patch.bio) setProfileBio(patch.bio)
@@ -266,17 +384,19 @@ export default function App() {
         paradas={routeItems.filter((d) => savedRoutes.includes(d.id))}
         onSelect={selectDestination}
         onNavigate={navigate}
-        onViewMap={() => showOnMap(routeItems.filter((d) => savedRoutes.includes(d.id)), 'Mis rutas')}
+        onViewMap={() => showOnMap(routeItems.filter((d) => savedRoutes.includes(d.id)), t('map.routes'))}
       />
     )
   } else if (stackScreen === 'Mapa') {
     wrapInScroll = false
-    content = <MapScreen title={mapTitle} points={mapPoints} drawRoute={mapDrawRoute} onBack={() => setStackScreen(null)} />
+    content = <MapScreen title={mapTitle || t('map.title')} points={mapPoints} drawRoute={mapDrawRoute} onBack={() => setStackScreen(null)} />
   } else if (activeTab === 'IA') {
     content = (
-      <AiRoutePlannerScreen
+      <AiHubScreen
         candidatos={favoriteItems.filter((d) => favorites.includes(d.id))}
-        onViewOnMap={(points, title) => showOnMap(points, title, true)}
+        onViewOnMap={(points, title, drawRoute) => showOnMap(points, title, drawRoute ?? true)}
+        onSaveStops={saveStops}
+        onSelect={selectDestination}
       />
     )
   } else if (activeTab === 'Inicio') {
@@ -316,7 +436,7 @@ export default function App() {
         onFavorite={toggleFavorite}
         onToggleRoute={toggleRoute}
         onNavigate={navigate}
-        onViewMap={() => showOnMap(favoriteItems.filter((d) => favorites.includes(d.id)), 'Mis favoritos')}
+        onViewMap={() => showOnMap(favoriteItems.filter((d) => favorites.includes(d.id)), t('map.favorites'))}
       />
     )
   } else {
@@ -336,14 +456,21 @@ export default function App() {
       <View style={{ flex: 1 }}>
         {wrapInScroll ? (
           <SafeAreaView style={styles.safe} edges={['top']}>
-            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               {content}
             </ScrollView>
           </SafeAreaView>
         ) : (
           content
         )}
-        <BottomNav active={activeTab} onChange={navigate} />
+        <BottomNav
+          active={activeTab}
+          onChange={navigate}
+          onTabLayout={(tab, layout) => setTabLayouts((current) => ({ ...current, [tab]: layout }))}
+        />
+        {phase === 'coach' && (
+          <CoachMarks tabLayouts={tabLayouts} onStep={(tab) => navigate(tab)} onFinish={finishOnboarding} />
+        )}
       </View>
     </SafeAreaProvider>
   )
