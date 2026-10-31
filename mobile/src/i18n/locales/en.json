@@ -13,7 +13,8 @@
     "noConnection": "We couldn't reach the server. Check your connection.",
     "noConnectionApi": "We couldn't reach the server. Make sure the API is running.",
     "offlineTitle": "No connection",
-    "tryAgainLater": "Please try again in a moment."
+    "tryAgainLater": "Please try again in a moment.",
+    "apiUnreachable": "Could not reach the server ({{url}}). Check that the backend is running, that your phone and PC are on the same Wi-Fi, and that the firewall allows port 5258."
   },
   "nav": {
     "home": "Home",
@@ -271,16 +272,46 @@
     "settingsSub": "Account, notifications and more"
   },
   "achievements": {
-    "1": { "title": "Welcome aboard", "text": "You completed the welcome tour." },
-    "2": { "title": "Cartographer", "text": "You saved 3 or more stops on your route." },
-    "3": { "title": "Compass ready", "text": "You marked your first favorite place." },
-    "4": { "title": "Passport stamped", "text": "You now have 5 favorite places." },
-    "5": { "title": "Photographer’s eye", "text": "You left your first review." },
-    "6": { "title": "Viewpoint hunter", "text": "You saved 3 nature places." },
-    "7": { "title": "Culture lover", "text": "You saved 3 culture places." },
-    "8": { "title": "Dream vacation", "text": "You created your first AI travel guide." },
-    "9": { "title": "Frequent traveler", "text": "You created 3 AI travel guides." },
-    "10": { "title": "ColombiaGO legend", "text": "You unlocked every other badge." }
+    "1": {
+      "title": "Welcome aboard",
+      "text": "You completed the welcome tour."
+    },
+    "2": {
+      "title": "Cartographer",
+      "text": "You saved 3 or more stops on your route."
+    },
+    "3": {
+      "title": "Compass ready",
+      "text": "You marked your first favorite place."
+    },
+    "4": {
+      "title": "Passport stamped",
+      "text": "You now have 5 favorite places."
+    },
+    "5": {
+      "title": "Photographer’s eye",
+      "text": "You left your first review."
+    },
+    "6": {
+      "title": "Viewpoint hunter",
+      "text": "You saved 3 nature places."
+    },
+    "7": {
+      "title": "Culture lover",
+      "text": "You saved 3 culture places."
+    },
+    "8": {
+      "title": "Dream vacation",
+      "text": "You created your first AI travel guide."
+    },
+    "9": {
+      "title": "Frequent traveler",
+      "text": "You created 3 AI travel guides."
+    },
+    "10": {
+      "title": "ColombiaGO legend",
+      "text": "You unlocked every other badge."
+    }
   },
   "settings": {
     "title": "Settings",
@@ -305,11 +336,26 @@
     "welcomeTitle": "Welcome to Colombia GO!",
     "welcomeSub": "Your guide to living Colombia. First, which language would you like to use?",
     "tour": [
-      { "title": "Discover amazing places", "text": "Search by category, city or name and see photos, hours and prices for every destination." },
-      { "title": "Save what you fall in love with", "text": "Tap the heart to save a place and find it later in Favorites." },
-      { "title": "Build your route and see it on the map", "text": "Add stops to your route and see everything on an interactive map." },
-      { "title": "Your AI travel guide", "text": "Tell us your city, days, budget and tastes: the AI builds your day-by-day itinerary." },
-      { "title": "Trusted local guides", "text": "Meet guides with experience in coffee, art, hiking and culture." }
+      {
+        "title": "Discover amazing places",
+        "text": "Search by category, city or name and see photos, hours and prices for every destination."
+      },
+      {
+        "title": "Save what you fall in love with",
+        "text": "Tap the heart to save a place and find it later in Favorites."
+      },
+      {
+        "title": "Build your route and see it on the map",
+        "text": "Add stops to your route and see everything on an interactive map."
+      },
+      {
+        "title": "Your AI travel guide",
+        "text": "Tell us your city, days, budget and tastes: the AI builds your day-by-day itinerary."
+      },
+      {
+        "title": "Trusted local guides",
+        "text": "Meet guides with experience in coffee, art, hiking and culture."
+      }
     ],
     "interestsTitle": "What do you like?",
     "interestsSub": "Pick your interests and we'll personalize your recommendations.",

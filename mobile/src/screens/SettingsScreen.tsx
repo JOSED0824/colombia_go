@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, ScrollView, Pressable, Image } from 'react-native'
+import { View, Pressable, Image } from 'react-native'
 import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
@@ -14,6 +14,7 @@ import { LANGUAGES, getLanguage, setLanguage, type LanguageCode } from '../i18n'
 import { apiGet, apiSend } from '../lib/api'
 import { notify } from '../lib/notify'
 import type { ConfiguracionDto } from '../lib/types'
+import { KeyboardScroll } from '../components/KeyboardScroll'
 
 export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout, onNavigate, onProfileUpdate, onShowTutorial, darkMode, onToggleDark }: any) {
   const { t } = useTranslation()
@@ -98,11 +99,9 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
         )}
       </View>
 
-      <ScrollView
+      <KeyboardScroll
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
       >
         <Text style={styles.settingsSectionLabel}>{t('settings.profile')}</Text>
         <View style={styles.settingsCard}>
@@ -181,7 +180,7 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
         </Pressable>
 
         <Text style={styles.versionText}>{t('settings.version')}</Text>
-      </ScrollView>
+      </KeyboardScroll>
 
       <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} onSelect={changeLanguage} />
     </View>

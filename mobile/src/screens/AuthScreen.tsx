@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
+import { View, Image, Pressable, ActivityIndicator } from 'react-native'
 import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
@@ -14,6 +14,7 @@ import { supabase } from '../lib/supabase'
 import { authErrorMessage, isEmailNotConfirmed } from '../lib/errors'
 import { notify } from '../lib/notify'
 import { getLanguage, setLanguage } from '../i18n'
+import { KeyboardScroll } from '../components/KeyboardScroll'
 
 type View_ = { name: 'form' } | { name: 'verify'; email: string; codeJustSent: boolean } | { name: 'forgot' }
 
@@ -83,10 +84,8 @@ export function AuthScreen() {
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
 
-      <ScrollView
+      <KeyboardScroll
         contentContainerStyle={styles.authScroll}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}
       >
         <LanguageButton onPress={() => setLangOpen(true)} />
@@ -135,7 +134,7 @@ export function AuthScreen() {
         <Pressable style={styles.switchAuth} onPress={() => setIsLogin(!isLogin)}>
           <Text style={styles.switchText}>{isLogin ? t('auth.noAccount') : t('auth.haveAccount')}<Text style={styles.switchLink}>{isLogin ? t('auth.signUpLink') : t('auth.signInLink')}</Text></Text>
         </Pressable>
-      </ScrollView>
+      </KeyboardScroll>
     </SafeAreaView>
   )
 }

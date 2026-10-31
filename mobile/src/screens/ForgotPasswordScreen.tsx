@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { View, Pressable, ActivityIndicator, StyleSheet, ScrollView } from 'react-native'
+import { View, Pressable, ActivityIndicator, StyleSheet } from 'react-native'
 import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
@@ -13,6 +13,7 @@ import { supabase } from '../lib/supabase'
 import { authFlow } from '../lib/authFlow'
 import { authErrorMessage } from '../lib/errors'
 import { notify } from '../lib/notify'
+import { KeyboardScroll } from '../components/KeyboardScroll'
 
 type Props = {
   initialEmail?: string
@@ -104,10 +105,8 @@ export function ForgotPasswordScreen({ initialEmail = '', onBack }: Props) {
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
-      <ScrollView
+      <KeyboardScroll
         contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}
       >
       <View style={styles.mfaContainer}>
@@ -149,7 +148,7 @@ export function ForgotPasswordScreen({ initialEmail = '', onBack }: Props) {
           </Text>
         </Pressable>
       </View>
-      </ScrollView>
+      </KeyboardScroll>
     </SafeAreaView>
   )
 }

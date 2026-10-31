@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Pressable, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Pressable, ActivityIndicator } from 'react-native'
 import { Text, TextInput } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
@@ -9,6 +9,7 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { challenge, verifyChallenge } from '../lib/mfa'
 import { supabase } from '../lib/supabase'
+import { KeyboardScroll } from '../components/KeyboardScroll'
 
 type Props = {
   factorId: string
@@ -42,10 +43,8 @@ export function MfaChallengeScreen({ factorId, onVerified }: Props) {
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
-      <ScrollView
+      <KeyboardScroll
         contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}
       >
       <View style={styles.mfaContainer}>
@@ -74,7 +73,7 @@ export function MfaChallengeScreen({ factorId, onVerified }: Props) {
           </Text>
         </Pressable>
       </View>
-      </ScrollView>
+      </KeyboardScroll>
     </SafeAreaView>
   )
 }

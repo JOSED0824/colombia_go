@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Appearance } from 'react-native'
 import { rebuildThemedStyles } from './themed'
 
 export type ThemeMode = 'light' | 'dark'
@@ -60,25 +58,12 @@ export function applyTheme(mode: ThemeMode) {
   rebuildThemedStyles()
 }
 
-const STORAGE_KEY = 'colombiago.theme'
-
-/** Tema guardado en el dispositivo; si nunca se eligió, el del sistema (claro u oscuro). */
+/** La app siempre abre en modo claro (sin importar el modo del teléfono); el oscuro se activa a mano en Configuración y dura la sesión. */
 export async function loadSavedTheme(): Promise<ThemeMode> {
-  let mode: ThemeMode = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light'
-  try {
-    const saved = await AsyncStorage.getItem(STORAGE_KEY)
-    if (saved === 'dark' || saved === 'light') mode = saved
-  } catch {
-    // se usa el del sistema
-  }
-  applyTheme(mode)
-  return mode
+  applyTheme('light')
+  return 'light'
 }
 
-export async function saveTheme(mode: ThemeMode) {
-  try {
-    await AsyncStorage.setItem(STORAGE_KEY, mode)
-  } catch {
-    // el cambio igual queda aplicado en esta sesión
-  }
+export async function saveTheme(_mode: ThemeMode) {
+  // Intencionalmente no se guarda: en cada apertura se vuelve al modo claro.
 }

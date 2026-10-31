@@ -13,7 +13,8 @@
     "noConnection": "Impossible de joindre le serveur. Vérifiez votre connexion.",
     "noConnectionApi": "Impossible de joindre le serveur. Vérifiez que l'API est lancée.",
     "offlineTitle": "Pas de connexion",
-    "tryAgainLater": "Veuillez réessayer dans un instant."
+    "tryAgainLater": "Veuillez réessayer dans un instant.",
+    "apiUnreachable": "Impossible de joindre le serveur ({{url}}). Vérifiez que le backend est démarré, que le téléphone et le PC sont sur le même Wi-Fi et que le pare-feu autorise le port 5258."
   },
   "nav": {
     "home": "Accueil",
@@ -271,16 +272,46 @@
     "settingsSub": "Compte, notifications et plus"
   },
   "achievements": {
-    "1": { "title": "Bienvenue à bord", "text": "Vous avez terminé la visite de bienvenue." },
-    "2": { "title": "Cartographe", "text": "Vous avez enregistré 3 étapes ou plus dans votre itinéraire." },
-    "3": { "title": "Boussole prête", "text": "Vous avez ajouté votre premier lieu favori." },
-    "4": { "title": "Passeport tamponné", "text": "Vous avez déjà 5 lieux favoris." },
-    "5": { "title": "Œil de photographe", "text": "Vous avez laissé votre premier avis." },
-    "6": { "title": "Chasseur de points de vue", "text": "Vous avez enregistré 3 lieux de nature." },
-    "7": { "title": "Amoureux de la culture", "text": "Vous avez enregistré 3 lieux culturels." },
-    "8": { "title": "Vacances de rêve", "text": "Vous avez créé votre premier guide de voyage IA." },
-    "9": { "title": "Voyageur assidu", "text": "Vous avez créé 3 guides de voyage IA." },
-    "10": { "title": "Légende ColombiaGO", "text": "Vous avez débloqué tous les autres badges." }
+    "1": {
+      "title": "Bienvenue à bord",
+      "text": "Vous avez terminé la visite de bienvenue."
+    },
+    "2": {
+      "title": "Cartographe",
+      "text": "Vous avez enregistré 3 étapes ou plus dans votre itinéraire."
+    },
+    "3": {
+      "title": "Boussole prête",
+      "text": "Vous avez ajouté votre premier lieu favori."
+    },
+    "4": {
+      "title": "Passeport tamponné",
+      "text": "Vous avez déjà 5 lieux favoris."
+    },
+    "5": {
+      "title": "Œil de photographe",
+      "text": "Vous avez laissé votre premier avis."
+    },
+    "6": {
+      "title": "Chasseur de points de vue",
+      "text": "Vous avez enregistré 3 lieux de nature."
+    },
+    "7": {
+      "title": "Amoureux de la culture",
+      "text": "Vous avez enregistré 3 lieux culturels."
+    },
+    "8": {
+      "title": "Vacances de rêve",
+      "text": "Vous avez créé votre premier guide de voyage IA."
+    },
+    "9": {
+      "title": "Voyageur assidu",
+      "text": "Vous avez créé 3 guides de voyage IA."
+    },
+    "10": {
+      "title": "Légende ColombiaGO",
+      "text": "Vous avez débloqué tous les autres badges."
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -305,11 +336,26 @@
     "welcomeTitle": "Bienvenue sur Colombia GO !",
     "welcomeSub": "Votre guide pour vivre la Colombie. D'abord, dans quelle langue souhaitez-vous utiliser l'application ?",
     "tour": [
-      { "title": "Découvrez des lieux incroyables", "text": "Recherchez par catégorie, ville ou nom et consultez photos, horaires et prix de chaque destination." },
-      { "title": "Gardez ce qui vous plaît", "text": "Appuyez sur le cœur pour enregistrer un lieu et le retrouver ensuite dans Favoris." },
-      { "title": "Créez votre itinéraire et voyez-le sur la carte", "text": "Ajoutez des étapes à votre itinéraire et visualisez tout sur une carte interactive." },
-      { "title": "Votre guide de voyage IA", "text": "Indiquez ville, jours, budget et goûts : l'IA crée votre programme jour par jour." },
-      { "title": "Des guides locaux de confiance", "text": "Rencontrez des guides expérimentés en café, art, randonnée et culture." }
+      {
+        "title": "Découvrez des lieux incroyables",
+        "text": "Recherchez par catégorie, ville ou nom et consultez photos, horaires et prix de chaque destination."
+      },
+      {
+        "title": "Gardez ce qui vous plaît",
+        "text": "Appuyez sur le cœur pour enregistrer un lieu et le retrouver ensuite dans Favoris."
+      },
+      {
+        "title": "Créez votre itinéraire et voyez-le sur la carte",
+        "text": "Ajoutez des étapes à votre itinéraire et visualisez tout sur une carte interactive."
+      },
+      {
+        "title": "Votre guide de voyage IA",
+        "text": "Indiquez ville, jours, budget et goûts : l'IA crée votre programme jour par jour."
+      },
+      {
+        "title": "Des guides locaux de confiance",
+        "text": "Rencontrez des guides expérimentés en café, art, randonnée et culture."
+      }
     ],
     "interestsTitle": "Qu'aimez-vous ?",
     "interestsSub": "Choisissez vos centres d'intérêt et nous personnalisons vos recommandations.",

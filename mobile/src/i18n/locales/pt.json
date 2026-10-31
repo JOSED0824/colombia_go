@@ -13,7 +13,8 @@
     "noConnection": "Não conseguimos conectar ao servidor. Verifique sua conexão.",
     "noConnectionApi": "Não conseguimos conectar ao servidor. Verifique se a API está ligada.",
     "offlineTitle": "Sem conexão",
-    "tryAgainLater": "Tente novamente em instantes."
+    "tryAgainLater": "Tente novamente em instantes.",
+    "apiUnreachable": "Não foi possível conectar ao servidor ({{url}}). Verifique se o backend está ligado, se o celular e o PC estão no mesmo Wi-Fi e se o firewall libera a porta 5258."
   },
   "nav": {
     "home": "Início",
@@ -271,16 +272,46 @@
     "settingsSub": "Conta, notificações e mais"
   },
   "achievements": {
-    "1": { "title": "Bem-vindo a bordo", "text": "Você concluiu o tour de boas-vindas." },
-    "2": { "title": "Cartógrafo", "text": "Você salvou 3 ou mais paradas no seu roteiro." },
-    "3": { "title": "Bússola pronta", "text": "Você marcou seu primeiro lugar favorito." },
-    "4": { "title": "Passaporte carimbado", "text": "Você já tem 5 lugares favoritos." },
-    "5": { "title": "Olho de fotógrafo", "text": "Você deixou sua primeira avaliação." },
-    "6": { "title": "Caçador de mirantes", "text": "Você salvou 3 lugares de natureza." },
-    "7": { "title": "Amante da cultura", "text": "Você salvou 3 lugares de cultura." },
-    "8": { "title": "Férias dos sonhos", "text": "Você criou seu primeiro guia de viagem com IA." },
-    "9": { "title": "Viajante frequente", "text": "Você criou 3 guias de viagem com IA." },
-    "10": { "title": "Lenda ColombiaGO", "text": "Você desbloqueou todas as outras insígnias." }
+    "1": {
+      "title": "Bem-vindo a bordo",
+      "text": "Você concluiu o tour de boas-vindas."
+    },
+    "2": {
+      "title": "Cartógrafo",
+      "text": "Você salvou 3 ou mais paradas no seu roteiro."
+    },
+    "3": {
+      "title": "Bússola pronta",
+      "text": "Você marcou seu primeiro lugar favorito."
+    },
+    "4": {
+      "title": "Passaporte carimbado",
+      "text": "Você já tem 5 lugares favoritos."
+    },
+    "5": {
+      "title": "Olho de fotógrafo",
+      "text": "Você deixou sua primeira avaliação."
+    },
+    "6": {
+      "title": "Caçador de mirantes",
+      "text": "Você salvou 3 lugares de natureza."
+    },
+    "7": {
+      "title": "Amante da cultura",
+      "text": "Você salvou 3 lugares de cultura."
+    },
+    "8": {
+      "title": "Férias dos sonhos",
+      "text": "Você criou seu primeiro guia de viagem com IA."
+    },
+    "9": {
+      "title": "Viajante frequente",
+      "text": "Você criou 3 guias de viagem com IA."
+    },
+    "10": {
+      "title": "Lenda ColombiaGO",
+      "text": "Você desbloqueou todas as outras insígnias."
+    }
   },
   "settings": {
     "title": "Configurações",
@@ -305,11 +336,26 @@
     "welcomeTitle": "Bem-vindo ao Colombia GO!",
     "welcomeSub": "Seu guia para viver a Colômbia. Primeiro, em que idioma você quer usar o app?",
     "tour": [
-      { "title": "Descubra lugares incríveis", "text": "Busque por categoria, cidade ou nome e veja fotos, horários e preços de cada destino." },
-      { "title": "Salve o que você ama", "text": "Toque no coração para salvar um lugar e encontrá-lo depois em Favoritos." },
-      { "title": "Monte sua rota e veja no mapa", "text": "Adicione paradas à sua rota e veja tudo em um mapa interativo." },
-      { "title": "Seu guia de viagem com IA", "text": "Diga sua cidade, dias, orçamento e gostos: a IA monta seu roteiro dia a dia." },
-      { "title": "Guias locais de confiança", "text": "Conheça guias com experiência em café, arte, trilhas e cultura." }
+      {
+        "title": "Descubra lugares incríveis",
+        "text": "Busque por categoria, cidade ou nome e veja fotos, horários e preços de cada destino."
+      },
+      {
+        "title": "Salve o que você ama",
+        "text": "Toque no coração para salvar um lugar e encontrá-lo depois em Favoritos."
+      },
+      {
+        "title": "Monte sua rota e veja no mapa",
+        "text": "Adicione paradas à sua rota e veja tudo em um mapa interativo."
+      },
+      {
+        "title": "Seu guia de viagem com IA",
+        "text": "Diga sua cidade, dias, orçamento e gostos: a IA monta seu roteiro dia a dia."
+      },
+      {
+        "title": "Guias locais de confiança",
+        "text": "Conheça guias com experiência em café, arte, trilhas e cultura."
+      }
     ],
     "interestsTitle": "Do que você gosta?",
     "interestsSub": "Escolha seus interesses e personalizamos suas recomendações.",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Pressable, ActivityIndicator, Linking, StyleSheet, ScrollView } from 'react-native'
+import { View, Pressable, ActivityIndicator, Linking, StyleSheet } from 'react-native'
 import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
@@ -11,6 +11,7 @@ import { CodeInput } from '../components/CodeInput'
 import { supabase } from '../lib/supabase'
 import { authErrorMessage } from '../lib/errors'
 import { notify } from '../lib/notify'
+import { KeyboardScroll } from '../components/KeyboardScroll'
 
 const RESEND_SECONDS = 60
 
@@ -69,10 +70,8 @@ export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props)
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
-      <ScrollView
+      <KeyboardScroll
         contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}
       >
       <View style={styles.mfaContainer}>
@@ -107,7 +106,7 @@ export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props)
           </Text>
         </Pressable>
       </View>
-      </ScrollView>
+      </KeyboardScroll>
     </SafeAreaView>
   )
 }

@@ -3,6 +3,24 @@ import { getLanguage } from '../i18n'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
+/** Dirección del backend con la que se armó la app (para mostrarla en los avisos de conexión). */
+export const API_BASE = API_URL ?? '(EXPO_PUBLIC_API_URL sin definir)'
+
+/** true si el backend responde en /health; se usa para avisar al usuario cuando no hay conexión con el servidor. */
+export async function pingApi(): Promise<boolean> {
+  if (!API_URL) return false
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 6000)
+  try {
+    const res = await fetch(`${API_URL}/health`, { signal: controller.signal })
+    return res.ok
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 /** Error de la API: `code` es el `title` del ProblemDetails (p. ej. "GuiaIa.LimiteAlcanzado"). */
 export class ApiError extends Error {
   constructor(

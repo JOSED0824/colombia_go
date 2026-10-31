@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useSyncExternalStore } from 'react'
-import { ActivityIndicator, ScrollView, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
@@ -19,7 +19,7 @@ import { getLanguage, hasSavedLanguage, loadSavedLanguage, normalizeLanguage, se
 import { COLORS, applyTheme, loadSavedTheme, saveTheme, type ThemeMode } from './src/theme/colors'
 import { styles } from './src/theme/styles'
 import { supabase } from './src/lib/supabase'
-import { apiGet, apiSend } from './src/lib/api'
+import { apiGet, apiSend, pingApi, API_BASE } from './src/lib/api'
 import { authFlow } from './src/lib/authFlow'
 import { notify } from './src/lib/notify'
 import { toDestination } from './src/lib/mappers'
@@ -40,6 +40,7 @@ import { MapScreen } from './src/screens/MapScreen'
 import { AiHubScreen } from './src/screens/AiHubScreen'
 import { BottomNav } from './src/components/BottomNav'
 import { CoachMarks } from './src/components/CoachMarks'
+import { KeyboardScroll } from './src/components/KeyboardScroll'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
@@ -208,6 +209,14 @@ export default function App() {
     return () => {
       cancelled = true
     }
+  }, [session?.user?.id])
+
+  // Si el backend no responde (apagado, otra red, firewall) la app se vería vacía sin explicación: se avisa una vez al entrar.
+  useEffect(() => {
+    if (!session?.user) return
+    pingApi().then((ok) => {
+      if (!ok) notify(t('common.offlineTitle'), t('common.apiUnreachable', { url: API_BASE }))
+    })
   }, [session?.user?.id])
 
   // Al iniciar sesión (o cambiar de usuario o de idioma) se cargan los favoritos y la ruta guardados en la base.
@@ -495,14 +504,12 @@ export default function App() {
         <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         {wrapInScroll ? (
           <SafeAreaView style={styles.safe} edges={['top']}>
-            <ScrollView
+            <KeyboardScroll
               contentContainerStyle={styles.content}
               showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-              automaticallyAdjustKeyboardInsets
             >
               {content}
-            </ScrollView>
+            </KeyboardScroll>
           </SafeAreaView>
         ) : padStack ? (
           <SafeAreaView style={styles.safe} edges={['top']}>
