@@ -23,10 +23,22 @@ const FOTOS_LUGARES: Record<string, any> = {
   barichara: require('../../assets/normalized/barichara.jpg'),
   'santa-marta': require('../../assets/normalized/Santa-Marta.jpg'),
   popayan: require('../../assets/normalized/Popayan.jpg'),
+  // Fotos de Wikimedia Commons (licencias y autores en assets/places/CREDITOS.md)
+  'parque-explora': require('../../assets/places/parque-explora.jpg'),
+  'jardin-botanico-medellin': require('../../assets/places/jardin-botanico-medellin.jpg'),
+  'plaza-botero': require('../../assets/places/plaza-botero.jpg'),
+  'parque-lleras': require('../../assets/places/parque-lleras.jpg'),
+  'mercado-del-rio': require('../../assets/normalized/provenza.jpg'),
+  'museo-arte-moderno-medellin': require('../../assets/places/museo-arte-moderno-medellin.jpg'),
+  laureles: require('../../assets/places/laureles.jpg'),
+  'santa-elena-silleteros': require('../../assets/places/santa-elena-silleteros.jpg'),
+  'cerro-el-volador': require('../../assets/places/cerro-el-volador.jpg'),
+  'parque-pies-descalzos': require('../../assets/places/parque-pies-descalzos.jpg'),
 }
 
 const FOTOS_GUIAS: Record<string, any> = {
   mateo: require('../../assets/normalized/guia-mateo.jpg'),
+  camila: require('../../assets/normalized/guia-Luis.jpg'),
   sofia: require('../../assets/normalized/guia-Luis.jpg'),
   andres: require('../../assets/normalized/guia-andres.jpg'),
   lucia: require('../../assets/normalized/Guia-Lucia.jpg'),
