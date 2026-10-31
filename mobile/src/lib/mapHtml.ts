@@ -64,6 +64,9 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   .pin.sel .pin-body { animation: pop .35s forwards; }
   @keyframes pop { 0% { transform: rotate(-45deg) scale(.8); } 60% { transform: rotate(-45deg) scale(1.35); } 100% { transform: rotate(-45deg) scale(1.2); } }
   .pin.sel::after { content: ''; position: absolute; left: 50%; bottom: -3px; width: 14px; height: 6px; margin-left: -7px; border-radius: 50%; background: rgba(0,0,0,.25); }
+  /* Grupo de lugares cercanos (al alejar el mapa los pines se agrupan en lugar de amontonarse) */
+  .cluster { width: 46px; height: 46px; border-radius: 50%; background: #003B7D; color: #fff; border: 3px solid #fff; box-shadow: 0 0 0 7px rgba(0,59,125,.22), 0 3px 10px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; cursor: pointer; }
+  body.dark .cluster { border-color: #172230; box-shadow: 0 0 0 7px rgba(157,193,255,.25), 0 3px 10px rgba(0,0,0,.5); }
   .me { width: 18px; height: 18px; border-radius: 50%; background: #1A73E8; border: 3px solid #fff; box-shadow: 0 0 0 0 rgba(26,115,232,.5); animation: pulse 1.8s infinite; }
   @keyframes pulse { 70% { box-shadow: 0 0 0 16px rgba(26,115,232,0); } 100% { box-shadow: 0 0 0 0 rgba(26,115,232,0); } }
 
@@ -165,7 +168,10 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   });
 
   // ---------- pines + tarjetas ----------
-  var pins = [], cards = [], cur = -1, programmatic = false;
+  var pins = [], markers = [], clusterMarkers = [], cards = [], cur = -1, programmatic = false;
+  // Con muchos lugares, los cercanos se agrupan en una burbuja con el número; en una ruta (paradas numeradas) no se agrupa.
+  var CLUSTER = !ROUTE && P.length > 1;
+  var RADIUS = 52;
   var cardsEl = $('cards');
 
   P.forEach(function (p, i) {
@@ -180,7 +186,9 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     inner.textContent = ROUTE ? String(i + 1) : (EMOJI[p.category] || '\\uD83D\\uDCCD');
     body.appendChild(inner); el.appendChild(body);
     el.addEventListener('click', function (e) { e.stopPropagation(); select(i, true, true); });
-    new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat([p.lng, p.lat]).addTo(map);
+    var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat([p.lng, p.lat]);
+    markers.push(marker);
+    if (!CLUSTER) marker.addTo(map);
     pins.push(el);
 
     var card = document.createElement('div'); card.className = 'card';
@@ -201,12 +209,53 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     cardsEl.appendChild(card); cards.push(card);
   });
 
+  // Agrupa por cercanía en pantalla: se recalcula al terminar cada movimiento o zoom del mapa.
+  function recluster() {
+    if (!CLUSTER) return;
+    clusterMarkers.forEach(function (m) { m.remove(); });
+    clusterMarkers = [];
+    var pts = P.map(function (p, i) { var s = map.project([p.lng, p.lat]); return { i: i, x: s.x, y: s.y }; });
+    var used = {}, groups = [];
+    pts.forEach(function (a) {
+      if (used[a.i]) return;
+      used[a.i] = true;
+      var g = [a];
+      if (a.i !== cur) { // el lugar seleccionado siempre se muestra solo
+        pts.forEach(function (b) {
+          if (used[b.i] || b.i === cur) return;
+          var dx = a.x - b.x, dy = a.y - b.y;
+          if (dx * dx + dy * dy < RADIUS * RADIUS) { used[b.i] = true; g.push(b); }
+        });
+      }
+      groups.push(g);
+    });
+    groups.forEach(function (g) {
+      if (g.length === 1) { markers[g[0].i].addTo(map); return; }
+      var lng = 0, lat = 0, bounds = new maplibregl.LngLatBounds();
+      g.forEach(function (m) {
+        markers[m.i].remove();
+        lng += P[m.i].lng; lat += P[m.i].lat;
+        bounds.extend([P[m.i].lng, P[m.i].lat]);
+      });
+      var el = document.createElement('div');
+      el.className = 'cluster';
+      el.textContent = String(g.length);
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        map.fitBounds(bounds, { padding: { top: 100, bottom: 200, left: 60, right: 60 }, maxZoom: 17, duration: 600 });
+      });
+      clusterMarkers.push(new maplibregl.Marker({ element: el }).setLngLat([lng / g.length, lat / g.length]).addTo(map));
+    });
+  }
+  map.on('moveend', recluster);
+
   function cardLeft(i) { var c = cards[i]; return c.offsetLeft - (cardsEl.clientWidth - c.offsetWidth) / 2; }
 
   function select(i, fly, scrollCard) {
     if (cur >= 0) { pins[cur].classList.remove('sel'); cards[cur].classList.remove('on'); }
     cur = i;
     pins[i].classList.add('sel'); cards[i].classList.add('on');
+    recluster();
     if (scrollCard) {
       programmatic = true;
       cardsEl.scrollTo({ left: cardLeft(i), behavior: 'smooth' });
@@ -336,6 +385,7 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     loaded = true;
     $('loading').className = 'done';
     fitAll(false);
+    recluster();
     if (ROUTE && P.length > 1) {
       $('routebar').className = '';
       buildModes();

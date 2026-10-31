@@ -11,6 +11,9 @@ import { assetUrl } from '../lib/assetUrl'
 import { MapBody } from '../components/MapBody'
 import type { Destination } from '../lib/types'
 
+// Alto de la barra de navegación inferior (position: absolute en theme/styles.ts).
+const NAV_HEIGHT = 90
+
 type Props = {
   title: string
   points: Destination[]
@@ -99,11 +102,15 @@ export function MapScreen({ title, points, onBack, drawRoute, onSelect }: Props)
         </View>
       ) : (
         <>
-          <MapBody html={html} onMessage={handleMessage} />
+          {/* marginBottom: la barra inferior es absoluta (90 de alto); sin él las tarjetas del carrusel quedan tapadas por ella. */}
+          <View style={{ flex: 1, marginBottom: sinUbicacion > 0 ? 0 : NAV_HEIGHT }}>
+            <MapBody html={html} onMessage={handleMessage} />
+          </View>
           {sinUbicacion > 0 && (
             <Text
               style={{
                 padding: 10,
+                paddingBottom: NAV_HEIGHT,
                 fontSize: 11,
                 fontFamily: 'Poppins_400Regular',
                 color: COLORS.TEXT_MUTED,
