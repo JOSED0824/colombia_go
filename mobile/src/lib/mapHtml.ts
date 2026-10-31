@@ -56,7 +56,8 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   @keyframes rot { to { transform: rotate(360deg); } }
 
   /* Pines */
-  .pin { position: relative; width: 36px; height: 44px; cursor: pointer; }
+  /* sin position: relative -> el pin conserva el position:absolute de maplibregl-marker; con relative cada pin quedaba desplazado 44px por cada pin anterior */
+  .pin { width: 36px; height: 44px; cursor: pointer; }
   .pin-body { position: absolute; left: 0; top: 0; width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c); border: 3px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; transition: transform .18s; }
   .pin-body span { transform: rotate(45deg); font-size: 16px; font-weight: 800; color: #fff; line-height: 1; }
   .pin.dark span { color: #003B7D; }
@@ -64,6 +65,8 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   .pin.sel .pin-body { animation: pop .35s forwards; }
   @keyframes pop { 0% { transform: rotate(-45deg) scale(.8); } 60% { transform: rotate(-45deg) scale(1.35); } 100% { transform: rotate(-45deg) scale(1.2); } }
   .pin.sel::after { content: ''; position: absolute; left: 50%; bottom: -3px; width: 14px; height: 6px; margin-left: -7px; border-radius: 50%; background: rgba(0,0,0,.25); }
+  .pin, .cluster { animation: appear .28s ease-out; }
+  @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
   /* Grupo de lugares cercanos (al alejar el mapa los pines se agrupan en lugar de amontonarse) */
   .cluster { width: 46px; height: 46px; border-radius: 50%; background: #003B7D; color: #fff; border: 3px solid #fff; box-shadow: 0 0 0 7px rgba(0,59,125,.22), 0 3px 10px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; cursor: pointer; }
   body.dark .cluster { border-color: #172230; box-shadow: 0 0 0 7px rgba(157,193,255,.25), 0 3px 10px rgba(0,0,0,.5); }
@@ -168,7 +171,7 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   });
 
   // ---------- pines + tarjetas ----------
-  var pins = [], markers = [], clusterMarkers = [], cards = [], cur = -1, programmatic = false;
+  var pins = [], markers = [], shown = [], clusterByKey = {}, cards = [], cur = -1, programmatic = false;
   // Con muchos lugares, los cercanos se agrupan en una burbuja con el número; en una ruta (paradas numeradas) no se agrupa.
   var CLUSTER = !ROUTE && P.length > 1;
   var RADIUS = 52;
@@ -189,6 +192,7 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     var marker = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat([p.lng, p.lat]);
     markers.push(marker);
     if (!CLUSTER) marker.addTo(map);
+    shown.push(!CLUSTER);
     pins.push(el);
 
     var card = document.createElement('div'); card.className = 'card';
@@ -209,11 +213,10 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     cardsEl.appendChild(card); cards.push(card);
   });
 
-  // Agrupa por cercanía en pantalla: se recalcula al terminar cada movimiento o zoom del mapa.
+  // Agrupa por cercanía en pantalla: se recalcula al terminar cada movimiento o zoom del mapa. Solo se tocan los
+  // pines y grupos que cambiaron, así lo que no cambia no parpadea ni se mueve.
   function recluster() {
     if (!CLUSTER) return;
-    clusterMarkers.forEach(function (m) { m.remove(); });
-    clusterMarkers = [];
     var pts = P.map(function (p, i) { var s = map.project([p.lng, p.lat]); return { i: i, x: s.x, y: s.y }; });
     var used = {}, groups = [];
     pts.forEach(function (a) {
@@ -229,25 +232,49 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
       }
       groups.push(g);
     });
+
+    var want = {};
     groups.forEach(function (g) {
-      if (g.length === 1) { markers[g[0].i].addTo(map); return; }
+      if (g.length === 1) {
+        var i = g[0].i;
+        if (!shown[i]) { markers[i].addTo(map); shown[i] = true; }
+        return;
+      }
+      g.forEach(function (m) { if (shown[m.i]) { markers[m.i].remove(); shown[m.i] = false; } });
+      var ids = g.map(function (m) { return m.i; }).sort(function (x, y) { return x - y; });
+      var key = ids.join(',');
+      want[key] = true;
+      if (clusterByKey[key]) return;
       var lng = 0, lat = 0, bounds = new maplibregl.LngLatBounds();
-      g.forEach(function (m) {
-        markers[m.i].remove();
-        lng += P[m.i].lng; lat += P[m.i].lat;
-        bounds.extend([P[m.i].lng, P[m.i].lat]);
-      });
+      ids.forEach(function (i) { lng += P[i].lng; lat += P[i].lat; bounds.extend([P[i].lng, P[i].lat]); });
+      var center = [lng / ids.length, lat / ids.length];
       var el = document.createElement('div');
       el.className = 'cluster';
-      el.textContent = String(g.length);
+      el.textContent = String(ids.length);
       el.addEventListener('click', function (e) {
         e.stopPropagation();
-        map.fitBounds(bounds, { padding: { top: 100, bottom: 200, left: 60, right: 60 }, maxZoom: 17, duration: 600 });
+        // Acerca lo suficiente para que el grupo se abra de verdad (al menos 2.2 niveles más), centrado sobre el grupo.
+        var cam = map.cameraForBounds(bounds, { padding: PAD });
+        var zoom = Math.min(17, Math.max(cam && cam.zoom ? cam.zoom : 0, map.getZoom() + 2.2));
+        goTo(center, zoom);
       });
-      clusterMarkers.push(new maplibregl.Marker({ element: el }).setLngLat([lng / g.length, lat / g.length]).addTo(map));
+      clusterByKey[key] = new maplibregl.Marker({ element: el }).setLngLat(center).addTo(map);
+    });
+    Object.keys(clusterByKey).forEach(function (k) {
+      if (!want[k]) { clusterByKey[k].remove(); delete clusterByKey[k]; }
     });
   }
   map.on('moveend', recluster);
+
+  // Mueve la cámara. Si el destino está cerca, se desliza; si está lejos, "vuela" (se aleja y vuelve a acercar)
+  // para que no se pierda la orientación como pasaba con un salto directo.
+  function goTo(center, zoom) {
+    var from = map.project(map.getCenter()), to = map.project(center);
+    var px = Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
+    var opts = { center: center, zoom: zoom, padding: PAD, essential: true };
+    if (px < 700 && Math.abs(map.getZoom() - zoom) < 4) { opts.duration = 650; map.easeTo(opts); }
+    else { opts.duration = 1400; opts.curve = 1.35; map.flyTo(opts); }
+  }
 
   function cardLeft(i) { var c = cards[i]; return c.offsetLeft - (cardsEl.clientWidth - c.offsetWidth) / 2; }
 
@@ -255,14 +282,15 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
     if (cur >= 0) { pins[cur].classList.remove('sel'); cards[cur].classList.remove('on'); }
     cur = i;
     pins[i].classList.add('sel'); cards[i].classList.add('on');
-    recluster();
+    // Si el lugar estaba dentro de un grupo, su pin aparece de inmediato (no se "pierde" mientras la cámara se mueve).
+    if (CLUSTER && !shown[i]) { markers[i].addTo(map); shown[i] = true; }
     if (scrollCard) {
       programmatic = true;
       cardsEl.scrollTo({ left: cardLeft(i), behavior: 'smooth' });
       setTimeout(function () { programmatic = false; }, 700);
     }
     if (fly) {
-      map.easeTo({ center: [P[i].lng, P[i].lat], zoom: Math.max(map.getZoom(), 14), padding: PAD, duration: 700 });
+      goTo([P[i].lng, P[i].lat], Math.max(map.getZoom(), 14));
     }
   }
 

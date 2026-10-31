@@ -17,7 +17,7 @@ export function buildMiniMapHtml(lat: number, lng: number, category: string, dar
   html, body { margin: 0; height: 100%; overflow: hidden; background: #EEF2F6; }
   #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
   .maplibregl-ctrl-attrib { font-size: 8px; }
-  .pin { position: relative; width: 34px; height: 42px; }
+  .pin { width: 34px; height: 42px; }
   .pin-body { position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: ${color}; border: 3px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; animation: drop .5s ease-out; }
   .pin-body i { transform: rotate(45deg); width: 10px; height: 10px; border-radius: 50%; background: ${pinText}; }
   @keyframes drop { 0% { transform: rotate(-45deg) translate(14px, -14px) scale(.6); opacity: 0; } 100% { transform: rotate(-45deg); opacity: 1; } }
