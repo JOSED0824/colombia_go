@@ -15,7 +15,7 @@ type Props = {
  * numérico, pegar el código y el autocompletado de SMS/correo del sistema); las casillas solo lo muestran.
  */
 export function CodeInput({ value, onChange, length = 6, autoFocus, onComplete }: Props) {
-  const inputRef = useRef<TextInput>(null)
+  const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null)
 
   function handleChange(text: string) {
     const digits = text.replace(/[^0-9]/g, '').slice(0, length)
