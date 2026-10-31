@@ -79,7 +79,18 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
   }
 
   const handleSave = () => {
-    onProfileUpdate({ name: editName, bio: editBio })
+    if (!editName.trim()) {
+      notify(t('settings.nameRequired'))
+      return
+    }
+    onProfileUpdate({ name: editName.trim(), bio: editBio.trim() })
+    setIsEditing(false)
+    notify(t('settings.profileSaved'))
+  }
+
+  const handleCancel = () => {
+    setEditName(profileName)
+    setEditBio(profileBio ?? '')
     setIsEditing(false)
   }
 
@@ -92,11 +103,6 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
           <Ionicons name="chevron-back" size={20} color={COLORS.BLUE} />
         </Pressable>
         <Text style={styles.settingsHeaderTitle}>{t('settings.title')}</Text>
-        {isEditing && (
-          <Pressable onPress={handleSave}>
-            <Text style={{ color: COLORS.BLUE, fontFamily: 'Poppins_700Bold' }}>{t('common.save')}</Text>
-          </Pressable>
-        )}
       </View>
 
       <KeyboardScroll
@@ -114,6 +120,7 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
                   value={editName}
                   onChangeText={setEditName}
                   placeholder={t('settings.yourName')}
+                  placeholderTextColor={COLORS.TEXT_MUTED}
                 />
               ) : (
                 <Text style={styles.editNameText}>{profileName}</Text>
@@ -123,13 +130,26 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
             <Ionicons name="camera-outline" size={24} color={COLORS.BLUE} />
           </Pressable>
           {isEditing && (
-            <TextInput
-              style={[styles.editInput, { marginTop: 15, height: 60, textAlignVertical: 'top' }]}
-              value={editBio}
-              onChangeText={setEditBio}
-              placeholder={t('settings.yourBio')}
-              multiline
-            />
+            <>
+              <TextInput
+                style={[styles.editInput, { marginTop: 15, height: 80, textAlignVertical: 'top', paddingTop: 12 }]}
+                value={editBio}
+                onChangeText={setEditBio}
+                placeholder={t('settings.yourBio')}
+                placeholderTextColor={COLORS.TEXT_MUTED}
+                multiline
+                maxLength={160}
+              />
+              <View style={styles.editActions}>
+                <Pressable style={styles.editCancelBtn} onPress={handleCancel}>
+                  <Text style={styles.editCancelText}>{t('common.cancel')}</Text>
+                </Pressable>
+                <Pressable style={styles.editSaveBtn} onPress={handleSave}>
+                  <Ionicons name="checkmark" size={18} color={COLORS.INK} />
+                  <Text style={styles.editSaveText}>{t('settings.saveChanges')}</Text>
+                </Pressable>
+              </View>
+            </>
           )}
         </View>
 
@@ -167,7 +187,7 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
 
         <Text style={styles.settingsSectionLabel}>{t('settings.security')}</Text>
         <View style={styles.settingsCard}>
-          <SettingLink icon="person-outline" label={t('settings.editInfo')} onPress={() => setIsEditing(!isEditing)} />
+          <SettingLink icon="person-outline" label={t('settings.editInfo')} onPress={() => (isEditing ? handleCancel() : setIsEditing(true))} />
           <View style={styles.settingsDivider} />
           <SettingLink icon="lock-closed-outline" label={t('settings.changePassword')} onPress={() => notify(t('settings.changePasswordSoon'))} />
           <View style={styles.settingsDivider} />

@@ -138,7 +138,17 @@
     "reserve": "Reservar Experiencia",
     "perHour": "por hora",
     "reviews": "{{count}} reseñas",
-    "empty": "Aún no hay guías disponibles."
+    "empty": "Aún no hay guías disponibles.",
+    "about": "Sobre mí",
+    "statRating": "Calificación",
+    "statExperience": "Experiencia",
+    "statTours": "Tours",
+    "yearsValue": "{{count}} años",
+    "verified": "Guía verificado",
+    "languages": "Idiomas que habla",
+    "rate": "Tarifa",
+    "reserveSoon": "Pronto podrás reservar a {{name}} desde la app.",
+    "noBio": "Este guía aún no ha escrito su presentación."
   },
   "favorites": {
     "title": "Mis Favoritos",
@@ -330,7 +340,11 @@
     "changePasswordSoon": "Función para cambiar contraseña en desarrollo",
     "tutorial": "Ver tutorial de nuevo",
     "logout": "Cerrar Sesión",
-    "version": "Colombia GO v1.0.2"
+    "version": "Colombia GO v1.0.2",
+    "saveChanges": "Guardar cambios",
+    "profileSaved": "Perfil actualizado",
+    "nameRequired": "Escribe tu nombre para guardar.",
+    "editProfile": "Editar perfil"
   },
   "onboarding": {
     "welcomeTitle": "¡Bienvenido a Colombia GO!",

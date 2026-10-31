@@ -138,7 +138,17 @@
     "reserve": "Book Experience",
     "perHour": "per hour",
     "reviews": "{{count}} reviews",
-    "empty": "No guides available yet."
+    "empty": "No guides available yet.",
+    "about": "About me",
+    "statRating": "Rating",
+    "statExperience": "Experience",
+    "statTours": "Tours",
+    "yearsValue": "{{count}} years",
+    "verified": "Verified guide",
+    "languages": "Languages spoken",
+    "rate": "Rate",
+    "reserveSoon": "Soon you will be able to book {{name}} from the app.",
+    "noBio": "This guide hasn't written an introduction yet."
   },
   "favorites": {
     "title": "My Favorites",
@@ -330,7 +340,11 @@
     "changePasswordSoon": "Password change is coming soon",
     "tutorial": "Watch the tutorial again",
     "logout": "Sign Out",
-    "version": "Colombia GO v1.0.2"
+    "version": "Colombia GO v1.0.2",
+    "saveChanges": "Save changes",
+    "profileSaved": "Profile updated",
+    "nameRequired": "Enter your name to save.",
+    "editProfile": "Edit profile"
   },
   "onboarding": {
     "welcomeTitle": "Welcome to Colombia GO!",

@@ -41,12 +41,14 @@ import { AiHubScreen } from './src/screens/AiHubScreen'
 import { BottomNav } from './src/components/BottomNav'
 import { CoachMarks } from './src/components/CoachMarks'
 import { KeyboardScroll } from './src/components/KeyboardScroll'
+import { GuideDetailScreen } from './src/screens/GuideDetailScreen'
+import type { Guia } from './src/lib/guides'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
 const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as const
 type Tab = (typeof TABS)[number]
-type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | null
+type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | null
 
 // loading: leyendo la configuración del servidor · onboarding: bienvenida + tour + intereses ·
 // coach: tooltips sobre la barra inferior · done: app normal.
@@ -127,7 +129,10 @@ export default function App() {
 
   useEffect(() => {
     const user = session?.user
-    if (user) setProfileName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Viajero')
+    if (user) {
+      setProfileName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Viajero')
+      setProfileBio(user.user_metadata?.bio || null)
+    }
   }, [session?.user?.id])
   // null = usar el texto traducido por defecto; si la persona escribe su propia bio, se respeta.
   const [profileBio, setProfileBio] = useState<string | null>(null)
@@ -137,6 +142,7 @@ export default function App() {
   const [stackScreen, setStackScreen] = useState<StackScreen>(null)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
   const [detailFrom, setDetailFrom] = useState<StackScreen>(null)
+  const [selectedGuide, setSelectedGuide] = useState<Guia | null>(null)
 
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
@@ -384,6 +390,9 @@ export default function App() {
         onToggleRoute={() => toggleRoute(selectedDestination.id)}
       />
     )
+  } else if (stackScreen === 'Guía' && selectedGuide) {
+    wrapInScroll = false
+    content = <GuideDetailScreen guide={selectedGuide} onBack={() => setStackScreen(null)} />
   } else if (stackScreen === 'Configuración') {
     wrapInScroll = false
     padStack = true
@@ -410,8 +419,12 @@ export default function App() {
         }}
         onProfileUpdate={(patch: { name?: string; bio?: string; photo?: string }) => {
           if (patch.name) setProfileName(patch.name)
-          if (patch.bio) setProfileBio(patch.bio)
+          if (patch.bio !== undefined) setProfileBio(patch.bio || null)
           if (patch.photo) setProfilePhoto(patch.photo)
+          // El nombre y la biografía se guardan en la cuenta (Supabase) para que sigan ahí al cerrar la app.
+          if (patch.name || patch.bio !== undefined) {
+            supabase.auth.updateUser({ data: { ...(patch.name ? { full_name: patch.name } : {}), ...(patch.bio !== undefined ? { bio: patch.bio } : {}) } }).catch(() => {})
+          }
         }}
       />
     )
@@ -473,7 +486,14 @@ export default function App() {
       />
     )
   } else if (activeTab === 'Guías') {
-    content = <GuidesScreen />
+    content = (
+      <GuidesScreen
+        onSelect={(guide) => {
+          setSelectedGuide(guide)
+          setStackScreen('Guía')
+        }}
+      />
+    )
   } else if (activeTab === 'Favoritos') {
     content = (
       <FavoritesScreen

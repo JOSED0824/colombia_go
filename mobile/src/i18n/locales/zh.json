@@ -138,7 +138,17 @@
     "reserve": "预订体验",
     "perHour": "每小时",
     "reviews": "{{count}} 条评价",
-    "empty": "暂时还没有可用的向导。"
+    "empty": "暂时还没有可用的向导。",
+    "about": "关于我",
+    "statRating": "评分",
+    "statExperience": "经验",
+    "statTours": "带团次数",
+    "yearsValue": "{{count}} 年",
+    "verified": "已认证向导",
+    "languages": "使用语言",
+    "rate": "费用",
+    "reserveSoon": "很快您就可以在应用中预订 {{name}}。",
+    "noBio": "这位向导还没有填写自我介绍。"
   },
   "favorites": {
     "title": "我的收藏",
@@ -330,7 +340,11 @@
     "changePasswordSoon": "修改密码功能即将上线",
     "tutorial": "重新观看教程",
     "logout": "退出登录",
-    "version": "Colombia GO v1.0.2"
+    "version": "Colombia GO v1.0.2",
+    "saveChanges": "保存更改",
+    "profileSaved": "资料已更新",
+    "nameRequired": "请输入姓名后再保存。",
+    "editProfile": "编辑资料"
   },
   "onboarding": {
     "welcomeTitle": "欢迎来到 Colombia GO！",

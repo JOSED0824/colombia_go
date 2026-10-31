@@ -1,54 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import { View, Image, Pressable, ActivityIndicator } from 'react-native'
 import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
-import { apiGet } from '../lib/api'
-import { fotoGuia } from '../lib/images'
+import { useApi } from '../lib/useApi'
+import { toGuia, type Guia } from '../lib/guides'
 import type { GuiaDto } from '../lib/types'
 
-type Guia = {
-  id: string
-  name: string
-  specialty: string
-  place: string
-  rating: string
-  reviews: string
-  price: string
-  image: any
-  tags: string[]
-  featured: boolean
-}
-
-function toGuia(dto: GuiaDto): Guia {
-  return {
-    id: String(dto.id),
-    name: dto.name,
-    specialty: dto.specialty,
-    place: dto.place,
-    rating: Number(dto.rating).toFixed(1),
-    reviews: String(dto.reviews),
-    price: dto.price.match(/\$[\d.,]+/)?.[0] ?? dto.price, // la pantalla muestra "por hora" (traducido) aparte
-    image: fotoGuia(dto.name, dto.image),
-    tags: dto.languages,
-    featured: dto.featured,
-  }
-}
-
-export function GuidesScreen() {
-  const { t, i18n } = useTranslation()
-  const [guides, setGuides] = useState<Guia[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    apiGet<GuiaDto[]>('/api/v1/guias')
-      .then((dtos) => setGuides(dtos.map(toGuia)))
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
-  }, [i18n.language])
+export function GuidesScreen({ onSelect }: { onSelect?: (guide: Guia) => void }) {
+  const { t } = useTranslation()
+  // Con caché: al volver a esta pestaña la lista aparece al instante, sin spinner ni nueva consulta.
+  const { data, loading, error } = useApi<GuiaDto[]>('/api/v1/guias')
+  const guides = useMemo(() => (data ?? []).map(toGuia), [data])
 
   if (loading) return <ActivityIndicator color={COLORS.BLUE} style={{ marginTop: 60 }} />
   if (error || guides.length === 0) {
@@ -75,7 +40,7 @@ export function GuidesScreen() {
         <Ionicons name="search-outline" size={24} color={COLORS.BLUE} />
       </View>
 
-      <View style={styles.guideHeroCard}>
+      <Pressable style={styles.guideHeroCard} onPress={() => onSelect?.(featured)}>
         <Image source={featured.image} style={styles.guideHeroImg} />
         <View style={styles.guideHeroContent}>
           <View style={styles.pillExp}>
@@ -92,12 +57,12 @@ export function GuidesScreen() {
             <Ionicons name="star" size={16} color={COLORS.YELLOW} />
             <Text style={styles.guideHeroRate}> {featured.rating} ({t('guides.reviews', { count: Number(featured.reviews) })})</Text>
           </View>
-          <Pressable style={styles.reserveBtn}>
+          <Pressable style={styles.reserveBtn} onPress={() => onSelect?.(featured)}>
             <Ionicons name="calendar-outline" size={20} color={COLORS.INK} />
             <Text style={styles.reserveBtnText}>{t('guides.reserve')}</Text>
           </Pressable>
         </View>
-      </View>
+      </Pressable>
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { flexShrink: 1, marginRight: 12 }]} numberOfLines={2}>{t('guides.others')}</Text>
@@ -105,7 +70,7 @@ export function GuidesScreen() {
       </View>
 
       {others.map((item) => (
-        <Pressable key={item.id} style={styles.guideRowCard}>
+        <Pressable key={item.id} style={styles.guideRowCard} onPress={() => onSelect?.(item)}>
           <Image source={item.image} style={styles.guideRowImg} />
           <View style={styles.guideRowContent}>
             <Text style={styles.guideRowName}>{item.name}, {item.specialty}</Text>

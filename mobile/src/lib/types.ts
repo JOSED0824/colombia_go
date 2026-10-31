@@ -50,6 +50,10 @@ export type GuiaDto = {
   image: string | null
   featured: boolean
   badge: string | null
+  verified: boolean
+  bio: string | null // presentación en el idioma de la petición
+  experienceYears: number
+  toursCount: number
 }
 
 export type RutaDto = {

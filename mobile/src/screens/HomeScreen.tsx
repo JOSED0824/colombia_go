@@ -1,32 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { View, Image, Pressable, ScrollView, Dimensions } from 'react-native'
 import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
-import { apiGet } from '../lib/api'
+import { useApi } from '../lib/useApi'
 import { toDestination } from '../lib/mappers'
-import type { Destination, LugarResumenDto, PagedResult } from '../lib/types'
+import type { LugarResumenDto, PagedResult } from '../lib/types'
 
 const { width } = Dimensions.get('window')
 
 export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: any) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [activeSlide, setActiveSlide] = useState(0)
-  const [featured, setFeatured] = useState<Destination[]>([])
-  const [destinations, setDestinations] = useState<Destination[]>([])
-  const [error, setError] = useState(false)
 
-  useEffect(() => {
-    apiGet<LugarResumenDto[]>('/api/v1/lugares/destacados?take=3')
-      .then((dtos) => setFeatured(dtos.map(toDestination)))
-      .catch(() => setError(true))
-
-    apiGet<PagedResult<LugarResumenDto>>(`/api/v1/lugares?ciudad=${encodeURIComponent('Medellín')}&pageSize=6`)
-      .then((page) => setDestinations(page.items.map(toDestination)))
-      .catch(() => setError(true))
-  }, [i18n.language])
+  // Con caché: al volver a Inicio desde otra pestaña se pinta al instante con lo ya cargado, sin repetir la consulta.
+  const featuredApi = useApi<LugarResumenDto[]>('/api/v1/lugares/destacados?take=3')
+  const cityApi = useApi<PagedResult<LugarResumenDto>>(`/api/v1/lugares?ciudad=${encodeURIComponent('Medellín')}&pageSize=6`)
+  const featured = useMemo(() => (featuredApi.data ?? []).map(toDestination), [featuredApi.data])
+  const destinations = useMemo(() => (cityApi.data?.items ?? []).map(toDestination), [cityApi.data])
+  const error = featuredApi.error || cityApi.error
 
   const handleScroll = (event: any) => {
     const slide = Math.round(event.nativeEvent.contentOffset.x / (width - 40))

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { View, ScrollView, Image, Pressable, Linking } from 'react-native'
 import { Text } from '../components/AppText'
 import { StatusBar } from 'expo-status-bar'
@@ -8,26 +8,27 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { FactItemCol } from '../components/FactItemCol'
 import { useTranslation } from 'react-i18next'
-import { apiGet } from '../lib/api'
+import { apiSend } from '../lib/api'
+import { useApi } from '../lib/useApi'
+import { MiniMap } from '../components/MiniMap'
 import { toDestinationDetail } from '../lib/mappers'
 import type { Destination, LugarDetalleDto } from '../lib/types'
 
 export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, onFavorite, onToggleRoute }: any) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   // Se muestra de una vez lo que ya se tiene (nombre, foto, calificación) y se completa con el detalle de la API.
-  const [detalle, setDetalle] = useState<Destination | null>(null)
-  const [error, setError] = useState(false)
+  // "/contenido" es el detalle igual para todos: el servidor lo guarda en caché y la app lo reutiliza al volver.
+  const { data: dto, error } = useApi<LugarDetalleDto>(`/api/v1/lugares/${encodeURIComponent(resumen.id)}/contenido`)
+  const detalle = useMemo(() => (dto ? toDestinationDetail(dto) : null), [dto])
 
+  // El historial de lugares vistos (alimenta las recomendaciones) se avisa aparte, sin esperar ni bloquear la pantalla.
   useEffect(() => {
-    setDetalle(null)
-    setError(false)
-    apiGet<LugarDetalleDto>(`/api/v1/lugares/${encodeURIComponent(resumen.id)}`)
-      .then((dto) => setDetalle(toDestinationDetail(dto)))
-      .catch(() => setError(true))
-  }, [resumen.id, i18n.language])
+    apiSend(`/api/v1/lugares/${encodeURIComponent(resumen.id)}/vista`, 'POST', undefined, { keepCache: true }).catch(() => {})
+  }, [resumen.id])
 
   const destination: Destination = detalle ?? resumen
+  const hasLocation = typeof destination.latitude === 'number' && typeof destination.longitude === 'number' && !Number.isNaN(destination.latitude)
 
   const openMaps = () => {
     const query = destination.latitude != null && destination.longitude != null
@@ -43,7 +44,8 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.WHITE }}>
       <StatusBar style="light" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {/* paddingBottom: la barra inferior es absoluta (90 de alto); sin este espacio el botón final queda tapado y el scroll rebota. */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 + insets.bottom }}>
         <View style={styles.detailHero}>
           <Image source={destination.image} style={styles.detailImage} />
           <View style={[styles.detailHeaderAbs, { top: insets.top + 8 }]}>
@@ -80,25 +82,26 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
           <Text style={styles.detailDesc}>{descripcion}</Text>
 
           <View style={styles.mapContainer}>
-             <View style={styles.mapCard}>
-                <View style={styles.mapInfo}>
-                  <Text style={styles.mapPlaceName}>{destination.name}</Text>
-                  {!!destination.address && <Text style={styles.mapPlaceSub} numberOfLines={2}>{destination.address}</Text>}
+            {hasLocation ? (
+              <MiniMap
+                latitude={destination.latitude as number}
+                longitude={destination.longitude as number}
+                category={destination.category}
+                onPress={openMaps}
+              />
+            ) : null}
+            <View style={styles.detailMapInfo}>
+              <View style={styles.detailMapPin}>
+                <Ionicons name="location" size={20} color={COLORS.BLUE} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.mapPlaceName} numberOfLines={1}>{destination.name}</Text>
+                {!!destination.address && <Text style={styles.mapPlaceSub} numberOfLines={2}>{destination.address}</Text>}
+                {!destination.address?.includes(destination.city) && (
                   <Text style={styles.mapPlaceCity}>{destination.city}, {destination.region}</Text>
-                </View>
-                <View style={styles.mapGraphic}>
-                   <View style={styles.mapLine} />
-                   <View style={styles.mapPinContainer}>
-                     <Ionicons name="location" size={24} color="#3B82F6" />
-                   </View>
-                   {destination.id === 'comuna-13' && (
-                     <>
-                       <View style={styles.landmark1}><Ionicons name="body" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>{t('detail.escalators')}</Text></View>
-                       <View style={styles.landmark2}><Ionicons name="bus" size={12} color={COLORS.TEXT_MUTED} /><Text style={styles.landmarkTxt}>{t('detail.metrocable')}</Text></View>
-                     </>
-                   )}
-                </View>
-             </View>
+                )}
+              </View>
+            </View>
           </View>
 
           <View style={styles.factRow}>
