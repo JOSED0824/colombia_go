@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, Pressable, TextInput, ScrollView, Dimensions } from 'react-native'
+import { View, Image, Pressable, ScrollView, Dimensions } from 'react-native'
+import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
@@ -67,11 +68,11 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
                     <Text style={styles.heroCity}>{item.city.toUpperCase()}</Text>
                     <Ionicons name="location" size={10} color={COLORS.YELLOW} style={{ marginLeft: 5 }} />
                   </View>
-                  <Text style={styles.heroTitle}>{item.name}</Text>
-                  <Text style={styles.heroSubtitle}>{item.tagline}</Text>
+                  <Text style={styles.heroTitle} numberOfLines={3} adjustsFontSizeToFit minimumFontScale={0.75}>{item.name}</Text>
+                  <Text style={styles.heroSubtitle} numberOfLines={2}>{item.tagline}</Text>
                   <Pressable style={styles.heroButton} onPress={() => onSelect(item)}>
-                    <Text style={styles.heroButtonText}>{t('home.discover', { name: item.name })}</Text>
-                    <Ionicons name="chevron-forward" size={14} color={COLORS.BLUE} />
+                    <Text style={[styles.heroButtonText, { flexShrink: 1 }]} numberOfLines={2}>{t('home.discover', { name: item.name })}</Text>
+                    <Ionicons name="chevron-forward" size={14} color={COLORS.INK} />
                   </Pressable>
                 </View>
               </View>
@@ -93,16 +94,16 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
           { id: 'nightlife', icon: 'musical-notes', color: '#E63946' },
         ].map((item) => (
           <View key={item.id} style={styles.catItem}>
-            <View style={[styles.catIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.BLUE : item.color }]}>
-              <Ionicons name={item.icon as any} size={24} color={item.color === '#FFD100' ? COLORS.BLUE : '#FFF'} />
+            <View style={[styles.catIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.PRIMARY : item.color }]}>
+              <Ionicons name={item.icon as any} size={24} color={item.color === '#FFD100' ? COLORS.INK : '#FFF'} />
             </View>
-            <Text style={styles.catLabel}>{t(`categories.${item.id}`)}</Text>
+            <Text style={styles.catLabel} numberOfLines={2}>{t(`categories.${item.id}`)}</Text>
           </View>
         ))}
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>{t('home.highlights', { city: 'Medellín' })}</Text>
+        <Text style={[styles.sectionTitle, { flexShrink: 1, marginRight: 12 }]} numberOfLines={2}>{t('home.highlights', { city: 'Medellín' })}</Text>
         <Pressable onPress={() => onExplore('Medellín')}><Text style={styles.seeAllText}>{t('common.viewAll')}</Text></Pressable>
       </View>
 
@@ -122,7 +123,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
             </View>
             <View style={styles.cardContent}>
               <View style={styles.cardTag}><Text style={styles.cardTagText}>{t(`categories.${item.categorySlug}`, { defaultValue: item.category })}</Text></View>
-              <Text style={styles.cardTitle}>{item.name}</Text>
+              <Text style={styles.cardTitle} numberOfLines={2}>{item.name}</Text>
               <Text style={styles.cardTagline}>{item.tagline}</Text>
               <View style={styles.cardLocation}>
                 <Ionicons name="location" size={12} color={COLORS.BLUE} />

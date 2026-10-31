@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { View, Text, Pressable, TextInput, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Pressable, ActivityIndicator, StyleSheet } from 'react-native'
+import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { styles } from '../theme/styles'
 import { apiGet, apiSend } from '../lib/api'
 import { apiErrorMessage } from '../lib/errors'
@@ -212,14 +214,14 @@ export function TravelGuideScreen({ onViewOnMap, onSaveStops, onSelect }: Props)
   )
 }
 
-const s = StyleSheet.create({
-  intro: { fontFamily: 'Poppins_400Regular', fontSize: 14, lineHeight: 21, color: '#4A6580', marginBottom: 6 },
+const s = themed(() => StyleSheet.create({
+  intro: { fontFamily: 'Poppins_400Regular', fontSize: 14, lineHeight: 21, color: COLORS.TEXT_BODY, marginBottom: 6 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 18, marginBottom: 4 },
-  stepBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#CBD8E5' },
+  stepBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: COLORS.CARD, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: COLORS.BORDER },
   stepValue: { fontFamily: 'Poppins_800ExtraBold', fontSize: 26, color: COLORS.BLUE, minWidth: 40, textAlign: 'center' },
   loadingMsg: { fontFamily: 'Poppins_500Medium', fontSize: 13, color: COLORS.BLUE, textAlign: 'center', marginTop: 12 },
-  mineRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 18, padding: 14, marginTop: 10 },
+  mineRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.CARD, borderRadius: 18, padding: 14, marginTop: 10 },
   mineTitle: { fontFamily: 'Poppins_700Bold', fontSize: 14, color: COLORS.BLUE },
   mineMeta: { fontFamily: 'Poppins_400Regular', fontSize: 11, color: COLORS.TEXT_MUTED, marginTop: 2 },
-})
+}))

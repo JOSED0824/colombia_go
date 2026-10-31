@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native'
+import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
-import { COLORS } from '../theme/colors'
+import { COLORS, getThemeMode } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { formatCop } from '../i18n'
 import { toDestination } from '../lib/mappers'
 import type { Destination, GuiaViajeDto } from '../lib/types'
@@ -167,25 +169,25 @@ export function TravelGuideResultScreen({ guia, onBack, onViewOnMap, onSaveStops
   )
 }
 
-const s = StyleSheet.create({
+const s = themed(() => StyleSheet.create({
   back: { flexDirection: 'row', alignItems: 'center', marginBottom: 8, alignSelf: 'flex-start' },
   backText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: COLORS.BLUE },
   title: { fontFamily: 'Poppins_800ExtraBold', fontSize: 24, color: COLORS.BLUE, lineHeight: 32 },
   meta: { fontFamily: 'Poppins_500Medium', fontSize: 13, color: COLORS.TEXT_MUTED, marginBottom: 16 },
-  card: { backgroundColor: '#FFF', borderRadius: 20, padding: 16, marginBottom: 14 },
+  card: { backgroundColor: COLORS.CARD, borderRadius: 20, padding: 16, marginBottom: 14 },
   cardLabel: { fontFamily: 'Poppins_700Bold', fontSize: 13, color: COLORS.BLUE, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 },
-  bodyText: { fontFamily: 'Poppins_400Regular', fontSize: 14, lineHeight: 21, color: '#4A6580' },
-  barTrack: { height: 10, borderRadius: 5, backgroundColor: '#E8EEF4', marginTop: 12, overflow: 'hidden' },
+  bodyText: { fontFamily: 'Poppins_400Regular', fontSize: 14, lineHeight: 21, color: COLORS.TEXT_BODY },
+  barTrack: { height: 10, borderRadius: 5, backgroundColor: COLORS.SURFACE2, marginTop: 12, overflow: 'hidden' },
   barFill: { height: 10, borderRadius: 5 },
   budgetStatus: { fontFamily: 'Poppins_700Bold', fontSize: 13, marginTop: 8 },
-  dayCard: { backgroundColor: '#FFF', borderRadius: 20, marginBottom: 12, overflow: 'hidden' },
+  dayCard: { backgroundColor: COLORS.CARD, borderRadius: 20, marginBottom: 12, overflow: 'hidden' },
   dayHeader: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
   dayBadge: { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.YELLOW, alignItems: 'center', justifyContent: 'center' },
-  dayBadgeText: { fontFamily: 'Poppins_800ExtraBold', fontSize: 16, color: COLORS.BLUE },
+  dayBadgeText: { fontFamily: 'Poppins_800ExtraBold', fontSize: 16, color: COLORS.INK },
   dayTitle: { fontFamily: 'Poppins_700Bold', fontSize: 15, color: COLORS.BLUE },
   dayTheme: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: COLORS.TEXT_MUTED },
   dayBody: { paddingHorizontal: 14, paddingBottom: 14 },
-  stop: { flexDirection: 'row', paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#EEF2F6' },
+  stop: { flexDirection: 'row', paddingVertical: 10, borderTopWidth: 1, borderTopColor: COLORS.BORDER },
   timeCol: { width: 58 },
   time: { fontFamily: 'Poppins_700Bold', fontSize: 13, color: COLORS.BLUE },
   duration: { fontFamily: 'Poppins_400Regular', fontSize: 10, color: COLORS.TEXT_MUTED },
@@ -193,15 +195,15 @@ const s = StyleSheet.create({
   stopImg: { width: 46, height: 46, borderRadius: 12, marginRight: 10 },
   stopName: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: COLORS.BLUE },
   stopCost: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: COLORS.TEXT_MUTED },
-  tipBox: { flexDirection: 'row', gap: 6, backgroundColor: '#FFF8DC', borderRadius: 12, padding: 8, marginTop: 8 },
-  tipText: { flex: 1, fontFamily: 'Poppins_400Regular', fontSize: 12, lineHeight: 18, color: '#4A6580' },
-  mapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 6, paddingVertical: 10, borderRadius: 16, backgroundColor: '#EEF4FB' },
+  tipBox: { flexDirection: 'row', gap: 6, backgroundColor: getThemeMode() === 'dark' ? 'rgba(255,209,0,0.14)' : '#FFF8DC', borderRadius: 12, padding: 8, marginTop: 8 },
+  tipText: { flex: 1, fontFamily: 'Poppins_400Regular', fontSize: 12, lineHeight: 18, color: COLORS.TEXT_BODY },
+  mapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 6, paddingVertical: 10, borderRadius: 16, backgroundColor: COLORS.SURFACE2 },
   mapBtnText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: COLORS.BLUE },
   bullet: { flexDirection: 'row', gap: 8, marginTop: 4 },
   bulletDot: { fontFamily: 'Poppins_700Bold', color: COLORS.BLUE },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { backgroundColor: '#EEF4FB', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
+  chip: { backgroundColor: COLORS.SURFACE2, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
   chipText: { fontFamily: 'Poppins_500Medium', fontSize: 12, color: COLORS.BLUE },
-  saveBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.BLUE, borderRadius: 26, paddingVertical: 14, marginTop: 6, marginBottom: 20 },
+  saveBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.PRIMARY, borderRadius: 26, paddingVertical: 14, marginTop: 6, marginBottom: 20 },
   saveBtnText: { fontFamily: 'Poppins_700Bold', fontSize: 14, color: '#FFF' },
-})
+}))

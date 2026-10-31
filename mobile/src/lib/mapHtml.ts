@@ -34,7 +34,7 @@ export type MapLabels = {
  * mi ubicación. Se usa igual en el WebView nativo y en un <iframe> en web; para abrir un lugar manda
  * { type: 'select', id } por postMessage.
  */
-export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: MapLabels) {
+export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: MapLabels, dark = false) {
   // Se neutraliza "<" para que ningún nombre pueda cerrar el <script> ni abrir un comentario HTML.
   const data = JSON.stringify(points).replace(/</g, '\\u003c')
   const lab = JSON.stringify(labels).replace(/</g, '\\u003c')
@@ -93,11 +93,27 @@ export function buildMapHtml(points: MapPoint[], drawRoute: boolean, labels: Map
   .chip.dark { color: #003B7D; }
   .card-btn { margin-top: auto; align-self: flex-start; border: 0; background: #FFD100; color: #003B7D; font-weight: 800; font-size: 12px; padding: 8px 14px; border-radius: 16px; cursor: pointer; }
 
+  /* Modo oscuro: el mapa se invierte (conservando los tonos) y los paneles usan la paleta oscura de la app. */
+  body.dark { background: #0E1621; }
+  body.dark #map .maplibregl-canvas { filter: invert(1) hue-rotate(180deg) brightness(.92) contrast(.9) saturate(.8); }
+  body.dark .maplibregl-ctrl-attrib { background: rgba(14,22,33,.75); color: #8FA3BA; }
+  body.dark .maplibregl-ctrl-attrib a { color: #9DC1FF; }
+  body.dark #loading { background: #0E1621; color: #9DC1FF; }
+  body.dark .spin { border-color: #2C3E52; border-top-color: #9DC1FF; }
+  body.dark #routebar, body.dark #fab button, body.dark .card { background: #172230; }
+  body.dark #fab button { color: #9DC1FF; }
+  body.dark #modes button { background: #213245; color: #9DC1FF; }
+  body.dark #modes button.on { background: #FFD100; color: #003B7D; }
+  body.dark #stats { color: #B7C5D6; }
+  body.dark .card-title { color: #E8F0FB; }
+  body.dark .card-meta { color: #8FA3BA; }
+  body.dark .card-img { background-color: #213245; }
+  body.dark .pin-body { border-color: #172230; }
   #toast { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); background: rgba(0,28,61,.9); color: #fff; font-size: 12px; padding: 9px 14px; border-radius: 14px; z-index: 40; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 80%; text-align: center; }
   #toast.show { opacity: 1; }
 </style>
 </head>
-<body>
+<body class="${dark ? 'dark' : ''}">
 <div id="map"></div>
 <div id="loading"><div class="spin"></div><div id="loadingText"></div></div>
 <div id="routebar" class="hidden"><div id="modes"></div><div id="stats"></div></div>

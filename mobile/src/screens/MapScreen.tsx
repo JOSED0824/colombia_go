@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
-import { View, Text, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
+import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
-import { COLORS } from '../theme/colors'
+import { COLORS, getThemeMode } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { buildMapHtml, type MapLabels } from '../lib/mapHtml'
@@ -31,6 +32,7 @@ export function MapScreen({ title, points, onBack, drawRoute, onSelect }: Props)
     [points],
   )
   const sinUbicacion = points.length - ubicados.length
+  const dark = getThemeMode() === 'dark'
 
   const html = useMemo(() => {
     const labels: MapLabels = {
@@ -61,9 +63,10 @@ export function MapScreen({ title, points, onBack, drawRoute, onSelect }: Props)
       })),
       Boolean(drawRoute),
       labels,
+      dark,
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ubicados, drawRoute, i18n.language])
+  }, [ubicados, drawRoute, i18n.language, dark])
 
   const handleMessage = useCallback(
     (data: string) => {

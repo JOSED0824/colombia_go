@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Pressable, StyleSheet } from 'react-native'
+import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { AiRoutePlannerScreen } from './AiRoutePlannerScreen'
 import { TravelGuideScreen } from './TravelGuideScreen'
 import type { Destination } from '../lib/types'
@@ -31,7 +33,7 @@ export function AiHubScreen({ candidatos, onViewOnMap, onSaveStops, onSelect }: 
               <Ionicons
                 name={id === 'guide' ? 'sparkles' : 'navigate'}
                 size={16}
-                color={active ? COLORS.BLUE : COLORS.TEXT_MUTED}
+                color={active ? COLORS.INK : COLORS.TEXT_MUTED}
               />
               <Text style={[s.segmentText, active && s.segmentTextActive]}>
                 {id === 'guide' ? t('aiHub.guideTab') : t('aiHub.routeTab')}
@@ -50,10 +52,10 @@ export function AiHubScreen({ candidatos, onViewOnMap, onSaveStops, onSelect }: 
   )
 }
 
-const s = StyleSheet.create({
-  segment: { flexDirection: 'row', backgroundColor: '#E8EEF4', borderRadius: 22, padding: 4, marginBottom: 18 },
+const s = themed(() => StyleSheet.create({
+  segment: { flexDirection: 'row', backgroundColor: COLORS.SURFACE2, borderRadius: 22, padding: 4, marginBottom: 18 },
   segmentItem: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 18 },
   segmentActive: { backgroundColor: COLORS.YELLOW },
   segmentText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: COLORS.TEXT_MUTED },
-  segmentTextActive: { color: COLORS.BLUE, fontFamily: 'Poppins_700Bold' },
-})
+  segmentTextActive: { color: COLORS.INK, fontFamily: 'Poppins_700Bold' },
+}))

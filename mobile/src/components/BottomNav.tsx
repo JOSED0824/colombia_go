@@ -1,5 +1,6 @@
 import React from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, View } from 'react-native'
+import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
@@ -30,16 +31,18 @@ export function BottomNav({ active, onChange, onTabLayout }: BottomNavProps) {
         return (
           <Pressable
             key={tab.id}
-            style={[styles.navItem, isActive && styles.navItemActive]}
+            style={styles.navTab}
             onPress={() => onChange(tab.id)}
             onLayout={(e) => onTabLayout?.(tab.id, { x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width })}
           >
-            <Ionicons
-              name={(isActive ? tab.icon : `${tab.icon}-outline`) as any}
-              size={20}
-              color={isActive ? COLORS.BLUE : COLORS.TEXT_MUTED}
-            />
-            <Text style={[styles.navLabel, isActive && styles.navLabelActive]}>{t(tab.label)}</Text>
+            <View style={[styles.navItem, isActive && styles.navItemActive]}>
+              <Ionicons
+                name={(isActive ? tab.icon : `${tab.icon}-outline`) as any}
+                size={20}
+                color={isActive ? COLORS.INK : COLORS.TEXT_MUTED}
+              />
+              <Text style={[styles.navLabel, isActive && styles.navLabelActive]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{t(tab.label)}</Text>
+            </View>
           </Pressable>
         )
       })}

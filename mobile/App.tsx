@@ -2,6 +2,7 @@ import React, { useEffect, useState, useSyncExternalStore } from 'react'
 import { ActivityIndicator, ScrollView, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
+import { StatusBar } from 'expo-status-bar'
 import {
   useFonts,
   Poppins_400Regular,
@@ -15,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import './src/i18n'
 import { getLanguage, hasSavedLanguage, loadSavedLanguage, normalizeLanguage, setLanguage } from './src/i18n'
-import { COLORS } from './src/theme/colors'
+import { COLORS, applyTheme, loadSavedTheme, saveTheme, type ThemeMode } from './src/theme/colors'
 import { styles } from './src/theme/styles'
 import { supabase } from './src/lib/supabase'
 import { apiGet, apiSend } from './src/lib/api'
@@ -66,6 +67,22 @@ export default function App() {
     loadSavedLanguage().finally(() => setLanguageReady(true))
   }, [])
 
+  // Tema claro/oscuro: el guardado en el dispositivo o, la primera vez, el del sistema.
+  const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+  const [themeReady, setThemeReady] = useState(false)
+  useEffect(() => {
+    loadSavedTheme()
+      .then(setThemeMode)
+      .finally(() => setThemeReady(true))
+  }, [])
+
+  function toggleTheme() {
+    const next: ThemeMode = themeMode === 'dark' ? 'light' : 'dark'
+    applyTheme(next) // reconstruye los estilos con la paleta nueva...
+    setThemeMode(next) // ...y vuelve a pintar la app
+    saveTheme(next)
+  }
+
   // undefined = todavía leyendo la sesión guardada; null = no hay sesión (mostrar login).
   const [session, setSession] = useState<Session | null | undefined>(undefined)
 
@@ -102,8 +119,8 @@ export default function App() {
   }, [session?.user?.id])
 
   useEffect(() => {
-    if (fontsLoaded && languageReady && session !== undefined) SplashScreen.hideAsync().catch(() => {})
-  }, [fontsLoaded, languageReady, session])
+    if (fontsLoaded && languageReady && themeReady && session !== undefined) SplashScreen.hideAsync().catch(() => {})
+  }, [fontsLoaded, languageReady, themeReady, session])
 
   const [profileName, setProfileName] = useState('Viajero')
 
@@ -220,7 +237,7 @@ export default function App() {
     return () => clearTimeout(timer)
   }, [query, category, i18n.language])
 
-  if (!fontsLoaded || !languageReady || session === undefined) return null
+  if (!fontsLoaded || !languageReady || !themeReady || session === undefined) return null
 
   function navigate(target: string) {
     if ((TABS as readonly string[]).includes(target)) {
@@ -296,6 +313,7 @@ export default function App() {
   if (!session || recovering) {
     return (
       <SafeAreaProvider>
+        <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         <AuthScreen />
       </SafeAreaProvider>
     )
@@ -304,6 +322,7 @@ export default function App() {
   if (mfaFactorId) {
     return (
       <SafeAreaProvider>
+        <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         <MfaChallengeScreen factorId={mfaFactorId} onVerified={() => setMfaFactorId(null)} />
       </SafeAreaProvider>
     )
@@ -312,6 +331,7 @@ export default function App() {
   if (phase === 'loading') {
     return (
       <SafeAreaProvider>
+        <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.CREAM }}>
           <ActivityIndicator size="large" color={COLORS.BLUE} />
         </View>
@@ -322,6 +342,7 @@ export default function App() {
   if (phase === 'onboarding') {
     return (
       <SafeAreaProvider>
+        <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         <OnboardingScreen
           onFinish={(skipped) => {
             if (skipped) {
@@ -339,6 +360,8 @@ export default function App() {
 
   let content: React.ReactNode
   let wrapInScroll = true
+  // Pantallas "de pila" sin scroll propio (Configuración, Mis rutas): respetan la zona segura y el margen lateral.
+  let padStack = false
 
   if (stackScreen === 'Detalle' && selectedDestination) {
     wrapInScroll = false
@@ -354,6 +377,7 @@ export default function App() {
     )
   } else if (stackScreen === 'Configuración') {
     wrapInScroll = false
+    padStack = true
     content = (
       <SettingsScreen
         profileName={profileName}
@@ -369,6 +393,8 @@ export default function App() {
           setStackScreen(null)
         }}
         onNavigate={navigate}
+        darkMode={themeMode === 'dark'}
+        onToggleDark={toggleTheme}
         onShowTutorial={() => {
           setStackScreen(null)
           setPhase('onboarding')
@@ -382,6 +408,7 @@ export default function App() {
     )
   } else if (stackScreen === 'Viajes') {
     wrapInScroll = false
+    padStack = true
     content = (
       <SavedRoutesScreen
         paradas={routeItems.filter((d) => savedRoutes.includes(d.id))}
@@ -464,12 +491,22 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
+        <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
         {wrapInScroll ? (
           <SafeAreaView style={styles.safe} edges={['top']}>
-            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <ScrollView
+              contentContainerStyle={styles.content}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              automaticallyAdjustKeyboardInsets
+            >
               {content}
             </ScrollView>
+          </SafeAreaView>
+        ) : padStack ? (
+          <SafeAreaView style={styles.safe} edges={['top']}>
+            <View style={{ flex: 1, paddingHorizontal: 20 }}>{content}</View>
           </SafeAreaView>
         ) : (
           content

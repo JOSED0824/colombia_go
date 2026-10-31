@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, Pressable, ScrollView } from 'react-native'
+import { View, Image, Pressable, ScrollView } from 'react-native'
+import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
-import { COLORS } from '../theme/colors'
+import { COLORS, getThemeMode } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { AchievementCard } from '../components/AchievementCard'
 import { MenuRow } from '../components/MenuRow'
@@ -10,13 +11,20 @@ import { apiGet } from '../lib/api'
 import { badgeImage } from '../lib/badges'
 import type { LogroDto, PerfilDto } from '../lib/types'
 
-// Color de fondo de cada logro según el "tone" que guarda la base.
-const TONOS: Record<string, string> = {
+// Color de fondo de cada logro según el "tone" que guarda la base (versión clara y oscura).
+const TONOS_CLARO: Record<string, string> = {
   green: '#E8F5E9',
   yellow: '#FFF9E1',
   blue: '#E3F2FD',
   red: '#FFEBEE',
   purple: '#F3E5F5',
+}
+const TONOS_OSCURO: Record<string, string> = {
+  green: '#1B3A2C',
+  yellow: '#3B3518',
+  blue: '#1B2F4A',
+  red: '#3D2027',
+  purple: '#2E2342',
 }
 
 export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto, onNavigate }: any) {
@@ -37,6 +45,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
     <View>
       <View style={styles.profileHero}>
         <Image source={require('../../assets/normalized/fondo.jpg')} style={styles.profileArt} />
+        {getThemeMode() === 'dark' && <View style={styles.profileArtDim} />}
         <View style={styles.profileHeaderContent}>
           <Text style={styles.profileHeaderTitle}>{t('profile.title')}</Text>
           <Pressable style={styles.settingsBtn} onPress={() => onNavigate('Configuración')}>
@@ -46,7 +55,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
 
         <View style={styles.profilePhotoContainer}>
           <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.profileImage} />
-          <View style={styles.badgeProfile}><Ionicons name="star" size={16} color={COLORS.BLUE} /></View>
+          <View style={styles.badgeProfile}><Ionicons name="star" size={16} color={COLORS.INK} /></View>
         </View>
       </View>
 
@@ -73,7 +82,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
         </View>
 
         {/* Primero las ganadas, luego las que faltan (cada grupo conserva el orden de la hoja). */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.achievements}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ alignSelf: 'stretch' }} contentContainerStyle={styles.achievements}>
           {[...logros].sort((a, b) => Number(b.unlocked) - Number(a.unlocked)).map((logro) => (
             <AchievementCard
               key={logro.id}
@@ -81,7 +90,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
               emoji={logro.icon}
               title={t(`achievements.${logro.id}.title`, { defaultValue: logro.title })}
               desc={t(`achievements.${logro.id}.text`, { defaultValue: logro.text })}
-              color={TONOS[logro.tone] ?? '#F5F5F5'}
+              color={(getThemeMode() === 'dark' ? TONOS_OSCURO : TONOS_CLARO)[logro.tone] ?? COLORS.GRAY_LIGHT}
               locked={!logro.unlocked}
             />
           ))}

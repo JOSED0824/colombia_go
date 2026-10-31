@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Pressable, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
+import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { LANGUAGES, getLanguage, setLanguage } from '../i18n'
 import { apiSend } from '../lib/api'
 import { notify } from '../lib/notify'
@@ -14,7 +16,7 @@ type Props = {
 }
 
 const TOUR_ICONS: { icon: keyof typeof Ionicons.glyphMap; bg: string; fg: string }[] = [
-  { icon: 'compass', bg: COLORS.YELLOW, fg: COLORS.BLUE },
+  { icon: 'compass', bg: COLORS.YELLOW, fg: '#003B7D' },
   { icon: 'heart', bg: '#FFEBEE', fg: COLORS.RED },
   { icon: 'map', bg: '#E3F2FD', fg: '#2196F3' },
   { icon: 'sparkles', bg: '#F3E5F5', fg: '#9C27B0' },
@@ -118,8 +120,8 @@ export function OnboardingScreen({ onFinish }: Props) {
                 const on = interests.includes(item.id)
                 return (
                   <Pressable key={item.id} style={[s.interest, on && s.interestOn]} onPress={() => toggleInterest(item.id)}>
-                    <View style={[s.interestIcon, { backgroundColor: item.color }]}>
-                      <Ionicons name={item.icon} size={26} color={item.color === '#FFD100' ? COLORS.BLUE : '#FFF'} />
+                    <View style={[s.interestIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.PRIMARY : item.color }]}>
+                      <Ionicons name={item.icon} size={26} color={item.color === '#FFD100' ? COLORS.INK : '#FFF'} />
                     </View>
                     <Text style={s.interestLabel}>{t(`categories.${item.id}`)}</Text>
                     {on && <Ionicons name="checkmark-circle" size={20} color={COLORS.BLUE} style={s.interestCheck} />}
@@ -145,36 +147,36 @@ export function OnboardingScreen({ onFinish }: Props) {
           onPress={() => (step === lastStep ? finish() : setStep(step + 1))}
         >
           <Text style={s.nextText}>{step === lastStep ? t('common.start') : t('common.next')}</Text>
-          {saving ? <ActivityIndicator size="small" color={COLORS.BLUE} /> : <Ionicons name="arrow-forward" size={18} color={COLORS.BLUE} />}
+          {saving ? <ActivityIndicator size="small" color={COLORS.INK} /> : <Ionicons name="arrow-forward" size={18} color={COLORS.INK} />}
         </Pressable>
       </View>
     </SafeAreaView>
   )
 }
 
-const s = StyleSheet.create({
+const s = themed(() => StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.CREAM },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 24, paddingTop: 12 },
   dots: { flexDirection: 'row', gap: 6 },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#D9E2EC' },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.BORDER },
   dotActive: { width: 22, backgroundColor: COLORS.BLUE },
   skip: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: COLORS.TEXT_MUTED },
   body: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28, paddingVertical: 20 },
   iconCircle: { width: 120, height: 120, borderRadius: 60, alignItems: 'center', justifyContent: 'center', marginBottom: 28 },
   title: { fontFamily: 'Poppins_800ExtraBold', fontSize: 26, color: COLORS.BLUE, textAlign: 'center', marginBottom: 12 },
-  text: { fontFamily: 'Poppins_400Regular', fontSize: 15, lineHeight: 23, color: '#4A6580', textAlign: 'center', marginBottom: 14 },
-  langRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 2, borderColor: 'transparent' },
+  text: { fontFamily: 'Poppins_400Regular', fontSize: 15, lineHeight: 23, color: COLORS.TEXT_BODY, textAlign: 'center', marginBottom: 14 },
+  langRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.CARD, borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 2, borderColor: 'transparent' },
   langRowActive: { borderColor: COLORS.BLUE },
   flag: { fontSize: 24, marginRight: 14 },
   langName: { flex: 1, fontFamily: 'Poppins_500Medium', fontSize: 16, color: COLORS.BLUE },
   interestGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginTop: 8 },
-  interest: { width: '46%', backgroundColor: '#FFF', borderRadius: 20, padding: 18, alignItems: 'center', borderWidth: 2, borderColor: 'transparent' },
+  interest: { width: '46%', backgroundColor: COLORS.CARD, borderRadius: 20, padding: 18, alignItems: 'center', borderWidth: 2, borderColor: 'transparent' },
   interestOn: { borderColor: COLORS.BLUE },
   interestIcon: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
   interestLabel: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: COLORS.BLUE, textAlign: 'center' },
   interestCheck: { position: 'absolute', top: 10, right: 10 },
   footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, paddingBottom: 20, paddingTop: 8 },
-  backBtn: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 48, height: 48, borderRadius: 24, backgroundColor: COLORS.CARD, alignItems: 'center', justifyContent: 'center' },
   nextBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.YELLOW, borderRadius: 26, paddingVertical: 14, paddingHorizontal: 30 },
-  nextText: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: COLORS.BLUE },
-})
+  nextText: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: COLORS.INK },
+}))

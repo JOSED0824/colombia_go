@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { View, Text, Pressable, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Pressable, ActivityIndicator, StyleSheet, ScrollView } from 'react-native'
+import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { styles } from '../theme/styles'
 import { AuthInput } from '../components/AuthInput'
 import { CodeInput } from '../components/CodeInput'
@@ -102,6 +104,12 @@ export function ForgotPasswordScreen({ initialEmail = '', onBack }: Props) {
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+        showsVerticalScrollIndicator={false}
+      >
       <View style={styles.mfaContainer}>
         <View style={styles.mfaIconCircle}>
           <Ionicons name="key-outline" size={36} color={COLORS.BLUE} />
@@ -141,10 +149,11 @@ export function ForgotPasswordScreen({ initialEmail = '', onBack }: Props) {
           </Text>
         </Pressable>
       </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
-const local = StyleSheet.create({
+const local = themed(() => StyleSheet.create({
   error: { color: COLORS.RED, fontFamily: 'Poppins_500Medium', fontSize: 13, marginTop: 6, textAlign: 'center' },
-})
+}))

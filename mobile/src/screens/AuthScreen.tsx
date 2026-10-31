@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
+import { View, ScrollView, Image, Pressable, ActivityIndicator } from 'react-native'
+import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
@@ -82,7 +83,12 @@ export function AuthScreen() {
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
 
-      <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.authScroll}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+        showsVerticalScrollIndicator={false}
+      >
         <LanguageButton onPress={() => setLangOpen(true)} />
         <LanguageModal visible={langOpen} onClose={() => setLangOpen(false)} onSelect={(code) => setLanguage(code)} />
 
@@ -113,10 +119,10 @@ export function AuthScreen() {
           )}
 
           <Pressable style={[styles.authSubmit, !isLogin && { backgroundColor: COLORS.YELLOW }, loading && { opacity: 0.7 }]} onPress={submit} disabled={loading}>
-            <Text style={[styles.authSubmitText, !isLogin && { color: COLORS.BLUE }]}>{isLogin ? t('auth.login') : t('auth.register')}</Text>
+            <Text style={[styles.authSubmitText, !isLogin && { color: COLORS.INK }]}>{isLogin ? t('auth.login') : t('auth.register')}</Text>
             {loading
-              ? <ActivityIndicator size="small" color={isLogin ? '#FFF' : COLORS.BLUE} />
-              : <Ionicons name="arrow-forward" size={18} color={isLogin ? '#FFF' : COLORS.BLUE} />}
+              ? <ActivityIndicator size="small" color={isLogin ? '#FFF' : COLORS.INK} />
+              : <Ionicons name="arrow-forward" size={18} color={isLogin ? '#FFF' : COLORS.INK} />}
           </Pressable>
         </View>
 

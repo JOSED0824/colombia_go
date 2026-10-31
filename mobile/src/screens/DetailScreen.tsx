@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, Image, Pressable, Linking } from 'react-native'
+import { View, ScrollView, Image, Pressable, Linking } from 'react-native'
+import { Text } from '../components/AppText'
 import { StatusBar } from 'expo-status-bar'
 import { Ionicons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { FactItemCol } from '../components/FactItemCol'
@@ -12,6 +14,7 @@ import type { Destination, LugarDetalleDto } from '../lib/types'
 
 export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, onFavorite, onToggleRoute }: any) {
   const { t, i18n } = useTranslation()
+  const insets = useSafeAreaInsets()
   // Se muestra de una vez lo que ya se tiene (nombre, foto, calificación) y se completa con el detalle de la API.
   const [detalle, setDetalle] = useState<Destination | null>(null)
   const [error, setError] = useState(false)
@@ -43,7 +46,7 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.detailHero}>
           <Image source={destination.image} style={styles.detailImage} />
-          <View style={styles.detailHeaderAbs}>
+          <View style={[styles.detailHeaderAbs, { top: insets.top + 8 }]}>
             <Pressable style={styles.fabBack} onPress={onBack}>
               <Ionicons name="chevron-back" size={24} color={COLORS.BLUE} />
             </Pressable>
@@ -106,7 +109,7 @@ export function DetailScreen({ destination: resumen, favorite, inRoute, onBack, 
 
           <Pressable style={styles.primaryBtnLarge} onPress={openMaps}>
             <Text style={styles.primaryBtnText}>{t('detail.goThere')}</Text>
-            <Ionicons name="arrow-forward" size={24} color={COLORS.BLUE} />
+            <Ionicons name="arrow-forward" size={24} color={COLORS.INK} />
           </Pressable>
         </View>
       </ScrollView>

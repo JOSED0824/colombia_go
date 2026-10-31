@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, Pressable, ActivityIndicator } from 'react-native'
+import { View, Image, Pressable, ActivityIndicator } from 'react-native'
+import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
@@ -92,14 +93,14 @@ export function GuidesScreen() {
             <Text style={styles.guideHeroRate}> {featured.rating} ({t('guides.reviews', { count: Number(featured.reviews) })})</Text>
           </View>
           <Pressable style={styles.reserveBtn}>
-            <Ionicons name="calendar-outline" size={20} color={COLORS.BLUE} />
+            <Ionicons name="calendar-outline" size={20} color={COLORS.INK} />
             <Text style={styles.reserveBtnText}>{t('guides.reserve')}</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>{t('guides.others')}</Text>
+        <Text style={[styles.sectionTitle, { flexShrink: 1, marginRight: 12 }]} numberOfLines={2}>{t('guides.others')}</Text>
         <Pressable><Text style={styles.seeAllText}>{t('common.viewAll')}</Text></Pressable>
       </View>
 
@@ -114,7 +115,7 @@ export function GuidesScreen() {
             </View>
             <View style={styles.ratingRowSmall}>
               <Ionicons name="star" size={12} color={COLORS.YELLOW} />
-              <Text style={styles.ratingValueSmall}>{item.rating} ({t('guides.reviews', { count: Number(item.reviews) })})</Text>
+              <Text style={styles.ratingValueSmall} numberOfLines={1}>{item.rating} ({t('guides.reviews', { count: Number(item.reviews) })})</Text>
             </View>
           </View>
           <View style={styles.guidePriceArea}>

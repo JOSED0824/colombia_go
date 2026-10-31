@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Image } from 'react-native'
+import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from '../theme/styles'
 
@@ -10,7 +11,7 @@ export function AchievementCard({ badge, icon, emoji, title, desc, color, iconCo
     <View style={[styles.achieveCard, { backgroundColor: color }]}>
       <View style={styles.badgeBox}>
         {badge ? (
-          <Image source={badge} style={[styles.badgeImg, locked && { opacity: 0.28 }]} resizeMode="contain" />
+          <Image source={badge} style={[styles.badgeImg, locked && { opacity: 0.4 }]} resizeMode="contain" />
         ) : (
           <View style={[styles.hexagon, { marginBottom: 0 }, locked && { opacity: 0.4 }]}>
             {emoji ? <Text style={{ fontSize: 30 }}>{emoji}</Text> : <Ionicons name={icon} size={32} color={iconCol} />}

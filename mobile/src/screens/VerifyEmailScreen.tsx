@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, ActivityIndicator, Linking, StyleSheet } from 'react-native'
+import { View, Pressable, ActivityIndicator, Linking, StyleSheet, ScrollView } from 'react-native'
+import { Text } from '../components/AppText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { styles } from '../theme/styles'
 import { CodeInput } from '../components/CodeInput'
 import { supabase } from '../lib/supabase'
@@ -67,6 +69,12 @@ export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props)
     <SafeAreaView style={styles.authMain}>
       <View style={styles.authGlow1} />
       <View style={styles.authGlow2} />
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+        showsVerticalScrollIndicator={false}
+      >
       <View style={styles.mfaContainer}>
         <View style={styles.mfaIconCircle}>
           <Ionicons name="mail-open-outline" size={36} color={COLORS.BLUE} />
@@ -99,12 +107,13 @@ export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props)
           </Text>
         </Pressable>
       </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
-const local = StyleSheet.create({
+const local = themed(() => StyleSheet.create({
   error: { color: COLORS.RED, fontFamily: 'Poppins_500Medium', fontSize: 13, marginBottom: 10, textAlign: 'center' },
   link: { marginTop: 14 },
   hint: { marginTop: 6, fontFamily: 'Poppins_400Regular', fontSize: 12, color: COLORS.TEXT_MUTED, textAlign: 'center' },
-})
+}))

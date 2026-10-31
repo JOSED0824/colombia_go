@@ -1,8 +1,10 @@
 import React from 'react'
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Modal, Pressable, StyleSheet, View } from 'react-native'
+import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 import { LANGUAGES, getLanguage, type LanguageCode } from '../i18n'
 
 type Props = {
@@ -59,9 +61,9 @@ export function LanguageButton({ onPress }: { onPress: () => void }) {
   )
 }
 
-const s = StyleSheet.create({
+const s = themed(() => StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0,28,61,0.55)', justifyContent: 'center', padding: 24 },
-  sheet: { backgroundColor: COLORS.WHITE, borderRadius: 24, padding: 20 },
+  sheet: { backgroundColor: COLORS.CARD, borderRadius: 24, padding: 20 },
   title: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: COLORS.BLUE, marginBottom: 14, textAlign: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 14, borderRadius: 14, marginBottom: 6 },
   rowActive: { backgroundColor: COLORS.GRAY_LIGHT },
@@ -74,7 +76,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-end',
     gap: 6,
-    backgroundColor: COLORS.WHITE,
+    backgroundColor: COLORS.CARD,
     borderRadius: 20,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -83,4 +85,4 @@ const s = StyleSheet.create({
   },
   buttonFlag: { fontSize: 16 },
   buttonCode: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: COLORS.BLUE },
-})
+}))

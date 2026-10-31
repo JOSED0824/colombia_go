@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native'
+import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native'
+import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { COLORS } from '../theme/colors'
+import { themed } from '../theme/themed'
 
 const NAV_HEIGHT = 90
 
@@ -72,7 +74,7 @@ export function CoachMarks({ tabLayouts, onStep, onFinish }: Props) {
             )}
             <Pressable style={s.nextBtn} onPress={next}>
               <Text style={s.nextText}>{isLast ? t('onboarding.finish') : t('common.next')}</Text>
-              {!isLast && <Ionicons name="arrow-forward" size={16} color={COLORS.BLUE} />}
+              {!isLast && <Ionicons name="arrow-forward" size={16} color={COLORS.INK} />}
             </Pressable>
           </View>
         </View>
@@ -83,23 +85,23 @@ export function CoachMarks({ tabLayouts, onStep, onFinish }: Props) {
   )
 }
 
-const s = StyleSheet.create({
+const s = themed(() => StyleSheet.create({
   dim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: NAV_HEIGHT, backgroundColor: 'rgba(0,28,61,0.72)' },
   navCover: { position: 'absolute', left: 0, right: 0, bottom: 0, height: NAV_HEIGHT, backgroundColor: 'transparent' },
   ring: { position: 'absolute', top: 6, height: 58, borderRadius: 20, borderWidth: 3, borderColor: COLORS.YELLOW },
-  card: { position: 'absolute', bottom: NAV_HEIGHT + 18, backgroundColor: '#FFF', borderRadius: 20, padding: 18 },
+  card: { position: 'absolute', bottom: NAV_HEIGHT + 18, backgroundColor: COLORS.CARD, borderRadius: 20, padding: 18 },
   cardText: { fontFamily: 'Poppins_500Medium', fontSize: 15, lineHeight: 22, color: COLORS.BLUE },
   cardFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14 },
   counter: { fontFamily: 'Poppins_500Medium', fontSize: 12, color: COLORS.TEXT_MUTED },
   skip: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: COLORS.TEXT_MUTED },
   nextBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLORS.YELLOW, borderRadius: 18, paddingVertical: 8, paddingHorizontal: 16 },
-  nextText: { fontFamily: 'Poppins_700Bold', fontSize: 13, color: COLORS.BLUE },
+  nextText: { fontFamily: 'Poppins_700Bold', fontSize: 13, color: COLORS.INK },
   arrow: {
     position: 'absolute',
     bottom: -9,
     width: 18,
     height: 18,
-    backgroundColor: '#FFF',
+    backgroundColor: COLORS.CARD,
     transform: [{ rotate: '45deg' }],
   },
-})
+}))

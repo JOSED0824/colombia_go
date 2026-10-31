@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, Pressable, Image, TextInput } from 'react-native'
+import { View, ScrollView, Pressable, Image } from 'react-native'
+import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import { useTranslation } from 'react-i18next'
@@ -14,10 +15,9 @@ import { apiGet, apiSend } from '../lib/api'
 import { notify } from '../lib/notify'
 import type { ConfiguracionDto } from '../lib/types'
 
-export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout, onNavigate, onProfileUpdate, onShowTutorial }: any) {
+export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout, onNavigate, onProfileUpdate, onShowTutorial, darkMode, onToggleDark }: any) {
   const { t } = useTranslation()
   const [notifications, setNotifications] = useState(true)
-  const [darkMode, setDarkMode] = useState(false)
   const [locationEnabled, setLocationEnabled] = useState(true)
   const [reduceMotion, setReduceMotion] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -98,7 +98,12 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
         )}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
         <Text style={styles.settingsSectionLabel}>{t('settings.profile')}</Text>
         <View style={styles.settingsCard}>
           <Pressable style={styles.profileEditRow} onPress={pickImage}>
@@ -141,8 +146,8 @@ export function SettingsScreen({ profileName, profileBio, profilePhoto, onLogout
           <SettingToggle
             icon="moon-outline"
             label={t('settings.darkMode')}
-            value={darkMode}
-            onToggle={() => setDarkMode(!darkMode)}
+            value={!!darkMode}
+            onToggle={onToggleDark}
           />
           <View style={styles.settingsDivider} />
           <SettingToggle
