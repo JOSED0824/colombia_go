@@ -170,7 +170,19 @@
     "suggested": "Itinéraire suggéré",
     "day": "Jour {{day}}",
     "empty": "Aucun lieu avec une position à afficher pour le moment.",
-    "hidden": "{{count}} lieu(x) sans coordonnées ne s'affichent pas sur la carte."
+    "hidden": "{{count}} lieu(x) sans coordonnées ne s'affichent pas sur la carte.",
+    "viewDetail": "Voir le détail",
+    "fitAll": "Tout voir",
+    "myLocation": "Ma position",
+    "drive": "Voiture",
+    "walk": "À pied",
+    "bike": "Vélo",
+    "routeLoading": "Calcul de l’itinéraire…",
+    "routeFailed": "Impossible de calculer l’itinéraire routier ; ligne droite affichée.",
+    "geoFailed": "Impossible d’obtenir votre position.",
+    "mapFailed": "Impossible de charger la carte. Vérifiez votre connexion.",
+    "loading": "Chargement de la carte…",
+    "stopsCount": "{{count}} étapes"
   },
   "aiHub": {
     "routeTab": "Itinéraire IA",
@@ -250,6 +262,7 @@
     "guides": "Guides",
     "reviews": "Avis",
     "achievements": "Mes Succès",
+    "badgesCount": "{{done}} sur {{total}}",
     "favorites": "Mes Favoris",
     "favoritesSub": "Lieux et expériences à aimer",
     "routes": "Itinéraires Enregistrés",
@@ -258,9 +271,16 @@
     "settingsSub": "Compte, notifications et plus"
   },
   "achievements": {
-    "1": { "title": "Chasseur de belvédères", "text": "Vous avez découvert plus de 10 belvédères incroyables." },
-    "2": { "title": "Nuit folle", "text": "Vous avez fait plus de 5 bars ou discothèques." },
-    "3": { "title": "Ami du Metrocable", "text": "Vous avez pris 5 lignes du Metrocable." }
+    "1": { "title": "Bienvenue à bord", "text": "Vous avez terminé la visite de bienvenue." },
+    "2": { "title": "Cartographe", "text": "Vous avez enregistré 3 étapes ou plus dans votre itinéraire." },
+    "3": { "title": "Boussole prête", "text": "Vous avez ajouté votre premier lieu favori." },
+    "4": { "title": "Passeport tamponné", "text": "Vous avez déjà 5 lieux favoris." },
+    "5": { "title": "Œil de photographe", "text": "Vous avez laissé votre premier avis." },
+    "6": { "title": "Chasseur de points de vue", "text": "Vous avez enregistré 3 lieux de nature." },
+    "7": { "title": "Amoureux de la culture", "text": "Vous avez enregistré 3 lieux culturels." },
+    "8": { "title": "Vacances de rêve", "text": "Vous avez créé votre premier guide de voyage IA." },
+    "9": { "title": "Voyageur assidu", "text": "Vous avez créé 3 guides de voyage IA." },
+    "10": { "title": "Légende ColombiaGO", "text": "Vous avez débloqué tous les autres badges." }
   },
   "settings": {
     "title": "Paramètres",

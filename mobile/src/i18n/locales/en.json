@@ -170,7 +170,19 @@
     "suggested": "Suggested route",
     "day": "Day {{day}}",
     "empty": "There are no places with a location to show here yet.",
-    "hidden": "{{count}} place(s) without coordinates are not shown on the map."
+    "hidden": "{{count}} place(s) without coordinates are not shown on the map.",
+    "viewDetail": "View details",
+    "fitAll": "Show all",
+    "myLocation": "My location",
+    "drive": "Car",
+    "walk": "Walk",
+    "bike": "Bike",
+    "routeLoading": "Calculating route…",
+    "routeFailed": "Couldn’t calculate the street route; showing a straight line.",
+    "geoFailed": "We couldn’t get your location.",
+    "mapFailed": "The map couldn’t load. Check your connection.",
+    "loading": "Loading map…",
+    "stopsCount": "{{count}} stops"
   },
   "aiHub": {
     "routeTab": "AI route",
@@ -250,6 +262,7 @@
     "guides": "Guides",
     "reviews": "Reviews",
     "achievements": "My Achievements",
+    "badgesCount": "{{done}} of {{total}}",
     "favorites": "My Favorites",
     "favoritesSub": "Places and experiences to love",
     "routes": "Saved Routes",
@@ -258,9 +271,16 @@
     "settingsSub": "Account, notifications and more"
   },
   "achievements": {
-    "1": { "title": "Viewpoint Hunter", "text": "You discovered 10+ amazing viewpoints." },
-    "2": { "title": "Wild Night", "text": "You visited 5+ bars or clubs." },
-    "3": { "title": "Metrocable Friend", "text": "You rode 5 Metrocable lines." }
+    "1": { "title": "Welcome aboard", "text": "You completed the welcome tour." },
+    "2": { "title": "Cartographer", "text": "You saved 3 or more stops on your route." },
+    "3": { "title": "Compass ready", "text": "You marked your first favorite place." },
+    "4": { "title": "Passport stamped", "text": "You now have 5 favorite places." },
+    "5": { "title": "Photographer’s eye", "text": "You left your first review." },
+    "6": { "title": "Viewpoint hunter", "text": "You saved 3 nature places." },
+    "7": { "title": "Culture lover", "text": "You saved 3 culture places." },
+    "8": { "title": "Dream vacation", "text": "You created your first AI travel guide." },
+    "9": { "title": "Frequent traveler", "text": "You created 3 AI travel guides." },
+    "10": { "title": "ColombiaGO legend", "text": "You unlocked every other badge." }
   },
   "settings": {
     "title": "Settings",

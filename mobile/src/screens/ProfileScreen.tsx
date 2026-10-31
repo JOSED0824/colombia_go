@@ -7,6 +7,7 @@ import { AchievementCard } from '../components/AchievementCard'
 import { MenuRow } from '../components/MenuRow'
 import { useTranslation } from 'react-i18next'
 import { apiGet } from '../lib/api'
+import { badgeImage } from '../lib/badges'
 import type { LogroDto, PerfilDto } from '../lib/types'
 
 // Color de fondo de cada logro según el "tone" que guarda la base.
@@ -64,12 +65,19 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t('profile.achievements')}</Text>
+          {logros.length > 0 && (
+            <Text style={styles.seeAllText}>
+              {t('profile.badgesCount', { done: logros.filter((l) => l.unlocked).length, total: logros.length })}
+            </Text>
+          )}
         </View>
 
+        {/* Primero las ganadas, luego las que faltan (cada grupo conserva el orden de la hoja). */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.achievements}>
-          {logros.map((logro) => (
+          {[...logros].sort((a, b) => Number(b.unlocked) - Number(a.unlocked)).map((logro) => (
             <AchievementCard
               key={logro.id}
+              badge={badgeImage(logro.icon)}
               emoji={logro.icon}
               title={t(`achievements.${logro.id}.title`, { defaultValue: logro.title })}
               desc={t(`achievements.${logro.id}.text`, { defaultValue: logro.text })}

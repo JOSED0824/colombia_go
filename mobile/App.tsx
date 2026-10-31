@@ -118,6 +118,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('Inicio')
   const [stackScreen, setStackScreen] = useState<StackScreen>(null)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
+  const [detailFrom, setDetailFrom] = useState<StackScreen>(null)
 
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
@@ -230,7 +231,9 @@ export default function App() {
     }
   }
 
+  // Si el detalle se abrió desde el mapa, "atrás" vuelve al mapa (con sus puntos) en vez de ir al inicio.
   function selectDestination(item: Destination) {
+    setDetailFrom(stackScreen === 'Mapa' ? 'Mapa' : null)
     setSelectedDestination(item)
     setStackScreen('Detalle')
   }
@@ -344,7 +347,7 @@ export default function App() {
         destination={selectedDestination}
         favorite={favorites.includes(selectedDestination.id)}
         inRoute={savedRoutes.includes(selectedDestination.id)}
-        onBack={() => setStackScreen(null)}
+        onBack={() => setStackScreen(detailFrom)}
         onFavorite={() => toggleFavorite(selectedDestination.id)}
         onToggleRoute={() => toggleRoute(selectedDestination.id)}
       />
@@ -389,7 +392,15 @@ export default function App() {
     )
   } else if (stackScreen === 'Mapa') {
     wrapInScroll = false
-    content = <MapScreen title={mapTitle || t('map.title')} points={mapPoints} drawRoute={mapDrawRoute} onBack={() => setStackScreen(null)} />
+    content = (
+      <MapScreen
+        title={mapTitle || t('map.title')}
+        points={mapPoints}
+        drawRoute={mapDrawRoute}
+        onBack={() => setStackScreen(null)}
+        onSelect={selectDestination}
+      />
+    )
   } else if (activeTab === 'IA') {
     content = (
       <AiHubScreen

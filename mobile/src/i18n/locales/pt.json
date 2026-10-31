@@ -170,7 +170,19 @@
     "suggested": "Rota sugerida",
     "day": "Dia {{day}}",
     "empty": "Ainda não há lugares com localização para mostrar aqui.",
-    "hidden": "{{count}} lugar(es) sem coordenadas não aparecem no mapa."
+    "hidden": "{{count}} lugar(es) sem coordenadas não aparecem no mapa.",
+    "viewDetail": "Ver detalhes",
+    "fitAll": "Ver tudo",
+    "myLocation": "Minha localização",
+    "drive": "Carro",
+    "walk": "A pé",
+    "bike": "Bici",
+    "routeLoading": "Calculando rota…",
+    "routeFailed": "Não foi possível calcular a rota pelas ruas; mostrando uma linha reta.",
+    "geoFailed": "Não conseguimos obter sua localização.",
+    "mapFailed": "Não foi possível carregar o mapa. Verifique sua conexão.",
+    "loading": "Carregando mapa…",
+    "stopsCount": "{{count}} paradas"
   },
   "aiHub": {
     "routeTab": "Rota com IA",
@@ -250,6 +262,7 @@
     "guides": "Guias",
     "reviews": "Avaliações",
     "achievements": "Minhas Conquistas",
+    "badgesCount": "{{done}} de {{total}}",
     "favorites": "Meus Favoritos",
     "favoritesSub": "Lugares e experiências para amar",
     "routes": "Rotas Salvas",
@@ -258,9 +271,16 @@
     "settingsSub": "Conta, notificações e mais"
   },
   "achievements": {
-    "1": { "title": "Caçador de mirantes", "text": "Você descobriu mais de 10 mirantes incríveis." },
-    "2": { "title": "Noite louca", "text": "Você esteve em mais de 5 bares ou baladas." },
-    "3": { "title": "Amigo do Metrocable", "text": "Você usou 5 linhas do Metrocable." }
+    "1": { "title": "Bem-vindo a bordo", "text": "Você concluiu o tour de boas-vindas." },
+    "2": { "title": "Cartógrafo", "text": "Você salvou 3 ou mais paradas no seu roteiro." },
+    "3": { "title": "Bússola pronta", "text": "Você marcou seu primeiro lugar favorito." },
+    "4": { "title": "Passaporte carimbado", "text": "Você já tem 5 lugares favoritos." },
+    "5": { "title": "Olho de fotógrafo", "text": "Você deixou sua primeira avaliação." },
+    "6": { "title": "Caçador de mirantes", "text": "Você salvou 3 lugares de natureza." },
+    "7": { "title": "Amante da cultura", "text": "Você salvou 3 lugares de cultura." },
+    "8": { "title": "Férias dos sonhos", "text": "Você criou seu primeiro guia de viagem com IA." },
+    "9": { "title": "Viajante frequente", "text": "Você criou 3 guias de viagem com IA." },
+    "10": { "title": "Lenda ColombiaGO", "text": "Você desbloqueou todas as outras insígnias." }
   },
   "settings": {
     "title": "Configurações",

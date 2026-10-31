@@ -170,7 +170,19 @@
     "suggested": "推荐路线",
     "day": "第 {{day}} 天",
     "empty": "这里暂时没有可显示位置的地点。",
-    "hidden": "有 {{count}} 个地点没有坐标，未显示在地图上。"
+    "hidden": "有 {{count}} 个地点没有坐标，未显示在地图上。",
+    "viewDetail": "查看详情",
+    "fitAll": "查看全部",
+    "myLocation": "我的位置",
+    "drive": "驾车",
+    "walk": "步行",
+    "bike": "骑行",
+    "routeLoading": "正在计算路线…",
+    "routeFailed": "无法计算道路路线，已显示直线。",
+    "geoFailed": "无法获取你的位置。",
+    "mapFailed": "地图加载失败，请检查网络连接。",
+    "loading": "正在加载地图…",
+    "stopsCount": "{{count}} 个站点"
   },
   "aiHub": {
     "routeTab": "AI 路线",
@@ -250,6 +262,7 @@
     "guides": "向导",
     "reviews": "评价",
     "achievements": "我的成就",
+    "badgesCount": "{{done}} / {{total}}",
     "favorites": "我的收藏",
     "favoritesSub": "您喜爱的地点和体验",
     "routes": "已保存的路线",
@@ -258,9 +271,16 @@
     "settingsSub": "账号、通知等"
   },
   "achievements": {
-    "1": { "title": "观景台猎人", "text": "您发现了 10 多个绝佳观景台。" },
-    "2": { "title": "狂欢之夜", "text": "您去过 5 家以上的酒吧或夜店。" },
-    "3": { "title": "缆车之友", "text": "您乘坐过 5 条缆车线路。" }
+    "1": { "title": "欢迎登机", "text": "你完成了欢迎导览。" },
+    "2": { "title": "制图师", "text": "你在路线中保存了 3 个或更多站点。" },
+    "3": { "title": "指南针就绪", "text": "你收藏了第一个喜爱的地点。" },
+    "4": { "title": "护照盖章", "text": "你已有 5 个收藏地点。" },
+    "5": { "title": "摄影师之眼", "text": "你发表了第一条评价。" },
+    "6": { "title": "观景台猎人", "text": "你收藏了 3 个自然景点。" },
+    "7": { "title": "文化爱好者", "text": "你收藏了 3 个文化景点。" },
+    "8": { "title": "梦想假期", "text": "你创建了第一份 AI 旅行指南。" },
+    "9": { "title": "旅行达人", "text": "你创建了 3 份 AI 旅行指南。" },
+    "10": { "title": "ColombiaGO 传奇", "text": "你解锁了其他所有徽章。" }
   },
   "settings": {
     "title": "设置",
