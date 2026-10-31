@@ -130,7 +130,9 @@
   "explore": {
     "title": "Explorar",
     "search": "Busca destinos...",
-    "empty": "No encontramos lugares con esa búsqueda."
+    "empty": "No encontramos lugares con esa búsqueda.",
+    "viewMap": "Ver en el mapa",
+    "viewMapCount": "Ver en el mapa ({{count}})"
   },
   "guides": {
     "title": "Guías Locales",
@@ -396,5 +398,17 @@
     "Lugar.NotFound": "Ese lugar ya no está disponible.",
     "unauthorized": "Tu sesión venció. Inicia sesión de nuevo.",
     "generic": "Algo salió mal. Intenta de nuevo."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAll": "Marcar todo como leído",
+    "empty": "Aún no tienes notificaciones.",
+    "badgeTitle": "¡Ganaste la insignia {{name}}!",
+    "tipAiTitle": "Planea tu viaje con IA",
+    "tipAiText": "Dile tu presupuesto, días e intereses y arma tu itinerario día por día.",
+    "tipGuidesTitle": "Conoce a los guías locales",
+    "tipGuidesText": "Mira su perfil, experiencia y tarifa antes de elegir con quién recorrer.",
+    "tipMapTitle": "Explora en el mapa",
+    "tipMapText": "En Explorar toca \"Ver en el mapa\" para ver todos los lugares por zonas."
   }
 }

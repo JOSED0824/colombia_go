@@ -26,6 +26,7 @@ export function KeyboardScroll({ children, onScroll, style, ...props }: ScrollVi
     if (!input || !scroll) return
     input.measureInWindow((_x, y, _w, h) => {
       scroll.measureInWindow((_sx, sy, _sw, sh) => {
+        if (sh === 0) return // pestaña oculta (display: none)
         const margin = 24
         const hidden = y + h + margin - (sy + sh) // cuánto del campo (más margen) queda bajo el borde visible
         if (hidden > 0) {

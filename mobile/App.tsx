@@ -42,13 +42,14 @@ import { BottomNav } from './src/components/BottomNav'
 import { CoachMarks } from './src/components/CoachMarks'
 import { KeyboardScroll } from './src/components/KeyboardScroll'
 import { GuideDetailScreen } from './src/screens/GuideDetailScreen'
+import { NotificationsScreen } from './src/screens/NotificationsScreen'
 import type { Guia } from './src/lib/guides'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
 const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as const
 type Tab = (typeof TABS)[number]
-type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | null
+type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | 'Notificaciones' | null
 
 // loading: leyendo la configuración del servidor · onboarding: bienvenida + tour + intereses ·
 // coach: tooltips sobre la barra inferior · done: app normal.
@@ -143,6 +144,13 @@ export default function App() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
   const [detailFrom, setDetailFrom] = useState<StackScreen>(null)
   const [selectedGuide, setSelectedGuide] = useState<Guia | null>(null)
+
+  // Las pestañas que ya se abrieron siguen montadas (ocultas) cuando se cambia de pestaña. Así al volver no se
+  // vuelve a construir la pantalla ni a cargar: conserva sus datos, el texto escrito y la posición del scroll.
+  const [visited, setVisited] = useState<Set<Tab>>(() => new Set<Tab>(['Inicio']))
+  useEffect(() => {
+    setVisited((v) => (v.has(activeTab) ? v : new Set(v).add(activeTab)))
+  }, [activeTab])
 
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
@@ -318,6 +326,14 @@ export default function App() {
     setActiveTab('Explorar')
   }
 
+  // Los botones de categoría del inicio abren Explorar ya filtrado por esa categoría.
+  function goCategory(id: string) {
+    setCategory(id)
+    setQuery('')
+    setStackScreen(null)
+    setActiveTab('Explorar')
+  }
+
   function finishOnboarding() {
     setPhase('done')
     setStackScreen(null)
@@ -373,13 +389,11 @@ export default function App() {
     )
   }
 
-  let content: React.ReactNode
-  let wrapInScroll = true
+  let content: React.ReactNode = null
   // Pantallas "de pila" sin scroll propio (Configuración, Mis rutas): respetan la zona segura y el margen lateral.
   let padStack = false
 
   if (stackScreen === 'Detalle' && selectedDestination) {
-    wrapInScroll = false
     content = (
       <DetailScreen
         destination={selectedDestination}
@@ -391,10 +405,8 @@ export default function App() {
       />
     )
   } else if (stackScreen === 'Guía' && selectedGuide) {
-    wrapInScroll = false
     content = <GuideDetailScreen guide={selectedGuide} onBack={() => setStackScreen(null)} />
   } else if (stackScreen === 'Configuración') {
-    wrapInScroll = false
     padStack = true
     content = (
       <SettingsScreen
@@ -429,7 +441,6 @@ export default function App() {
       />
     )
   } else if (stackScreen === 'Viajes') {
-    wrapInScroll = false
     padStack = true
     content = (
       <SavedRoutesScreen
@@ -440,7 +451,6 @@ export default function App() {
       />
     )
   } else if (stackScreen === 'Mapa') {
-    wrapInScroll = false
     content = (
       <MapScreen
         title={mapTitle || t('map.title')}
@@ -450,94 +460,108 @@ export default function App() {
         onSelect={selectDestination}
       />
     )
-  } else if (activeTab === 'IA') {
-    content = (
-      <AiHubScreen
-        candidatos={favoriteItems.filter((d) => favorites.includes(d.id))}
-        onViewOnMap={(points, title, drawRoute) => showOnMap(points, title, drawRoute ?? true)}
-        onSaveStops={saveStops}
-        onSelect={selectDestination}
-      />
-    )
-  } else if (activeTab === 'Inicio') {
-    content = (
-      <HomeScreen
-        profileName={profileName}
-        profilePhoto={profilePhoto}
-        onExplore={goExplore}
-        onSelect={selectDestination}
-      />
-    )
-  } else if (activeTab === 'Explorar') {
-    content = (
-      <ExploreScreen
-        category={category}
-        setCategory={setCategory}
-        query={query}
-        setQuery={setQuery}
-        destinations={exploreResults}
-        loading={exploreLoading}
-        error={exploreError}
-        favorites={favorites}
-        savedRoutes={savedRoutes}
-        onSelect={selectDestination}
-        onFavorite={toggleFavorite}
-        onToggleRoute={toggleRoute}
-      />
-    )
-  } else if (activeTab === 'Guías') {
-    content = (
-      <GuidesScreen
-        onSelect={(guide) => {
-          setSelectedGuide(guide)
-          setStackScreen('Guía')
-        }}
-      />
-    )
-  } else if (activeTab === 'Favoritos') {
-    content = (
-      <FavoritesScreen
-        destinations={favoriteItems.filter((d) => favorites.includes(d.id))}
-        inRoutes={savedRoutes}
-        onSelect={selectDestination}
-        onFavorite={toggleFavorite}
-        onToggleRoute={toggleRoute}
-        onNavigate={navigate}
-        onViewMap={() => showOnMap(favoriteItems.filter((d) => favorites.includes(d.id)), t('map.favorites'))}
-      />
-    )
-  } else {
-    content = (
-      <ProfileScreen
-        favorites={favorites}
-        profileName={profileName}
-        profileBio={profileBio}
-        profilePhoto={profilePhoto}
-        onNavigate={navigate}
-      />
-    )
+  } else if (stackScreen === 'Notificaciones') {
+    padStack = true
+    content = <NotificationsScreen onBack={() => setStackScreen(null)} onNavigate={navigate} />
+  }
+
+  function renderTab(tab: Tab): React.ReactNode {
+    switch (tab) {
+      case 'IA':
+        return (
+          <AiHubScreen
+            candidatos={favoriteItems.filter((d) => favorites.includes(d.id))}
+            onViewOnMap={(points, title, drawRoute) => showOnMap(points, title, drawRoute ?? true)}
+            onSaveStops={saveStops}
+            onSelect={selectDestination}
+          />
+        )
+      case 'Inicio':
+        return (
+          <HomeScreen
+            profileName={profileName}
+            profilePhoto={profilePhoto}
+            onExplore={goExplore}
+            onCategory={goCategory}
+            onNotifications={() => setStackScreen('Notificaciones')}
+            onSelect={selectDestination}
+          />
+        )
+      case 'Explorar':
+        return (
+          <ExploreScreen
+            category={category}
+            setCategory={setCategory}
+            query={query}
+            setQuery={setQuery}
+            destinations={exploreResults}
+            loading={exploreLoading}
+            error={exploreError}
+            favorites={favorites}
+            savedRoutes={savedRoutes}
+            onSelect={selectDestination}
+            onFavorite={toggleFavorite}
+            onToggleRoute={toggleRoute}
+            onViewMap={() => showOnMap(exploreResults, category === 'all' ? t('explore.title') : t(`categories.${category}`))}
+          />
+        )
+      case 'Guías':
+        return (
+          <GuidesScreen
+            onSelect={(guide) => {
+              setSelectedGuide(guide)
+              setStackScreen('Guía')
+            }}
+          />
+        )
+      case 'Favoritos':
+        return (
+          <FavoritesScreen
+            destinations={favoriteItems.filter((d) => favorites.includes(d.id))}
+            inRoutes={savedRoutes}
+            onSelect={selectDestination}
+            onFavorite={toggleFavorite}
+            onToggleRoute={toggleRoute}
+            onNavigate={navigate}
+            onViewMap={() => showOnMap(favoriteItems.filter((d) => favorites.includes(d.id)), t('map.favorites'))}
+          />
+        )
+      default:
+        return (
+          <ProfileScreen
+            favorites={favorites}
+            profileName={profileName}
+            profileBio={profileBio}
+            profilePhoto={profilePhoto}
+            onNavigate={navigate}
+          />
+        )
+    }
   }
 
   return (
     <SafeAreaProvider>
       <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
         <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
-        {wrapInScroll ? (
-          <SafeAreaView style={styles.safe} edges={['top']}>
-            <KeyboardScroll
-              contentContainerStyle={styles.content}
-              showsVerticalScrollIndicator={false}
-            >
-              {content}
-            </KeyboardScroll>
-          </SafeAreaView>
-        ) : padStack ? (
-          <SafeAreaView style={styles.safe} edges={['top']}>
-            <View style={{ flex: 1, paddingHorizontal: 20 }}>{content}</View>
-          </SafeAreaView>
-        ) : (
-          content
-        )}
+        {content !== null &&
+          (padStack ? (
+            <SafeAreaView style={styles.safe} edges={['top']}>
+              <View style={{ flex: 1, paddingHorizontal: 20 }}>{content}</View>
+            </SafeAreaView>
+          ) : (
+            content
+          ))}
+        <View style={{ flex: 1, display: content === null ? 'flex' : 'none' }}>
+          {TABS.filter((tab) => visited.has(tab) || tab === activeTab).map((tab) => (
+            <View key={tab} style={{ flex: 1, display: tab === activeTab ? 'flex' : 'none' }}>
+              <SafeAreaView style={styles.safe} edges={['top']}>
+                <KeyboardScroll contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+                  {renderTab(tab)}
+                </KeyboardScroll>
+              </SafeAreaView>
+            </View>
+          ))}
+        </View>
         <BottomNav
           active={activeTab}
           onChange={navigate}

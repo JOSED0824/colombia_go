@@ -6,14 +6,17 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { useApi } from '../lib/useApi'
+import { useNotifications } from '../lib/notifications'
 import { toDestination } from '../lib/mappers'
 import type { LugarResumenDto, PagedResult } from '../lib/types'
 
 const { width } = Dimensions.get('window')
 
-export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: any) {
+export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, onNotifications, onSelect }: any) {
   const { t } = useTranslation()
   const [activeSlide, setActiveSlide] = useState(0)
+  const [search, setSearch] = useState('')
+  const { unread } = useNotifications()
 
   // Con caché: al volver a Inicio desde otra pestaña se pinta al instante con lo ya cargado, sin repetir la consulta.
   const featuredApi = useApi<LugarResumenDto[]>('/api/v1/lugares/destacados?take=3')
@@ -34,15 +37,25 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
           <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.avatarHeader} />
           <Text style={styles.greetingText}>{t('home.hello', { name: profileName.split(' ')[0] })}</Text>
         </View>
-        <Pressable style={styles.notifBtn}>
+        <Pressable style={styles.notifBtn} onPress={onNotifications}>
           <Ionicons name="notifications-outline" size={24} color={COLORS.BLUE} />
-          <View style={styles.notifDot} />
+          {unread > 0 && <View style={styles.notifDot} />}
         </Pressable>
       </View>
 
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color={COLORS.TEXT_MUTED} />
-        <TextInput placeholder={t('home.search')} placeholderTextColor={COLORS.TEXT_MUTED} style={styles.searchInput} />
+        <TextInput
+          placeholder={t('home.search')}
+          placeholderTextColor={COLORS.TEXT_MUTED}
+          style={styles.searchInput}
+          value={search}
+          onChangeText={setSearch}
+          returnKeyType="search"
+          onSubmitEditing={() => {
+            if (search.trim()) onExplore(search.trim())
+          }}
+        />
       </View>
 
       <View style={styles.heroContainer}>
@@ -87,12 +100,12 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onSelect }: a
           { id: 'nature', icon: 'leaf', color: '#4CAF50' },
           { id: 'nightlife', icon: 'musical-notes', color: '#E63946' },
         ].map((item) => (
-          <View key={item.id} style={styles.catItem}>
+          <Pressable key={item.id} style={styles.catItem} onPress={() => onCategory(item.id)}>
             <View style={[styles.catIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.PRIMARY : item.color }]}>
               <Ionicons name={item.icon as any} size={24} color={item.color === '#FFD100' ? COLORS.INK : '#FFF'} />
             </View>
             <Text style={styles.catLabel} numberOfLines={2}>{t(`categories.${item.id}`)}</Text>
-          </View>
+          </Pressable>
         ))}
       </View>
 

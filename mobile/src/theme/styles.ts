@@ -163,6 +163,18 @@ export const styles = themed(() => StyleSheet.create({
   editCancelText: { fontSize: 15, fontFamily: 'Poppins_600SemiBold', color: COLORS.TEXT_MUTED },
   editSaveBtn: { flex: 1.6, height: 50, borderRadius: 16, flexDirection: 'row', gap: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.YELLOW, elevation: 2, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
   editSaveText: { fontSize: 15, fontFamily: 'Poppins_700Bold', color: COLORS.INK },
+  // Notificaciones
+  notifMarkAll: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', gap: 6, paddingVertical: 8, paddingHorizontal: 4, marginBottom: 6 },
+  notifMarkAllText: { fontSize: 13, fontFamily: 'Poppins_600SemiBold', color: COLORS.BLUE },
+  notifCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: COLORS.CARD, borderRadius: 22, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: COLORS.BORDER },
+  notifCardUnread: { borderColor: COLORS.YELLOW, borderWidth: 1.5 },
+  notifIcon: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
+  notifTitle: { fontSize: 14, fontFamily: 'Poppins_700Bold', color: COLORS.BLUE },
+  notifText: { fontSize: 12, fontFamily: 'Poppins_400Regular', color: COLORS.TEXT_MUTED, marginTop: 2 },
+  notifUnreadDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.RED },
+  // Explorar: botón "Ver en el mapa"
+  exploreMapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.YELLOW, borderRadius: 18, paddingVertical: 13, marginBottom: 16, elevation: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 6 },
+  exploreMapBtnText: { fontSize: 14, fontFamily: 'Poppins_700Bold', color: COLORS.INK },
   detailMapInfo: { flexDirection: 'row', alignItems: 'center', marginTop: 12, gap: 12 },
   detailMapPin: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.GRAY_LIGHT, alignItems: 'center', justifyContent: 'center' },
   mapPinContainer: { position: 'absolute', top: '40%', left: '40%' },

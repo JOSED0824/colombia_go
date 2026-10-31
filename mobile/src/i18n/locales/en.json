@@ -130,7 +130,9 @@
   "explore": {
     "title": "Explore",
     "search": "Search destinations...",
-    "empty": "We found no places for that search."
+    "empty": "We found no places for that search.",
+    "viewMap": "View on map",
+    "viewMapCount": "View on map ({{count}})"
   },
   "guides": {
     "title": "Local Guides",
@@ -396,5 +398,17 @@
     "Lugar.NotFound": "That place is no longer available.",
     "unauthorized": "Your session expired. Please sign in again.",
     "generic": "Something went wrong. Please try again."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAll": "Mark all as read",
+    "empty": "You have no notifications yet.",
+    "badgeTitle": "You earned the {{name}} badge!",
+    "tipAiTitle": "Plan your trip with AI",
+    "tipAiText": "Tell it your budget, days and interests and get a day-by-day itinerary.",
+    "tipGuidesTitle": "Meet the local guides",
+    "tipGuidesText": "Check their profile, experience and rate before choosing who to explore with.",
+    "tipMapTitle": "Explore on the map",
+    "tipMapText": "In Explore tap \"View on map\" to see all places by area."
   }
 }

@@ -130,7 +130,9 @@
   "explore": {
     "title": "探索",
     "search": "搜索目的地...",
-    "empty": "没有找到符合搜索条件的地点。"
+    "empty": "没有找到符合搜索条件的地点。",
+    "viewMap": "在地图上查看",
+    "viewMapCount": "在地图上查看（{{count}}）"
   },
   "guides": {
     "title": "本地向导",
@@ -396,5 +398,17 @@
     "Lugar.NotFound": "该地点已不可用。",
     "unauthorized": "登录已过期，请重新登录。",
     "generic": "出了点问题，请重试。"
+  },
+  "notifications": {
+    "title": "通知",
+    "markAll": "全部标为已读",
+    "empty": "您还没有通知。",
+    "badgeTitle": "您获得了“{{name}}”徽章！",
+    "tipAiTitle": "用 AI 规划行程",
+    "tipAiText": "告诉它您的预算、天数和兴趣，即可生成每日行程。",
+    "tipGuidesTitle": "认识本地向导",
+    "tipGuidesText": "在选择同行向导之前，先查看他们的资料、经验和费用。",
+    "tipMapTitle": "在地图上探索",
+    "tipMapText": "在“探索”中点击“在地图上查看”，按区域查看所有地点。"
   }
 }

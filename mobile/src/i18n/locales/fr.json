@@ -130,7 +130,9 @@
   "explore": {
     "title": "Explorer",
     "search": "Rechercher des destinations...",
-    "empty": "Aucun lieu trouvé pour cette recherche."
+    "empty": "Aucun lieu trouvé pour cette recherche.",
+    "viewMap": "Voir sur la carte",
+    "viewMapCount": "Voir sur la carte ({{count}})"
   },
   "guides": {
     "title": "Guides Locaux",
@@ -396,5 +398,17 @@
     "Lugar.NotFound": "Ce lieu n'est plus disponible.",
     "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
     "generic": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAll": "Tout marquer comme lu",
+    "empty": "Vous n'avez pas encore de notifications.",
+    "badgeTitle": "Vous avez gagné le badge {{name}} !",
+    "tipAiTitle": "Planifiez votre voyage avec l’IA",
+    "tipAiText": "Indiquez votre budget, vos jours et vos centres d’intérêt pour obtenir un itinéraire jour par jour.",
+    "tipGuidesTitle": "Rencontrez les guides locaux",
+    "tipGuidesText": "Consultez leur profil, leur expérience et leur tarif avant de choisir.",
+    "tipMapTitle": "Explorez sur la carte",
+    "tipMapText": "Dans Explorer, touchez « Voir sur la carte » pour voir tous les lieux par zone."
   }
 }

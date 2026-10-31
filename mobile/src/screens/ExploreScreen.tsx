@@ -7,7 +7,7 @@ import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { DestinationRow } from '../components/DestinationRow'
 
-export function ExploreScreen({ category, setCategory, query, setQuery, destinations: items, loading, error, favorites, savedRoutes, onSelect, onFavorite, onToggleRoute }: any) {
+export function ExploreScreen({ category, setCategory, query, setQuery, destinations: items, loading, error, favorites, savedRoutes, onSelect, onFavorite, onToggleRoute, onViewMap }: any) {
   const { t } = useTranslation()
   return (
     <View>
@@ -29,6 +29,12 @@ export function ExploreScreen({ category, setCategory, query, setQuery, destinat
           </Pressable>
         ))}
       </ScrollView>
+      {items.length > 0 && (
+        <Pressable style={styles.exploreMapBtn} onPress={onViewMap}>
+          <Ionicons name="map" size={18} color={COLORS.INK} />
+          <Text style={styles.exploreMapBtnText}>{t('explore.viewMapCount', { count: items.length })}</Text>
+        </Pressable>
+      )}
       {loading && items.length === 0 && <ActivityIndicator color={COLORS.BLUE} style={{ marginTop: 30 }} />}
       {!loading && error && (
         <Text style={{ textAlign: 'center', color: COLORS.TEXT_MUTED, marginTop: 30 }}>
