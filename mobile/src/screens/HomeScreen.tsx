@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { View, Image, Pressable, ScrollView, Dimensions } from 'react-native'
 import { Text, TextInput } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
@@ -6,6 +6,7 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { useApi } from '../lib/useApi'
+import { prefetch } from '../lib/api'
 import { useNotifications } from '../lib/notifications'
 import { toDestination } from '../lib/mappers'
 import type { LugarResumenDto, PagedResult } from '../lib/types'
@@ -24,6 +25,13 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, o
   const featured = useMemo(() => (featuredApi.data ?? []).map(toDestination), [featuredApi.data])
   const destinations = useMemo(() => (cityApi.data?.items ?? []).map(toDestination), [cityApi.data])
   const error = featuredApi.error || cityApi.error
+
+  // Con las tarjetas a la vista, se adelanta el detalle de cada lugar: al tocar una, abre al instante.
+  useEffect(() => {
+    const ids = [...featured, ...destinations].map((d) => d.id)
+    if (ids.length === 0) return
+    prefetch([...new Set(ids)].map((id) => `/api/v1/lugares/${encodeURIComponent(id)}/contenido`))
+  }, [featured, destinations])
 
   const handleScroll = (event: any) => {
     const slide = Math.round(event.nativeEvent.contentOffset.x / (width - 40))

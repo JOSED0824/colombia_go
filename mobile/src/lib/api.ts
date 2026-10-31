@@ -121,6 +121,17 @@ export async function apiGet<T>(path: string, options: { force?: boolean } = {})
   return request
 }
 
+/** Pide en segundo plano (de a una, sin molestar a lo que el usuario está viendo) rutas que probablemente va a abrir, para que ya estén en la caché. */
+export async function prefetch(paths: string[]) {
+  for (const path of paths) {
+    try {
+      await apiGet(path)
+    } catch {
+      // es solo un adelanto: si falla, la pantalla lo pedirá cuando haga falta
+    }
+  }
+}
+
 export async function apiSend<T = void>(
   path: string,
   method: 'POST' | 'PUT' | 'DELETE',

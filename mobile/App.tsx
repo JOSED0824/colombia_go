@@ -19,7 +19,7 @@ import { getLanguage, hasSavedLanguage, loadSavedLanguage, normalizeLanguage, se
 import { COLORS, applyTheme, loadSavedTheme, saveTheme, type ThemeMode } from './src/theme/colors'
 import { styles } from './src/theme/styles'
 import { supabase } from './src/lib/supabase'
-import { apiGet, apiSend, pingApi, API_BASE } from './src/lib/api'
+import { apiGet, apiSend, pingApi, prefetch, API_BASE } from './src/lib/api'
 import { authFlow } from './src/lib/authFlow'
 import { notify } from './src/lib/notify'
 import { toDestination } from './src/lib/mappers'
@@ -173,6 +173,16 @@ export default function App() {
   const [phase, setPhase] = useState<Phase>('loading')
   const [tabLayouts, setTabLayouts] = useState<Record<string, { x: number; width: number }>>({})
 
+  // Calentamiento: ya con la app lista, se van montando (ocultas) las pestañas que faltan, de a una cada 400 ms. Así cada una
+  // carga sus datos en segundo plano y cuando la persona la abre por primera vez ya está lista, sin spinner de "cargando".
+  useEffect(() => {
+    if (phase !== 'done' || !session?.user) return
+    const timers = TABS.map((tab, i) =>
+      setTimeout(() => setVisited((v) => (v.has(tab) ? v : new Set(v).add(tab))), 900 + i * 400),
+    )
+    return () => timers.forEach(clearTimeout)
+  }, [phase, session?.user?.id])
+
   function showOnMap(points: Destination[], title: string, drawRoute = false) {
     setMapPoints(points)
     setMapTitle(title)
@@ -252,6 +262,7 @@ export default function App() {
       apiGet<PagedResult<LugarResumenDto>>(`/api/v1/lugares?${params.toString()}`)
         .then((page) => {
           setExploreResults(page.items.map(toDestination))
+          prefetch(page.items.slice(0, 6).map((l) => `/api/v1/lugares/${encodeURIComponent(l.id)}/contenido`))
           setExploreError(false)
         })
         .catch(() => setExploreError(true))
