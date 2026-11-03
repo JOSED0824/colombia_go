@@ -536,5 +536,9 @@
     "rejected": "已拒绝",
     "rating": "评分",
     "places": "您的地点"
+  },
+  "achievementToast": {
+    "title": "徽章已解锁！",
+    "tap": "点击在通知中查看"
   }
 }

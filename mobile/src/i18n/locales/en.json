@@ -536,5 +536,9 @@
     "rejected": "Rejected",
     "rating": "Rating",
     "places": "Your places"
+  },
+  "achievementToast": {
+    "title": "Badge unlocked!",
+    "tap": "Tap to see it in your notifications"
   }
 }

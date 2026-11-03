@@ -536,5 +536,9 @@
     "rejected": "Recusados",
     "rating": "Avaliação",
     "places": "Seus lugares"
+  },
+  "achievementToast": {
+    "title": "Insígnia desbloqueada!",
+    "tap": "Toque para vê-la nas suas notificações"
   }
 }

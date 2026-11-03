@@ -127,6 +127,16 @@ export async function apiGet<T>(path: string, options: { force?: boolean } = {})
   return request
 }
 
+const mutationListeners = new Set<() => void>()
+
+/** Se llama después de cada POST/PUT/PATCH/DELETE que cambia datos (no las que se marcan keepCache). */
+export function onApiMutation(listener: () => void) {
+  mutationListeners.add(listener)
+  return () => {
+    mutationListeners.delete(listener)
+  }
+}
+
 /** Pide en segundo plano (de a una, sin molestar a lo que el usuario está viendo) rutas que probablemente va a abrir, para que ya estén en la caché. */
 export async function prefetch(paths: string[]) {
   for (const path of paths) {
@@ -151,6 +161,9 @@ export async function apiSend<T = void>(
     body: body ? JSON.stringify(body) : undefined,
   })
   if (!res.ok) throw await toError(res, `${method} ${path}`)
-  if (!options.keepCache) clearApiCache(true)
+  if (!options.keepCache) {
+    clearApiCache(true)
+    mutationListeners.forEach((l) => l())
+  }
   return res.status === 204 ? (undefined as T) : res.json()
 }

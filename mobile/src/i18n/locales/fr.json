@@ -536,5 +536,9 @@
     "rejected": "Refusés",
     "rating": "Note",
     "places": "Vos lieux"
+  },
+  "achievementToast": {
+    "title": "Badge débloqué !",
+    "tap": "Touchez pour le voir dans vos notifications"
   }
 }

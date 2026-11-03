@@ -536,5 +536,9 @@
     "rejected": "Rechazados",
     "rating": "Calificación",
     "places": "Tus lugares"
+  },
+  "achievementToast": {
+    "title": "¡Insignia desbloqueada!",
+    "tap": "Toca para verla en tus notificaciones"
   }
 }

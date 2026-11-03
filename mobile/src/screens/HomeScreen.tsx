@@ -7,6 +7,7 @@ import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { useApi } from '../lib/useApi'
 import { prefetch } from '../lib/api'
+import { PressableScale } from '../components/Transitions'
 import { useNotifications } from '../lib/notifications'
 import { toDestination } from '../lib/mappers'
 import type { LugarResumenDto, PagedResult } from '../lib/types'
@@ -108,12 +109,12 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, o
           { id: 'nature', icon: 'leaf', color: '#4CAF50' },
           { id: 'nightlife', icon: 'musical-notes', color: '#E63946' },
         ].map((item) => (
-          <Pressable key={item.id} style={styles.catItem} onPress={() => onCategory(item.id)}>
+          <PressableScale key={item.id} style={styles.catItem} onPress={() => onCategory(item.id)} scaleTo={0.9}>
             <View style={[styles.catIcon, { backgroundColor: item.color === '#003B7D' ? COLORS.PRIMARY : item.color }]}>
               <Ionicons name={item.icon as any} size={24} color={item.color === '#FFD100' ? COLORS.INK : '#FFF'} />
             </View>
             <Text style={styles.catLabel} numberOfLines={2}>{t(`categories.${item.id}`)}</Text>
-          </Pressable>
+          </PressableScale>
         ))}
       </View>
 
@@ -130,7 +131,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, o
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizList}>
         {destinations.map((item) => (
-          <Pressable key={item.id} style={styles.card} onPress={() => onSelect(item)}>
+          <PressableScale key={item.id} style={styles.card} onPress={() => onSelect(item)}>
             <Image source={item.image} style={styles.cardImage} />
             <View style={styles.cardRating}>
               <Ionicons name="star" size={12} color={COLORS.YELLOW} />
@@ -145,7 +146,7 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, o
                 <Text style={styles.cardLocationText}>{item.city}</Text>
               </View>
             </View>
-          </Pressable>
+          </PressableScale>
         ))}
       </ScrollView>
     </View>

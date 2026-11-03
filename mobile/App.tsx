@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useSyncExternalStore } from 'react'
+import React, { useEffect, useState, useSyncExternalStore, useRef } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
@@ -47,6 +47,9 @@ import { NotificationsScreen } from './src/screens/NotificationsScreen'
 import { GuidePanelScreen } from './src/screens/GuidePanelScreen'
 import { BusinessDashboard, BusinessForm } from './src/screens/BusinessScreen'
 import { GuideHomeScreen } from './src/screens/GuideHomeScreen'
+import { TabScene, PushScene, ReturnScene } from './src/components/Transitions'
+import { AchievementBubble } from './src/components/AchievementBubble'
+import { useAchievementWatcher } from './src/lib/achievements'
 import { AdminScreen } from './src/screens/AdminScreen'
 import type { Guia } from './src/lib/guides'
 
@@ -153,12 +156,17 @@ export default function App() {
   }, [session?.user?.id])
   const tabs = tabsForRole(role)
 
+  // Insignias recién ganadas: se celebran con una burbuja que lleva a las notificaciones.
+  const achievement = useAchievementWatcher(session?.user?.id)
+
   // Paneles de guía y negocio: cambian estos números para que vuelvan a pedir sus datos tras guardar.
   const [guideRefresh, setGuideRefresh] = useState(0)
   const [businessRefresh, setBusinessRefresh] = useState(0)
   const [selectedPlace, setSelectedPlace] = useState<MiLugarDto | null>(null)
 
   const [activeTab, setActiveTab] = useState<Tab>('Inicio')
+  const previousTab = useRef(activeTab)
+  const tabDirection = useRef(0)
   const [stackScreen, setStackScreen] = useState<StackScreen>(null)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
   const [detailFrom, setDetailFrom] = useState<StackScreen>(null)
@@ -306,6 +314,13 @@ export default function App() {
   }, [query, category, i18n.language])
 
   if (!fontsLoaded || !languageReady || !themeReady || session === undefined) return null
+
+  if (previousTab.current !== activeTab) {
+    const from = tabs.findIndex((tab) => tab.id === previousTab.current)
+    const to = tabs.findIndex((tab) => tab.id === activeTab)
+    tabDirection.current = from < 0 || to < 0 ? 0 : Math.sign(to - from)
+    previousTab.current = activeTab
+  }
 
   function navigate(target: string) {
     if (ALL_TAB_IDS.has(target)) {
@@ -635,31 +650,42 @@ export default function App() {
     <SafeAreaProvider>
       <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
         <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
-        {content !== null &&
-          (padStack ? (
-            <SafeAreaView style={styles.safe} edges={['top']}>
-              <View style={{ flex: 1, paddingHorizontal: 20 }}>{content}</View>
-            </SafeAreaView>
-          ) : (
-            content
-          ))}
-        <View style={{ flex: 1, display: content === null ? 'flex' : 'none' }}>
+        {content !== null && (
+          <PushScene key={String(stackScreen)}>
+            {padStack ? (
+              <SafeAreaView style={styles.safe} edges={['top']}>
+                <View style={{ flex: 1, paddingHorizontal: 20 }}>{content}</View>
+              </SafeAreaView>
+            ) : (
+              content
+            )}
+          </PushScene>
+        )}
+        <ReturnScene visible={content === null}>
           {tabs.map(({ id }) => id).filter((tab) => visited.has(tab) || tab === activeTab).map((tab) => (
-            <View key={tab} style={{ flex: 1, display: tab === activeTab ? 'flex' : 'none' }}>
+            <TabScene key={tab} active={tab === activeTab} direction={tabDirection.current}>
               <SafeAreaView style={styles.safe} edges={['top']}>
                 <KeyboardScroll contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
                   {renderTab(tab)}
                 </KeyboardScroll>
               </SafeAreaView>
-            </View>
+            </TabScene>
           ))}
-        </View>
+        </ReturnScene>
         <BottomNav
           tabs={tabs}
           active={activeTab}
           onChange={navigate}
           onTabLayout={(tab, layout) => setTabLayouts((current) => ({ ...current, [tab]: layout }))}
         />
+        {achievement.current && (
+          <AchievementBubble
+            key={achievement.current.id}
+            logro={achievement.current}
+            onDismiss={achievement.dismiss}
+            onOpen={() => setStackScreen('Notificaciones')}
+          />
+        )}
         {phase === 'coach' && (
           <CoachMarks tabLayouts={tabLayouts} onStep={(tab) => navigate(tab)} onFinish={finishOnboarding} />
         )}

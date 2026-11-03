@@ -6,6 +6,7 @@ import { COLORS } from '../theme/colors'
 import { styles } from '../theme/styles'
 import { useTranslation } from 'react-i18next'
 import { useApi } from '../lib/useApi'
+import { PressableScale } from '../components/Transitions'
 import { toGuia, type Guia } from '../lib/guides'
 import type { GuiaDto } from '../lib/types'
 
@@ -70,7 +71,7 @@ export function GuidesScreen({ onSelect }: { onSelect?: (guide: Guia) => void })
       </View>
 
       {others.map((item) => (
-        <Pressable key={item.id} style={styles.guideRowCard} onPress={() => onSelect?.(item)}>
+        <PressableScale key={item.id} style={styles.guideRowCard} onPress={() => onSelect?.(item)} scaleTo={0.97}>
           <Image source={item.image} style={styles.guideRowImg} />
           <View style={styles.guideRowContent}>
             <Text style={styles.guideRowName}>{item.name}, {item.specialty}</Text>
@@ -88,7 +89,7 @@ export function GuidesScreen({ onSelect }: { onSelect?: (guide: Guia) => void })
             <Text style={styles.guidePriceSub}>{t('guides.perHour')}</Text>
             <Ionicons name="chevron-forward" size={18} color={COLORS.BLUE} />
           </View>
-        </Pressable>
+        </PressableScale>
       ))}
     </View>
   )
