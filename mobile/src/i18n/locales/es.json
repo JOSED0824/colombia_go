@@ -14,7 +14,8 @@
     "noConnectionApi": "No pudimos conectar con el servidor. Revisa que la API esté encendida.",
     "offlineTitle": "Sin conexión",
     "tryAgainLater": "Intenta de nuevo en un momento.",
-    "apiUnreachable": "No se pudo conectar con el servidor ({{url}}). Revisa que el backend esté encendido, que el celular y el PC estén en el mismo Wi-Fi y que el firewall permita el puerto 5258."
+    "apiUnreachable": "No se pudo conectar con el servidor ({{url}}). Revisa que el backend esté encendido, que el celular y el PC estén en el mismo Wi-Fi y que el firewall permita el puerto 5258.",
+    "photoFailed": "No se pudo subir la foto. Intenta de nuevo."
   },
   "nav": {
     "home": "Inicio",
@@ -70,7 +71,14 @@
       "invalidEmail": "El correo no es válido.",
       "rateLimit": "Demasiados intentos. Espera un momento e intenta de nuevo.",
       "generic": "Algo salió mal. Intenta de nuevo."
-    }
+    },
+    "accountType": "¿Cómo vas a usar ColombiaGO?",
+    "type_turista": "Turista",
+    "type_turista_sub": "Explora y arma rutas",
+    "type_guia": "Guía local",
+    "type_guia_sub": "Ofrece tus recorridos",
+    "type_negocio": "Negocio",
+    "type_negocio_sub": "Publica tu lugar"
   },
   "verify": {
     "title": "Verifica tu correo",
@@ -281,7 +289,13 @@
     "routes": "Rutas Guardadas",
     "routesSub": "Tus rutas y recorridos personalizados",
     "settings": "Configuración",
-    "settingsSub": "Cuenta, notificaciones y más"
+    "settingsSub": "Cuenta, notificaciones y más",
+    "guidePanel": "Mi perfil de guía",
+    "guidePanelSub": "Tu información, idiomas y tarifa",
+    "business": "Mis negocios",
+    "businessSub": "Publica y edita tus lugares",
+    "admin": "Panel de administración",
+    "adminSub": "Aprueba lugares, guías y reseñas"
   },
   "achievements": {
     "1": {
@@ -410,5 +424,84 @@
     "tipGuidesText": "Mira su perfil, experiencia y tarifa antes de elegir con quién recorrer.",
     "tipMapTitle": "Explora en el mapa",
     "tipMapText": "En Explorar toca \"Ver en el mapa\" para ver todos los lugares por zonas."
+  },
+  "roles": {
+    "turista": "Turista",
+    "guia": "Guía local",
+    "negocio": "Negocio",
+    "admin": "Administrador"
+  },
+  "guidePanel": {
+    "title": "Mi perfil de guía",
+    "pending": "Tu perfil está en revisión. Aparecerá en Guías cuando un administrador lo verifique.",
+    "verified": "Perfil verificado: ya apareces en Guías.",
+    "empty": "Crea tu perfil para que los turistas te encuentren.",
+    "name": "Nombre",
+    "specialty": "Especialidad",
+    "specialtyPh": "Ej: arte urbano, café, senderismo",
+    "place": "Ciudad o zona",
+    "rate": "Tarifa por hora (COP)",
+    "languages": "Idiomas que hablas",
+    "experience": "Años de experiencia",
+    "bio": "Sobre ti",
+    "bioPh": "Cuéntales a los turistas qué recorridos haces",
+    "photo": "Foto de perfil",
+    "changePhoto": "Cambiar foto",
+    "save": "Guardar perfil",
+    "saved": "Perfil guardado.",
+    "required": "Completa nombre, especialidad, ciudad, tarifa y al menos un idioma."
+  },
+  "business": {
+    "title": "Mis negocios",
+    "empty": "Aún no has publicado lugares.",
+    "add": "Publicar un lugar",
+    "reviewNote": "Cada lugar nuevo o editado lo revisa un administrador antes de publicarse.",
+    "status_pendiente": "En revisión",
+    "status_aprobado": "Publicado",
+    "status_rechazado": "Rechazado",
+    "status_archivado": "Archivado",
+    "rejectReason": "Motivo: {{reason}}",
+    "formNew": "Publicar lugar",
+    "formEdit": "Editar lugar",
+    "name": "Nombre del lugar",
+    "category": "Categoría",
+    "city": "Ciudad",
+    "region": "Departamento",
+    "address": "Dirección",
+    "addressHint": "La usamos para ubicar tu lugar en el mapa.",
+    "description": "Descripción",
+    "descriptionPh": "Qué ofrece tu lugar (mínimo 20 caracteres)",
+    "tagline": "Frase corta",
+    "hours": "Horario",
+    "howToGet": "Cómo llegar",
+    "price": "Rango de precio",
+    "price_gratis": "Gratis",
+    "price_economico": "Económico",
+    "price_moderado": "Moderado",
+    "price_costoso": "Costoso",
+    "price_lujo": "Lujo",
+    "entryCost": "Costo de entrada (COP, opcional)",
+    "photo": "Foto del lugar",
+    "addPhoto": "Agregar foto",
+    "save": "Enviar a revisión",
+    "saved": "Enviado. Un administrador lo revisará antes de publicarlo.",
+    "required": "Completa nombre, ciudad, departamento, dirección y una descripción de al menos 20 caracteres.",
+    "addressNotFound": "No encontramos esa dirección en el mapa. Revisa la dirección y la ciudad."
+  },
+  "admin": {
+    "title": "Administración",
+    "tab_places": "Lugares",
+    "tab_guides": "Guías",
+    "tab_reviews": "Reseñas",
+    "empty_places": "No hay lugares por revisar.",
+    "empty_guides": "No hay guías por verificar.",
+    "empty_reviews": "No hay reseñas por revisar.",
+    "by": "Publicado por {{name}}",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "verify": "Verificar",
+    "rejectReasonPh": "Motivo del rechazo (lo verá el negocio)",
+    "confirmReject": "Rechazar",
+    "failed": "No se pudo completar. Intenta de nuevo."
   }
 }

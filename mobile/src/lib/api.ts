@@ -3,6 +3,12 @@ import { getLanguage } from '../i18n'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
+/**
+ * Página del backend a la que llegan los enlaces de los correos de Supabase (confirmar cuenta, recuperar contraseña).
+ * Sin esto Supabase usa su "Site URL" por defecto, que es localhost: en el teléfono el enlace no abre nada.
+ */
+export const AUTH_REDIRECT_URL = API_URL ? `${API_URL}/auth/confirmado` : undefined
+
 /** Dirección del backend con la que se armó la app (para mostrarla en los avisos de conexión). */
 export const API_BASE = API_URL ?? '(EXPO_PUBLIC_API_URL sin definir)'
 
@@ -134,7 +140,7 @@ export async function prefetch(paths: string[]) {
 
 export async function apiSend<T = void>(
   path: string,
-  method: 'POST' | 'PUT' | 'DELETE',
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   body?: unknown,
   /** true = esta llamada no cambia datos que se vean en pantallas (p. ej. registrar que se abrió un lugar). */
   options: { keepCache?: boolean } = {},

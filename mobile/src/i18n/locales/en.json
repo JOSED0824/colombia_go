@@ -14,7 +14,8 @@
     "noConnectionApi": "We couldn't reach the server. Make sure the API is running.",
     "offlineTitle": "No connection",
     "tryAgainLater": "Please try again in a moment.",
-    "apiUnreachable": "Could not reach the server ({{url}}). Check that the backend is running, that your phone and PC are on the same Wi-Fi, and that the firewall allows port 5258."
+    "apiUnreachable": "Could not reach the server ({{url}}). Check that the backend is running, that your phone and PC are on the same Wi-Fi, and that the firewall allows port 5258.",
+    "photoFailed": "Couldn't upload the photo. Please try again."
   },
   "nav": {
     "home": "Home",
@@ -70,7 +71,14 @@
       "invalidEmail": "The email address is not valid.",
       "rateLimit": "Too many attempts. Wait a moment and try again.",
       "generic": "Something went wrong. Please try again."
-    }
+    },
+    "accountType": "How will you use ColombiaGO?",
+    "type_turista": "Traveler",
+    "type_turista_sub": "Explore and plan routes",
+    "type_guia": "Local guide",
+    "type_guia_sub": "Offer your tours",
+    "type_negocio": "Business",
+    "type_negocio_sub": "List your place"
   },
   "verify": {
     "title": "Verify your email",
@@ -281,7 +289,13 @@
     "routes": "Saved Routes",
     "routesSub": "Your personalized routes and trips",
     "settings": "Settings",
-    "settingsSub": "Account, notifications and more"
+    "settingsSub": "Account, notifications and more",
+    "guidePanel": "My guide profile",
+    "guidePanelSub": "Your info, languages and rate",
+    "business": "My businesses",
+    "businessSub": "List and edit your places",
+    "admin": "Admin panel",
+    "adminSub": "Approve places, guides and reviews"
   },
   "achievements": {
     "1": {
@@ -410,5 +424,84 @@
     "tipGuidesText": "Check their profile, experience and rate before choosing who to explore with.",
     "tipMapTitle": "Explore on the map",
     "tipMapText": "In Explore tap \"View on map\" to see all places by area."
+  },
+  "roles": {
+    "turista": "Traveler",
+    "guia": "Local guide",
+    "negocio": "Business",
+    "admin": "Administrator"
+  },
+  "guidePanel": {
+    "title": "My guide profile",
+    "pending": "Your profile is under review. It will appear in Guides once an administrator verifies it.",
+    "verified": "Verified profile: you're listed in Guides.",
+    "empty": "Create your profile so travelers can find you.",
+    "name": "Name",
+    "specialty": "Specialty",
+    "specialtyPh": "e.g. street art, coffee, hiking",
+    "place": "City or area",
+    "rate": "Hourly rate (COP)",
+    "languages": "Languages you speak",
+    "experience": "Years of experience",
+    "bio": "About you",
+    "bioPh": "Tell travelers what tours you offer",
+    "photo": "Profile photo",
+    "changePhoto": "Change photo",
+    "save": "Save profile",
+    "saved": "Profile saved.",
+    "required": "Fill in name, specialty, city, rate and at least one language."
+  },
+  "business": {
+    "title": "My businesses",
+    "empty": "You haven't listed any places yet.",
+    "add": "List a place",
+    "reviewNote": "Every new or edited place is reviewed by an administrator before it goes live.",
+    "status_pendiente": "Under review",
+    "status_aprobado": "Published",
+    "status_rechazado": "Rejected",
+    "status_archivado": "Archived",
+    "rejectReason": "Reason: {{reason}}",
+    "formNew": "List a place",
+    "formEdit": "Edit place",
+    "name": "Place name",
+    "category": "Category",
+    "city": "City",
+    "region": "Department",
+    "address": "Address",
+    "addressHint": "We use it to put your place on the map.",
+    "description": "Description",
+    "descriptionPh": "What your place offers (at least 20 characters)",
+    "tagline": "Short tagline",
+    "hours": "Opening hours",
+    "howToGet": "How to get there",
+    "price": "Price range",
+    "price_gratis": "Free",
+    "price_economico": "Budget",
+    "price_moderado": "Moderate",
+    "price_costoso": "Expensive",
+    "price_lujo": "Luxury",
+    "entryCost": "Entry fee (COP, optional)",
+    "photo": "Place photo",
+    "addPhoto": "Add photo",
+    "save": "Send for review",
+    "saved": "Sent. An administrator will review it before publishing.",
+    "required": "Fill in name, city, department, address and a description of at least 20 characters.",
+    "addressNotFound": "We couldn't find that address on the map. Check the address and city."
+  },
+  "admin": {
+    "title": "Administration",
+    "tab_places": "Places",
+    "tab_guides": "Guides",
+    "tab_reviews": "Reviews",
+    "empty_places": "No places to review.",
+    "empty_guides": "No guides to verify.",
+    "empty_reviews": "No reviews to moderate.",
+    "by": "Submitted by {{name}}",
+    "approve": "Approve",
+    "reject": "Reject",
+    "verify": "Verify",
+    "rejectReasonPh": "Reason for rejection (the business will see it)",
+    "confirmReject": "Reject",
+    "failed": "Couldn't complete it. Please try again."
   }
 }

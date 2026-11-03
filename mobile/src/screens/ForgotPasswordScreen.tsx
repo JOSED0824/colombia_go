@@ -10,6 +10,7 @@ import { styles } from '../theme/styles'
 import { AuthInput } from '../components/AuthInput'
 import { CodeInput } from '../components/CodeInput'
 import { supabase } from '../lib/supabase'
+import { AUTH_REDIRECT_URL } from '../lib/api'
 import { authFlow } from '../lib/authFlow'
 import { authErrorMessage } from '../lib/errors'
 import { notify } from '../lib/notify'
@@ -42,7 +43,7 @@ export function ForgotPasswordScreen({ initialEmail = '', onBack }: Props) {
     }
     setLoading(true)
     setError('')
-    const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim())
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: AUTH_REDIRECT_URL })
     setLoading(false)
     if (err) {
       setError(authErrorMessage(err.message))

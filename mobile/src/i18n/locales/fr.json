@@ -14,7 +14,8 @@
     "noConnectionApi": "Impossible de joindre le serveur. Vérifiez que l'API est lancée.",
     "offlineTitle": "Pas de connexion",
     "tryAgainLater": "Veuillez réessayer dans un instant.",
-    "apiUnreachable": "Impossible de joindre le serveur ({{url}}). Vérifiez que le backend est démarré, que le téléphone et le PC sont sur le même Wi-Fi et que le pare-feu autorise le port 5258."
+    "apiUnreachable": "Impossible de joindre le serveur ({{url}}). Vérifiez que le backend est démarré, que le téléphone et le PC sont sur le même Wi-Fi et que le pare-feu autorise le port 5258.",
+    "photoFailed": "Impossible d'envoyer la photo. Réessayez."
   },
   "nav": {
     "home": "Accueil",
@@ -70,7 +71,14 @@
       "invalidEmail": "L'adresse e-mail n'est pas valide.",
       "rateLimit": "Trop de tentatives. Patientez un instant et réessayez.",
       "generic": "Une erreur est survenue. Veuillez réessayer."
-    }
+    },
+    "accountType": "Comment allez-vous utiliser ColombiaGO ?",
+    "type_turista": "Voyageur",
+    "type_turista_sub": "Explorez et créez des itinéraires",
+    "type_guia": "Guide local",
+    "type_guia_sub": "Proposez vos visites",
+    "type_negocio": "Commerce",
+    "type_negocio_sub": "Publiez votre lieu"
   },
   "verify": {
     "title": "Vérifiez votre e-mail",
@@ -281,7 +289,13 @@
     "routes": "Itinéraires Enregistrés",
     "routesSub": "Vos itinéraires et parcours personnalisés",
     "settings": "Paramètres",
-    "settingsSub": "Compte, notifications et plus"
+    "settingsSub": "Compte, notifications et plus",
+    "guidePanel": "Mon profil de guide",
+    "guidePanelSub": "Vos infos, langues et tarif",
+    "business": "Mes commerces",
+    "businessSub": "Publiez et modifiez vos lieux",
+    "admin": "Panneau d'administration",
+    "adminSub": "Validez lieux, guides et avis"
   },
   "achievements": {
     "1": {
@@ -410,5 +424,84 @@
     "tipGuidesText": "Consultez leur profil, leur expérience et leur tarif avant de choisir.",
     "tipMapTitle": "Explorez sur la carte",
     "tipMapText": "Dans Explorer, touchez « Voir sur la carte » pour voir tous les lieux par zone."
+  },
+  "roles": {
+    "turista": "Voyageur",
+    "guia": "Guide local",
+    "negocio": "Commerce",
+    "admin": "Administrateur"
+  },
+  "guidePanel": {
+    "title": "Mon profil de guide",
+    "pending": "Votre profil est en cours de vérification. Il apparaîtra dans Guides une fois validé par un administrateur.",
+    "verified": "Profil vérifié : vous apparaissez dans Guides.",
+    "empty": "Créez votre profil pour que les voyageurs vous trouvent.",
+    "name": "Nom",
+    "specialty": "Spécialité",
+    "specialtyPh": "Ex. : street art, café, randonnée",
+    "place": "Ville ou zone",
+    "rate": "Tarif horaire (COP)",
+    "languages": "Langues parlées",
+    "experience": "Années d'expérience",
+    "bio": "À propos de vous",
+    "bioPh": "Décrivez aux voyageurs les visites que vous proposez",
+    "photo": "Photo de profil",
+    "changePhoto": "Changer la photo",
+    "save": "Enregistrer le profil",
+    "saved": "Profil enregistré.",
+    "required": "Indiquez le nom, la spécialité, la ville, le tarif et au moins une langue."
+  },
+  "business": {
+    "title": "Mes commerces",
+    "empty": "Vous n'avez encore publié aucun lieu.",
+    "add": "Publier un lieu",
+    "reviewNote": "Chaque lieu nouveau ou modifié est vérifié par un administrateur avant publication.",
+    "status_pendiente": "En vérification",
+    "status_aprobado": "Publié",
+    "status_rechazado": "Refusé",
+    "status_archivado": "Archivé",
+    "rejectReason": "Motif : {{reason}}",
+    "formNew": "Publier un lieu",
+    "formEdit": "Modifier le lieu",
+    "name": "Nom du lieu",
+    "category": "Catégorie",
+    "city": "Ville",
+    "region": "Département",
+    "address": "Adresse",
+    "addressHint": "Elle sert à placer votre lieu sur la carte.",
+    "description": "Description",
+    "descriptionPh": "Ce que propose votre lieu (20 caractères minimum)",
+    "tagline": "Accroche",
+    "hours": "Horaires",
+    "howToGet": "Comment s'y rendre",
+    "price": "Gamme de prix",
+    "price_gratis": "Gratuit",
+    "price_economico": "Économique",
+    "price_moderado": "Modéré",
+    "price_costoso": "Cher",
+    "price_lujo": "Luxe",
+    "entryCost": "Prix d'entrée (COP, facultatif)",
+    "photo": "Photo du lieu",
+    "addPhoto": "Ajouter une photo",
+    "save": "Envoyer en vérification",
+    "saved": "Envoyé. Un administrateur le vérifiera avant publication.",
+    "required": "Indiquez le nom, la ville, le département, l’adresse et une description d’au moins 20 caractères.",
+    "addressNotFound": "Adresse introuvable sur la carte. Vérifiez l’adresse et la ville."
+  },
+  "admin": {
+    "title": "Administration",
+    "tab_places": "Lieux",
+    "tab_guides": "Guides",
+    "tab_reviews": "Avis",
+    "empty_places": "Aucun lieu à vérifier.",
+    "empty_guides": "Aucun guide à vérifier.",
+    "empty_reviews": "Aucun avis à modérer.",
+    "by": "Publié par {{name}}",
+    "approve": "Approuver",
+    "reject": "Refuser",
+    "verify": "Vérifier",
+    "rejectReasonPh": "Motif du refus (visible par le commerce)",
+    "confirmReject": "Refuser",
+    "failed": "Action impossible. Réessayez."
   }
 }

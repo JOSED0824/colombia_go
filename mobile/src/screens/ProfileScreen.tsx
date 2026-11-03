@@ -11,6 +11,8 @@ import { apiGet } from '../lib/api'
 import { badgeImage } from '../lib/badges'
 import type { LogroDto, PerfilDto } from '../lib/types'
 
+const ROLE_ICON: Record<string, string> = { guia: 'person-circle', negocio: 'storefront', admin: 'shield-checkmark' }
+
 // Color de fondo de cada logro según el "tone" que guarda la base (versión clara y oscura).
 const TONOS_CLARO: Record<string, string> = {
   green: '#E8F5E9',
@@ -63,6 +65,12 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
         <Text style={styles.profileName}>{profileName}</Text>
         <Text style={styles.profileBio} numberOfLines={2}>{profileBio || t('profile.bio')}</Text>
         <Text style={styles.profileLevel}><Ionicons name="ribbon-outline" size={16} color="#6B4CFF" /> {levelLabel}</Text>
+        {!!perfil?.role && perfil.role !== 'turista' && (
+          <View style={styles.roleBadge}>
+            <Ionicons name={ROLE_ICON[perfil.role] as any} size={14} color={COLORS.INK} />
+            <Text style={styles.roleBadgeText}>{t(`roles.${perfil.role}`)}</Text>
+          </View>
+        )}
 
         <View style={styles.statsPanel}>
           <View style={styles.statBox}><Text style={styles.statVal}>{perfil?.places ?? '–'}</Text><View style={styles.statLabelRow}><Ionicons name="location" size={12} color="#10B981" /><Text style={styles.statLabelText}>{t('profile.places')}</Text></View></View>
@@ -97,6 +105,18 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
         </ScrollView>
 
         <View style={styles.profileMenu}>
+          {perfil?.role === 'guia' && (
+            <MenuRow icon="person-circle" label={t('profile.guidePanel')} sub={t('profile.guidePanelSub')} color="#E8F5E9" iconCol="#10B981" onPress={() => onNavigate('PanelGuia')} />
+          )}
+          {perfil?.role === 'negocio' && (
+            <MenuRow icon="storefront" label={t('profile.business')} sub={t('profile.businessSub')} color="#FFF8E1" iconCol="#F59E0B" onPress={() => onNavigate('Negocios')} />
+          )}
+          {perfil?.role === 'admin' && (
+            <>
+              <MenuRow icon="shield-checkmark" label={t('profile.admin')} sub={t('profile.adminSub')} color="#E3F2FD" iconCol="#003B7D" onPress={() => onNavigate('Admin')} />
+              <MenuRow icon="storefront" label={t('profile.business')} sub={t('profile.businessSub')} color="#FFF8E1" iconCol="#F59E0B" onPress={() => onNavigate('Negocios')} />
+            </>
+          )}
           <MenuRow icon="heart" label={t('profile.favorites')} sub={t('profile.favoritesSub')} color="#FFEBEE" iconCol="#E63946" onPress={() => onNavigate('Favoritos')} />
           <MenuRow icon="map" label={t('profile.routes')} sub={t('profile.routesSub')} color="#E3F2FD" iconCol="#2196F3" onPress={() => onNavigate('Viajes')} />
           <MenuRow icon="settings" label={t('profile.settings')} sub={t('profile.settingsSub')} color="#F3E5F5" iconCol="#9C27B0" onPress={() => onNavigate('Configuración')} />

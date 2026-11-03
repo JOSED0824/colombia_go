@@ -175,6 +175,13 @@ export const styles = themed(() => StyleSheet.create({
   // Explorar: botón "Ver en el mapa"
   exploreMapBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.YELLOW, borderRadius: 18, paddingVertical: 13, marginBottom: 16, elevation: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 6 },
   exploreMapBtnText: { fontSize: 14, fontFamily: 'Poppins_700Bold', color: COLORS.INK },
+  roleBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'center', backgroundColor: COLORS.YELLOW, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14, marginTop: 8 },
+  roleBadgeText: { fontSize: 12, fontFamily: 'Poppins_700Bold', color: COLORS.INK },
+  accountTypes: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  accountType: { flex: 1, alignItems: 'center', backgroundColor: COLORS.CARD, borderRadius: 18, paddingVertical: 12, paddingHorizontal: 6, borderWidth: 1.5, borderColor: COLORS.BORDER },
+  accountTypeOn: { borderColor: COLORS.YELLOW, backgroundColor: COLORS.YELLOW + '33' },
+  accountTypeTitle: { fontSize: 12, fontFamily: 'Poppins_700Bold', color: COLORS.BLUE, marginTop: 6, textAlign: 'center' },
+  accountTypeSub: { fontSize: 10, fontFamily: 'Poppins_400Regular', color: COLORS.TEXT_MUTED, textAlign: 'center', marginTop: 2 },
   detailMapInfo: { flexDirection: 'row', alignItems: 'center', marginTop: 12, gap: 12 },
   detailMapPin: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.GRAY_LIGHT, alignItems: 'center', justifyContent: 'center' },
   mapPinContainer: { position: 'absolute', top: '40%', left: '40%' },

@@ -14,7 +14,14 @@ import { supabase } from '../lib/supabase'
 import { authErrorMessage, isEmailNotConfirmed } from '../lib/errors'
 import { notify } from '../lib/notify'
 import { getLanguage, setLanguage } from '../i18n'
+import { AUTH_REDIRECT_URL } from '../lib/api'
 import { KeyboardScroll } from '../components/KeyboardScroll'
+
+const ACCOUNT_TYPES = [
+  { id: 'turista', icon: 'compass-outline' },
+  { id: 'guia', icon: 'person-circle-outline' },
+  { id: 'negocio', icon: 'storefront-outline' },
+] as const
 
 type View_ = { name: 'form' } | { name: 'verify'; email: string; codeJustSent: boolean } | { name: 'forgot' }
 
@@ -29,6 +36,7 @@ export function AuthScreen() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const [accountType, setAccountType] = useState<'turista' | 'guia' | 'negocio'>('turista')
 
   async function submit() {
     if (!email.trim() || !password) {
@@ -47,14 +55,18 @@ export function AuthScreen() {
           email: email.trim(),
           password,
           // full_name e idioma los lee el trigger handle_new_user (usuarios.nombre_completo / usuario_configuracion.idioma).
-          options: { data: { full_name: nombre.trim(), phone: telefono.trim() || undefined, idioma: getLanguage() } },
+          // tipo_cuenta lo lee el trigger handle_new_user para asignar el rol (turista, guía o negocio).
+          options: {
+            data: { full_name: nombre.trim(), phone: telefono.trim() || undefined, idioma: getLanguage(), tipo_cuenta: accountType },
+            emailRedirectTo: AUTH_REDIRECT_URL,
+          },
         })
     setLoading(false)
 
     if (error) {
       if (isLogin && isEmailNotConfirmed(error)) {
         // Se registró pero nunca verificó: se le manda un código nuevo y se le pide escribirlo.
-        await supabase.auth.resend({ type: 'signup', email: email.trim() })
+        await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: AUTH_REDIRECT_URL } })
         setView({ name: 'verify', email: email.trim(), codeJustSent: true })
         return
       }
@@ -100,6 +112,20 @@ export function AuthScreen() {
         <Text style={styles.authSubtitle}>{isLogin ? t('auth.loginSubtitle') : t('auth.registerSubtitle')}</Text>
 
         <View style={styles.authForm}>
+          {!isLogin && (
+            <>
+              <Text style={[styles.settingsSectionLabel, { marginTop: 0 }]}>{t('auth.accountType')}</Text>
+              <View style={styles.accountTypes}>
+                {ACCOUNT_TYPES.map((a) => (
+                  <Pressable key={a.id} style={[styles.accountType, accountType === a.id && styles.accountTypeOn]} onPress={() => setAccountType(a.id)}>
+                    <Ionicons name={a.icon as any} size={24} color={accountType === a.id ? COLORS.INK : COLORS.BLUE} />
+                    <Text style={styles.accountTypeTitle} numberOfLines={1}>{t(`auth.type_${a.id}`)}</Text>
+                    <Text style={styles.accountTypeSub} numberOfLines={2}>{t(`auth.type_${a.id}_sub`)}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </>
+          )}
           {!isLogin && <AuthInput icon="person-outline" placeholder={t('auth.fullName')} value={nombre} onChangeText={setNombre} autoCapitalize="words" />}
           <AuthInput icon="mail-outline" placeholder={t('auth.email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
           {!isLogin && <AuthInput icon="call-outline" placeholder={t('auth.phone')} value={telefono} onChangeText={setTelefono} keyboardType="phone-pad" />}

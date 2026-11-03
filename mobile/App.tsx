@@ -43,13 +43,16 @@ import { CoachMarks } from './src/components/CoachMarks'
 import { KeyboardScroll } from './src/components/KeyboardScroll'
 import { GuideDetailScreen } from './src/screens/GuideDetailScreen'
 import { NotificationsScreen } from './src/screens/NotificationsScreen'
+import { GuidePanelScreen } from './src/screens/GuidePanelScreen'
+import { BusinessScreen } from './src/screens/BusinessScreen'
+import { AdminScreen } from './src/screens/AdminScreen'
 import type { Guia } from './src/lib/guides'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
 const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as const
 type Tab = (typeof TABS)[number]
-type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | 'Notificaciones' | null
+type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | 'Notificaciones' | 'PanelGuia' | 'Negocios' | 'Admin' | null
 
 // loading: leyendo la configuración del servidor · onboarding: bienvenida + tour + intereses ·
 // coach: tooltips sobre la barra inferior · done: app normal.
@@ -474,6 +477,15 @@ export default function App() {
   } else if (stackScreen === 'Notificaciones') {
     padStack = true
     content = <NotificationsScreen onBack={() => setStackScreen(null)} onNavigate={navigate} />
+  } else if (stackScreen === 'PanelGuia') {
+    padStack = true
+    content = <GuidePanelScreen onBack={() => setStackScreen(null)} />
+  } else if (stackScreen === 'Negocios') {
+    padStack = true
+    content = <BusinessScreen onBack={() => setStackScreen(null)} />
+  } else if (stackScreen === 'Admin') {
+    padStack = true
+    content = <AdminScreen onBack={() => setStackScreen(null)} />
   }
 
   function renderTab(tab: Tab): React.ReactNode {

@@ -84,7 +84,11 @@ export type PerfilDto = {
   places: number
   guides: number
   reviews: number
+  role: Role
 }
+
+/** Tipo de cuenta. "admin" solo se asigna a mano en la base. */
+export type Role = 'turista' | 'guia' | 'negocio' | 'admin'
 
 export type LogroDto = {
   id: number
@@ -174,4 +178,57 @@ export type GuiaViajeResumenDto = {
   dias: number
   presupuesto: number
   fechaCreacion: string
+}
+
+// --- Paneles por rol ------------------------------------------------------------------------------
+
+export type MiLugarDto = {
+  id: number
+  slug: string
+  name: string
+  category: string // food | culture | nature | nightlife
+  city: string
+  region: string
+  address: string
+  description: string
+  tagline: string | null
+  hours: string | null
+  howToGet: string | null
+  priceRange: string // gratis | economico | moderado | costoso | lujo
+  entryCost: number | null
+  image: string | null
+  latitude: number
+  longitude: number
+  status: 'pendiente' | 'aprobado' | 'rechazado' | 'archivado'
+  rejectReason: string | null
+  rating: number
+  reviewsCount: number
+  updatedAt: string
+}
+
+export type LugarPendienteDto = {
+  id: number
+  nombre: string
+  slug: string
+  categoria: string
+  ciudad: string
+  registradoPorNombre: string | null
+  registradoPorEmail: string | null
+  fechaRegistro: string
+  descripcion: string
+  direccion: string
+  imagenUrl: string | null
+  latitud: number
+  longitud: number
+}
+
+export type CalificacionPendienteDto = {
+  id: number
+  lugarId: number
+  lugarNombre: string
+  usuarioNombre: string
+  usuarioFoto: string | null
+  puntuacion: number
+  comentario: string | null
+  fecha: string
 }

@@ -14,7 +14,8 @@
     "noConnectionApi": "无法连接到服务器，请确认 API 已启动。",
     "offlineTitle": "无网络连接",
     "tryAgainLater": "请稍后再试。",
-    "apiUnreachable": "无法连接到服务器（{{url}}）。请确认后端已启动、手机与电脑在同一 Wi-Fi，且防火墙已放行 5258 端口。"
+    "apiUnreachable": "无法连接到服务器（{{url}}）。请确认后端已启动、手机与电脑在同一 Wi-Fi，且防火墙已放行 5258 端口。",
+    "photoFailed": "照片上传失败，请重试。"
   },
   "nav": {
     "home": "首页",
@@ -70,7 +71,14 @@
       "invalidEmail": "邮箱格式不正确。",
       "rateLimit": "尝试次数过多，请稍等片刻后重试。",
       "generic": "出了点问题，请重试。"
-    }
+    },
+    "accountType": "您将如何使用 ColombiaGO？",
+    "type_turista": "游客",
+    "type_turista_sub": "探索并规划路线",
+    "type_guia": "本地向导",
+    "type_guia_sub": "提供您的导览",
+    "type_negocio": "商家",
+    "type_negocio_sub": "发布您的店铺"
   },
   "verify": {
     "title": "验证您的邮箱",
@@ -281,7 +289,13 @@
     "routes": "已保存的路线",
     "routesSub": "您的个性化路线和行程",
     "settings": "设置",
-    "settingsSub": "账号、通知等"
+    "settingsSub": "账号、通知等",
+    "guidePanel": "我的向导资料",
+    "guidePanelSub": "您的信息、语言和费用",
+    "business": "我的商家",
+    "businessSub": "发布和编辑您的地点",
+    "admin": "管理面板",
+    "adminSub": "审核地点、向导和评价"
   },
   "achievements": {
     "1": {
@@ -410,5 +424,84 @@
     "tipGuidesText": "在选择同行向导之前，先查看他们的资料、经验和费用。",
     "tipMapTitle": "在地图上探索",
     "tipMapText": "在“探索”中点击“在地图上查看”，按区域查看所有地点。"
+  },
+  "roles": {
+    "turista": "游客",
+    "guia": "本地向导",
+    "negocio": "商家",
+    "admin": "管理员"
+  },
+  "guidePanel": {
+    "title": "我的向导资料",
+    "pending": "您的资料正在审核中。管理员验证后将显示在“向导”中。",
+    "verified": "资料已验证：您已显示在“向导”中。",
+    "empty": "创建您的资料，让游客找到您。",
+    "name": "姓名",
+    "specialty": "专长",
+    "specialtyPh": "例如：街头艺术、咖啡、徒步",
+    "place": "城市或地区",
+    "rate": "每小时费用（COP）",
+    "languages": "您会说的语言",
+    "experience": "从业年限",
+    "bio": "关于您",
+    "bioPh": "向游客介绍您提供的导览",
+    "photo": "头像",
+    "changePhoto": "更换照片",
+    "save": "保存资料",
+    "saved": "资料已保存。",
+    "required": "请填写姓名、专长、城市、费用和至少一种语言。"
+  },
+  "business": {
+    "title": "我的商家",
+    "empty": "您还没有发布任何地点。",
+    "add": "发布地点",
+    "reviewNote": "每个新发布或修改的地点都需管理员审核后才会上线。",
+    "status_pendiente": "审核中",
+    "status_aprobado": "已发布",
+    "status_rechazado": "已拒绝",
+    "status_archivado": "已归档",
+    "rejectReason": "原因：{{reason}}",
+    "formNew": "发布地点",
+    "formEdit": "编辑地点",
+    "name": "地点名称",
+    "category": "类别",
+    "city": "城市",
+    "region": "省份",
+    "address": "地址",
+    "addressHint": "用于在地图上定位您的地点。",
+    "description": "描述",
+    "descriptionPh": "您的地点提供什么（至少 20 个字符）",
+    "tagline": "简短标语",
+    "hours": "营业时间",
+    "howToGet": "如何到达",
+    "price": "价格范围",
+    "price_gratis": "免费",
+    "price_economico": "经济",
+    "price_moderado": "适中",
+    "price_costoso": "较贵",
+    "price_lujo": "豪华",
+    "entryCost": "门票（COP，可选）",
+    "photo": "地点照片",
+    "addPhoto": "添加照片",
+    "save": "提交审核",
+    "saved": "已提交，管理员审核后将发布。",
+    "required": "请填写名称、城市、省份、地址以及至少 20 个字符的描述。",
+    "addressNotFound": "在地图上找不到该地址，请检查地址和城市。"
+  },
+  "admin": {
+    "title": "管理",
+    "tab_places": "地点",
+    "tab_guides": "向导",
+    "tab_reviews": "评价",
+    "empty_places": "没有待审核的地点。",
+    "empty_guides": "没有待验证的向导。",
+    "empty_reviews": "没有待审核的评价。",
+    "by": "发布者：{{name}}",
+    "approve": "通过",
+    "reject": "拒绝",
+    "verify": "验证",
+    "rejectReasonPh": "拒绝原因（商家可见）",
+    "confirmReject": "拒绝",
+    "failed": "操作失败，请重试。"
   }
 }

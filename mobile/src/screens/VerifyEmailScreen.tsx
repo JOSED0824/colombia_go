@@ -9,6 +9,7 @@ import { themed } from '../theme/themed'
 import { styles } from '../theme/styles'
 import { CodeInput } from '../components/CodeInput'
 import { supabase } from '../lib/supabase'
+import { AUTH_REDIRECT_URL } from '../lib/api'
 import { authErrorMessage } from '../lib/errors'
 import { notify } from '../lib/notify'
 import { KeyboardScroll } from '../components/KeyboardScroll'
@@ -56,7 +57,7 @@ export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props)
 
   async function resend() {
     if (seconds > 0) return
-    const { error: err } = await supabase.auth.resend({ type: 'signup', email })
+    const { error: err } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: AUTH_REDIRECT_URL } })
     if (err) {
       setError(authErrorMessage(err.message))
       return
