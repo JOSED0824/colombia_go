@@ -137,7 +137,11 @@
     "search": "What do you want to discover today?",
     "discover": "Discover {{name}}",
     "highlights": "Must-see in {{city}}",
-    "traveler": "Traveler"
+    "traveler": "Traveler",
+    "morning": "Good morning,",
+    "afternoon": "Good afternoon,",
+    "evening": "Good evening,",
+    "tryIt": "Try \"{{name}}\""
   },
   "explore": {
     "title": "Explore",

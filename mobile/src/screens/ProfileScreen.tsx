@@ -52,27 +52,35 @@ export function ProfileScreen({ favorites, routesCount, profileName, profileBio,
 
   return (
     <View>
-      <View style={styles.profileHero}>
-        <Image source={require('../../assets/normalized/fondo.jpg')} style={styles.profileArt} />
-        {getThemeMode() === 'dark' && <View style={styles.profileArtDim} />}
-        <View style={styles.profileHeaderContent}>
-          <Text style={styles.profileHeaderTitle}>{t('profile.title')}</Text>
-          <Pressable style={styles.settingsBtn} onPress={() => onNavigate('Configuración')}>
-            <Ionicons name="settings-outline" size={24} color={COLORS.BLUE} />
-          </Pressable>
-        </View>
-        <View style={styles.profilePhotoContainer}>
-          <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.profileImage} />
-          <View style={styles.badgeProfile}><Ionicons name="star" size={16} color={COLORS.INK} /></View>
-        </View>
+      {/* Encabezado: título y ajustes arriba; debajo, una tarjeta con la foto de fondo, el avatar, el nombre, la bio y
+          los chips de nivel / tipo de cuenta. Todo el texto va sobre un velo oscuro para que se lea bien. */}
+      <View style={styles.profileTopBar}>
+        <Text style={styles.profileTopTitle}>{t('profile.title')}</Text>
+        <Pressable style={styles.notifBtn} onPress={() => onNavigate('Configuración')}>
+          <Ionicons name="settings-outline" size={22} color={COLORS.BLUE} />
+        </Pressable>
       </View>
 
-      <View style={styles.profileInfo}>
-        <Text style={styles.profileName}>{profileName}</Text>
-        <Text style={styles.profileBio} numberOfLines={2}>{profileBio || t('profile.bio')}</Text>
-        <View style={styles.profileChips}>
+      <View style={styles.profileCard}>
+        <Image source={require('../../assets/normalized/fondo.jpg')} style={styles.profileCardBg} />
+        <View style={styles.profileCardShade} />
+        <Pressable style={styles.profileEditBtn} onPress={() => onNavigate('Configuración')}>
+          <Ionicons name="create-outline" size={16} color={COLORS.INK} />
+          <Text style={styles.profileEditText}>{t('settings.editProfile')}</Text>
+        </Pressable>
+        <View style={styles.profileCardRow}>
+          <View>
+            <Image source={profilePhoto ? { uri: profilePhoto } : require('../../assets/normalized/Camilo.jpg')} style={styles.profileCardAvatar} />
+            <View style={styles.profileCardStar}><Ionicons name="star" size={12} color={COLORS.INK} /></View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.profileCardName} numberOfLines={2}>{profileName}</Text>
+            <Text style={styles.profileCardBio} numberOfLines={2}>{profileBio || t('profile.bio')}</Text>
+          </View>
+        </View>
+        <View style={[styles.profileChips, { justifyContent: 'flex-start' }]}>
           {isTourist && (
-            <View style={[styles.profileChip, { backgroundColor: '#EEE8FF' }]}>
+            <View style={[styles.profileChip, { backgroundColor: 'rgba(255,255,255,0.92)' }]}>
               <Ionicons name="ribbon" size={14} color="#6B4CFF" />
               <Text style={[styles.profileChipText, { color: '#6B4CFF' }]}>{levelLabel}</Text>
             </View>
@@ -83,8 +91,16 @@ export function ProfileScreen({ favorites, routesCount, profileName, profileBio,
               <Text style={[styles.profileChipText, { color: COLORS.INK }]}>{t(`roles.${perfil.role}`)}</Text>
             </View>
           )}
+          {isTourist && logros.length > 0 && (
+            <View style={[styles.profileChip, { backgroundColor: 'rgba(255,255,255,0.92)' }]}>
+              <Ionicons name="trophy" size={14} color="#F59E0B" />
+              <Text style={[styles.profileChipText, { color: '#9A6B00' }]}>{earned}/{logros.length}</Text>
+            </View>
+          )}
         </View>
+      </View>
 
+      <View style={styles.profileInfo}>
         {isTourist && (
           <>
             {/* Números del viajero: favoritos, paradas en su ruta y reseñas. */}

@@ -137,7 +137,11 @@
     "search": "今天想发现什么？",
     "discover": "探索{{name}}",
     "highlights": "{{city}}必去景点",
-    "traveler": "旅行者"
+    "traveler": "旅行者",
+    "morning": "早上好，",
+    "afternoon": "下午好，",
+    "evening": "晚上好，",
+    "tryIt": "试试“{{name}}”"
   },
   "explore": {
     "title": "探索",

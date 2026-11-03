@@ -137,7 +137,11 @@
     "search": "O que você quer descobrir hoje?",
     "discover": "Descobrir {{name}}",
     "highlights": "Imperdíveis de {{city}}",
-    "traveler": "Viajante"
+    "traveler": "Viajante",
+    "morning": "Bom dia,",
+    "afternoon": "Boa tarde,",
+    "evening": "Boa noite,",
+    "tryIt": "Experimente \"{{name}}\""
   },
   "explore": {
     "title": "Explorar",
