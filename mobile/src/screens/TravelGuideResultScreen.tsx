@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
+import { Image } from '../components/Img'
 import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'

@@ -28,7 +28,8 @@
       "expo-font",
       "expo-splash-screen",
       "expo-localization",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-image"
     ]
   }
 }

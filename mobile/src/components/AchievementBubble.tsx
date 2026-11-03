@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
-import { Animated, Easing, Image, Pressable, View, StyleSheet, Dimensions } from 'react-native'
+import { Animated, Easing, Pressable, View, StyleSheet, Dimensions } from 'react-native'
+import { Image } from './Img'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { Ionicons } from '@expo/vector-icons'

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Image, Pressable, ScrollView } from 'react-native'
+import { View, Pressable, ScrollView } from 'react-native'
+import { Image } from '../components/Img'
 import { Text } from '../components/AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS, getThemeMode } from '../theme/colors'

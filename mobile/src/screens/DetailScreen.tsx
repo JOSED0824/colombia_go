@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
-import { View, ScrollView, Image, Pressable, Linking } from 'react-native'
+import { View, ScrollView, Pressable, Linking } from 'react-native'
+import { Image } from '../components/Img'
 import { Text } from '../components/AppText'
 import { StatusBar } from 'expo-status-bar'
 import { Ionicons } from '@expo/vector-icons'

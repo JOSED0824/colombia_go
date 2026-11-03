@@ -1,5 +1,6 @@
 import React from 'react'
-import { Pressable, Image, View } from 'react-native'
+import { Pressable, View } from 'react-native'
+import { Image } from './Img'
 import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/colors'

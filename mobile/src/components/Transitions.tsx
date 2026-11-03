@@ -97,7 +97,13 @@ export function ReturnScene({ visible, children }: { visible: boolean; children:
   )
 }
 
-/** Pressable que se hunde un poco al tocarlo (como las tarjetas de iOS). */
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
+/**
+ * Pressable que se hunde un poco al tocarlo (como las tarjetas de iOS). El estilo va en el propio Pressable animado:
+ * así los anchos en porcentaje y el flex funcionan igual que en un Pressable normal (antes, envuelto en otra vista,
+ * las categorías del inicio quedaban angostas y su texto se cortaba).
+ */
 export function PressableScale({
   style,
   children,
@@ -107,8 +113,19 @@ export function PressableScale({
   const scale = useRef(new Animated.Value(1)).current
   const to = (v: number) => Animated.spring(scale, { toValue: v, speed: 40, bounciness: v === 1 ? 6 : 0, useNativeDriver: true }).start()
   return (
-    <Pressable {...props} onPressIn={(e) => { to(scaleTo); props.onPressIn?.(e) }} onPressOut={(e) => { to(1); props.onPressOut?.(e) }}>
-      <Animated.View style={[style, { transform: [{ scale }] }]}>{children}</Animated.View>
-    </Pressable>
+    <AnimatedPressable
+      {...props}
+      style={[style, { transform: [{ scale }] }]}
+      onPressIn={(e) => {
+        to(scaleTo)
+        props.onPressIn?.(e)
+      }}
+      onPressOut={(e) => {
+        to(1)
+        props.onPressOut?.(e)
+      }}
+    >
+      {children}
+    </AnimatedPressable>
   )
 }

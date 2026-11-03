@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
+import { Image } from './Img'
 import { Text } from './AppText'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from '../theme/styles'
