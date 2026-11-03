@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { apiGet, peekCache } from './api'
+import { apiGet, onApiMutation, peekCache } from './api'
 
 /**
  * Carga una ruta GET con caché: si ya se pidió antes, la pantalla arranca con ese dato (sin spinner) y solo vuelve a pedir
  * cuando venció. Se recarga al cambiar la ruta o el idioma. `path = null` no pide nada.
  */
-export function useApi<T>(path: string | null) {
+export function useApi<T>(path: string | null, options: { refreshOnMutation?: boolean } = {}) {
   const { i18n } = useTranslation()
   const [data, setData] = useState<T | undefined>(() => (path ? peekCache<T>(path) : undefined))
   const [loading, setLoading] = useState(() => !!path && peekCache<T>(path) === undefined)
@@ -40,6 +40,20 @@ export function useApi<T>(path: string | null) {
       cancelled = true
     }
   }, [path, i18n.language, attempt])
+
+  // Para datos que cambian con lo que hace la persona (p. ej. sus insignias): se vuelven a pedir tras cada acción.
+  useEffect(() => {
+    if (!options.refreshOnMutation || !path) return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const unsubscribe = onApiMutation(() => {
+      clearTimeout(timer)
+      timer = setTimeout(() => setAttempt((n) => n + 1), 1300)
+    })
+    return () => {
+      clearTimeout(timer)
+      unsubscribe()
+    }
+  }, [path, options.refreshOnMutation])
 
   return { data, loading, error, reload: () => setAttempt((n) => n + 1) }
 }

@@ -333,7 +333,8 @@ export default function App() {
 
   // Si el detalle se abrió desde el mapa, "atrás" vuelve al mapa (con sus puntos) en vez de ir al inicio.
   function selectDestination(item: Destination) {
-    setDetailFrom(stackScreen === 'Mapa' ? 'Mapa' : null)
+    // Si el detalle se abrió desde otra pantalla (mapa, "Mis rutas", notificaciones…), "atrás" vuelve a esa pantalla.
+    setDetailFrom(stackScreen && stackScreen !== 'Detalle' ? stackScreen : null)
     setSelectedDestination(item)
     setStackScreen('Detalle')
   }
@@ -637,6 +638,7 @@ export default function App() {
         return (
           <ProfileScreen
             favorites={favorites}
+            routesCount={savedRoutes.length}
             profileName={profileName}
             profileBio={profileBio}
             profilePhoto={profilePhoto}

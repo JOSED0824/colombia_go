@@ -96,10 +96,7 @@
     "wrongCode": "El código es incorrecto o ya venció.",
     "invalidCode": "Ingresa el código de 6 dígitos.",
     "otherEmail": "Usar otro correo",
-    "verified": "¡Correo verificado!",
-    "linkHint": "¿Te llegó un enlace en vez de un código? Tócalo desde tu correo y luego vuelve aquí.",
-    "confirmedWithLink": "Ya confirmé con el enlace",
-    "notYet": "Tu correo aún no aparece confirmado. Toca el enlace del correo e intenta de nuevo."
+    "verified": "¡Correo verificado!"
   },
   "forgot": {
     "title": "Recupera tu contraseña",
@@ -302,7 +299,12 @@
     "business": "Mis negocios",
     "businessSub": "Publica y edita tus lugares",
     "admin": "Panel de administración",
-    "adminSub": "Aprueba lugares, guías y reseñas"
+    "adminSub": "Aprueba lugares, guías y reseñas",
+    "statFavorites": "Favoritos",
+    "statRoute": "En tu ruta",
+    "notifications": "Notificaciones",
+    "notificationsSub": "Insignias y novedades",
+    "lockedHint": "Aún no la tienes. Cómo ganarla: {{text}}"
   },
   "achievements": {
     "1": {

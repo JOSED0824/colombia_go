@@ -96,10 +96,7 @@
     "wrongCode": "O código está incorreto ou expirou.",
     "invalidCode": "Digite o código de 6 dígitos.",
     "otherEmail": "Usar outro e-mail",
-    "verified": "E-mail verificado!",
-    "linkHint": "Recebeu um link em vez de um código? Toque nele pelo seu e-mail e depois volte aqui.",
-    "confirmedWithLink": "Já confirmei pelo link",
-    "notYet": "Seu e-mail ainda não aparece confirmado. Toque no link do e-mail e tente novamente."
+    "verified": "E-mail verificado!"
   },
   "forgot": {
     "title": "Recupere sua senha",
@@ -302,7 +299,12 @@
     "business": "Meus negócios",
     "businessSub": "Publique e edite seus lugares",
     "admin": "Painel de administração",
-    "adminSub": "Aprove lugares, guias e avaliações"
+    "adminSub": "Aprove lugares, guias e avaliações",
+    "statFavorites": "Favoritos",
+    "statRoute": "No seu roteiro",
+    "notifications": "Notificações",
+    "notificationsSub": "Insígnias e novidades",
+    "lockedHint": "Você ainda não tem. Como ganhar: {{text}}"
   },
   "achievements": {
     "1": {

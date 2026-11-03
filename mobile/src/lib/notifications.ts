@@ -44,7 +44,7 @@ function persist() {
  */
 export function useNotifications() {
   const { t } = useTranslation()
-  const { data: logros } = useApi<LogroDto[]>('/api/v1/perfil/logros')
+  const { data: logros } = useApi<LogroDto[]>('/api/v1/perfil/logros', { refreshOnMutation: true })
   const [, setTick] = useState(0)
 
   useEffect(() => {

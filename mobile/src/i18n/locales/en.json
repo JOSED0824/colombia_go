@@ -96,10 +96,7 @@
     "wrongCode": "The code is incorrect or has expired.",
     "invalidCode": "Enter the 6-digit code.",
     "otherEmail": "Use a different email",
-    "verified": "Email verified!",
-    "linkHint": "Got a link instead of a code? Tap it from your email, then come back here.",
-    "confirmedWithLink": "I confirmed with the link",
-    "notYet": "Your email isn't confirmed yet. Tap the link in the email and try again."
+    "verified": "Email verified!"
   },
   "forgot": {
     "title": "Reset your password",
@@ -302,7 +299,12 @@
     "business": "My businesses",
     "businessSub": "List and edit your places",
     "admin": "Admin panel",
-    "adminSub": "Approve places, guides and reviews"
+    "adminSub": "Approve places, guides and reviews",
+    "statFavorites": "Favorites",
+    "statRoute": "In your route",
+    "notifications": "Notifications",
+    "notificationsSub": "Badges and news",
+    "lockedHint": "You don't have it yet. How to earn it: {{text}}"
   },
   "achievements": {
     "1": {

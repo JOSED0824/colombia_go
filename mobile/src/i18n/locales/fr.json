@@ -96,10 +96,7 @@
     "wrongCode": "Le code est incorrect ou a expiré.",
     "invalidCode": "Saisissez le code à 6 chiffres.",
     "otherEmail": "Utiliser un autre e-mail",
-    "verified": "E-mail vérifié !",
-    "linkHint": "Vous avez reçu un lien au lieu d’un code ? Ouvrez-le depuis votre e-mail, puis revenez ici.",
-    "confirmedWithLink": "J’ai confirmé avec le lien",
-    "notYet": "Votre e-mail n’est pas encore confirmé. Ouvrez le lien de l’e-mail et réessayez."
+    "verified": "E-mail vérifié !"
   },
   "forgot": {
     "title": "Réinitialisez votre mot de passe",
@@ -302,7 +299,12 @@
     "business": "Mes commerces",
     "businessSub": "Publiez et modifiez vos lieux",
     "admin": "Panneau d'administration",
-    "adminSub": "Validez lieux, guides et avis"
+    "adminSub": "Validez lieux, guides et avis",
+    "statFavorites": "Favoris",
+    "statRoute": "Dans votre itinéraire",
+    "notifications": "Notifications",
+    "notificationsSub": "Badges et nouveautés",
+    "lockedHint": "Vous ne l’avez pas encore. Pour l’obtenir : {{text}}"
   },
   "achievements": {
     "1": {

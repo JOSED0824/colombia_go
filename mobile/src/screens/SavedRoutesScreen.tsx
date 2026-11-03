@@ -42,13 +42,13 @@ export function SavedRoutesScreen({ paradas, onSelect, onNavigate, onViewMap }: 
           </Pressable>
         </View>
       ) : (
-        <View>
+        <View style={{ flex: 1 }}>
           <View style={styles.routeInfoCard}>
             <Ionicons name="sparkles" size={20} color={COLORS.YELLOW} />
             <Text style={styles.routeInfoText}>{t('routes.stops', { count: saved.length })}</Text>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 130 }}>
             {saved.map((item, index) => (
               <View key={item.id} style={styles.routeItemContainer}>
                 {index !== saved.length - 1 && <View style={styles.routeLine} />}

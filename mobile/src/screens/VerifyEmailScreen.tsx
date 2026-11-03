@@ -10,7 +10,7 @@ import { styles } from '../theme/styles'
 import { CodeInput } from '../components/CodeInput'
 import { supabase } from '../lib/supabase'
 import { AUTH_REDIRECT_URL } from '../lib/api'
-import { authErrorMessage, isEmailNotConfirmed } from '../lib/errors'
+import { authErrorMessage } from '../lib/errors'
 import { notify } from '../lib/notify'
 import { KeyboardScroll } from '../components/KeyboardScroll'
 
@@ -18,8 +18,6 @@ const RESEND_SECONDS = 60
 
 type Props = {
   email: string
-  /** Contraseña recién escrita: permite entrar directo cuando la persona confirmó con el enlace del correo. */
-  password?: string
   /** Si el correo ya se envió justo antes de abrir esta pantalla (registro), arranca con la cuenta regresiva. */
   codeJustSent?: boolean
   onBack: () => void
@@ -29,7 +27,7 @@ type Props = {
  * Paso final del registro: la persona escribe el código de 6 dígitos que le llegó al correo.
  * Al verificarlo Supabase abre la sesión y App.tsx la detecta por onAuthStateChange (no hace falta callback).
  */
-export function VerifyEmailScreen({ email, password, codeJustSent = true, onBack }: Props) {
+export function VerifyEmailScreen({ email, codeJustSent = true, onBack }: Props) {
   const { t } = useTranslation()
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,20 +53,6 @@ export function VerifyEmailScreen({ email, password, codeJustSent = true, onBack
       setError(/expired|invalid/i.test(err.message) ? t('verify.wrongCode') : authErrorMessage(err.message))
       setCode('')
     }
-  }
-
-  // Con las plantillas por defecto de Supabase el correo trae un enlace (no un código). Tras tocarlo, la cuenta ya está
-  // confirmada: con la contraseña que la persona acaba de escribir se inicia sesión sin pedirle nada más.
-  async function confirmedWithLink() {
-    if (!password) {
-      onBack()
-      return
-    }
-    setLoading(true)
-    setError('')
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password })
-    setLoading(false)
-    if (err) setError(isEmailNotConfirmed(err) ? t('verify.notYet') : authErrorMessage(err.message))
   }
 
   async function resend() {
@@ -106,12 +90,6 @@ export function VerifyEmailScreen({ email, password, codeJustSent = true, onBack
           {loading ? <ActivityIndicator size="small" color="#FFF" /> : <Ionicons name="checkmark" size={18} color="#FFF" />}
         </Pressable>
 
-        <Text style={local.hint}>{t('verify.linkHint')}</Text>
-        <Pressable style={[local.linkBtn, loading && { opacity: 0.7 }]} onPress={confirmedWithLink} disabled={loading}>
-          <Ionicons name="link-outline" size={18} color={COLORS.BLUE} />
-          <Text style={local.linkBtnText}>{t('verify.confirmedWithLink')}</Text>
-        </Pressable>
-
         <Pressable onPress={resend} disabled={seconds > 0} style={local.link}>
           <Text style={[styles.switchLink, seconds > 0 && { color: COLORS.TEXT_MUTED }]}>
             {seconds > 0 ? t('verify.resendIn', { seconds }) : t('verify.resend')}
@@ -138,6 +116,4 @@ const local = themed(() => StyleSheet.create({
   error: { color: COLORS.RED, fontFamily: 'Poppins_500Medium', fontSize: 13, marginBottom: 10, textAlign: 'center' },
   link: { marginTop: 14 },
   hint: { marginTop: 6, fontFamily: 'Poppins_400Regular', fontSize: 12, color: COLORS.TEXT_MUTED, textAlign: 'center' },
-  linkBtn: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10, paddingVertical: 14, borderRadius: 20, borderWidth: 1.5, borderColor: COLORS.BLUE },
-  linkBtnText: { fontFamily: 'Poppins_700Bold', fontSize: 14, color: COLORS.BLUE },
 }))
