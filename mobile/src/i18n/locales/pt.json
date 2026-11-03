@@ -92,7 +92,10 @@
     "wrongCode": "O código está incorreto ou expirou.",
     "invalidCode": "Digite o código de 6 dígitos.",
     "otherEmail": "Usar outro e-mail",
-    "verified": "E-mail verificado!"
+    "verified": "E-mail verificado!",
+    "linkHint": "Recebeu um link em vez de um código? Toque nele pelo seu e-mail e depois volte aqui.",
+    "confirmedWithLink": "Já confirmei pelo link",
+    "notYet": "Seu e-mail ainda não aparece confirmado. Toque no link do e-mail e tente novamente."
   },
   "forgot": {
     "title": "Recupere sua senha",

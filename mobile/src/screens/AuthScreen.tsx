@@ -23,7 +23,7 @@ const ACCOUNT_TYPES = [
   { id: 'negocio', icon: 'storefront-outline' },
 ] as const
 
-type View_ = { name: 'form' } | { name: 'verify'; email: string; codeJustSent: boolean } | { name: 'forgot' }
+type View_ = { name: 'form' } | { name: 'verify'; email: string; password: string; codeJustSent: boolean } | { name: 'forgot' }
 
 // No recibe callback: al iniciar sesión, App.tsx detecta la nueva sesión vía onAuthStateChange.
 export function AuthScreen() {
@@ -67,7 +67,7 @@ export function AuthScreen() {
       if (isLogin && isEmailNotConfirmed(error)) {
         // Se registró pero nunca verificó: se le manda un código nuevo y se le pide escribirlo.
         await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: AUTH_REDIRECT_URL } })
-        setView({ name: 'verify', email: email.trim(), codeJustSent: true })
+        setView({ name: 'verify', email: email.trim(), password, codeJustSent: true })
         return
       }
       notify(isLogin ? t('auth.loginFailed') : t('auth.signupFailed'), authErrorMessage(error.message))
@@ -80,12 +80,12 @@ export function AuthScreen() {
         notify(t('auth.signupFailed'), t('auth.errors.alreadyRegistered'))
         return
       }
-      if (!data.session) setView({ name: 'verify', email: email.trim(), codeJustSent: true })
+      if (!data.session) setView({ name: 'verify', email: email.trim(), password, codeJustSent: true })
     }
   }
 
   if (view.name === 'verify') {
-    return <VerifyEmailScreen email={view.email} codeJustSent={view.codeJustSent} onBack={() => setView({ name: 'form' })} />
+    return <VerifyEmailScreen email={view.email} password={view.password} codeJustSent={view.codeJustSent} onBack={() => setView({ name: 'form' })} />
   }
   if (view.name === 'forgot') {
     return <ForgotPasswordScreen initialEmail={email} onBack={() => setView({ name: 'form' })} />

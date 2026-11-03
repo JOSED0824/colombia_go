@@ -92,7 +92,10 @@
     "wrongCode": "Le code est incorrect ou a expiré.",
     "invalidCode": "Saisissez le code à 6 chiffres.",
     "otherEmail": "Utiliser un autre e-mail",
-    "verified": "E-mail vérifié !"
+    "verified": "E-mail vérifié !",
+    "linkHint": "Vous avez reçu un lien au lieu d’un code ? Ouvrez-le depuis votre e-mail, puis revenez ici.",
+    "confirmedWithLink": "J’ai confirmé avec le lien",
+    "notYet": "Votre e-mail n’est pas encore confirmé. Ouvrez le lien de l’e-mail et réessayez."
   },
   "forgot": {
     "title": "Réinitialisez votre mot de passe",

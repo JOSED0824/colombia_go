@@ -92,7 +92,10 @@
     "wrongCode": "The code is incorrect or has expired.",
     "invalidCode": "Enter the 6-digit code.",
     "otherEmail": "Use a different email",
-    "verified": "Email verified!"
+    "verified": "Email verified!",
+    "linkHint": "Got a link instead of a code? Tap it from your email, then come back here.",
+    "confirmedWithLink": "I confirmed with the link",
+    "notYet": "Your email isn't confirmed yet. Tap the link in the email and try again."
   },
   "forgot": {
     "title": "Reset your password",

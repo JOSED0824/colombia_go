@@ -92,7 +92,10 @@
     "wrongCode": "验证码错误或已过期。",
     "invalidCode": "请输入 6 位验证码。",
     "otherEmail": "使用其他邮箱",
-    "verified": "邮箱已验证！"
+    "verified": "邮箱已验证！",
+    "linkHint": "收到的是链接而不是验证码？请在邮件中点击该链接，然后回到这里。",
+    "confirmedWithLink": "我已通过链接确认",
+    "notYet": "您的邮箱尚未确认。请点击邮件中的链接后重试。"
   },
   "forgot": {
     "title": "找回密码",

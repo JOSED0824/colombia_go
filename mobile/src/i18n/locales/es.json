@@ -92,7 +92,10 @@
     "wrongCode": "El código es incorrecto o ya venció.",
     "invalidCode": "Ingresa el código de 6 dígitos.",
     "otherEmail": "Usar otro correo",
-    "verified": "¡Correo verificado!"
+    "verified": "¡Correo verificado!",
+    "linkHint": "¿Te llegó un enlace en vez de un código? Tócalo desde tu correo y luego vuelve aquí.",
+    "confirmedWithLink": "Ya confirmé con el enlace",
+    "notYet": "Tu correo aún no aparece confirmado. Toca el enlace del correo e intenta de nuevo."
   },
   "forgot": {
     "title": "Recupera tu contraseña",
