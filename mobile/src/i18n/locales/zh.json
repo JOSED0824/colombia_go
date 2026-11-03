@@ -141,7 +141,20 @@
     "morning": "早上好，",
     "afternoon": "下午好，",
     "evening": "晚上好，",
-    "tryIt": "试试“{{name}}”"
+    "tryIt": "试试“{{name}}”",
+    "topRated": "评分最高",
+    "byCity": "按城市探索",
+    "guides": "推荐本地向导",
+    "nature": "自然瑰宝",
+    "food": "哥伦比亚风味",
+    "culture": "文化与传统",
+    "nightlife": "难忘之夜",
+    "placesCount_one": "{{count}} 个地点",
+    "placesCount_other": "{{count}} 个地点",
+    "aiBannerTitle": "用 AI 规划旅行",
+    "aiBannerText": "告诉我们天数、预算和兴趣，我们为您生成行程。",
+    "aiBannerCta": "开始",
+    "new": "新"
   },
   "explore": {
     "title": "探索",

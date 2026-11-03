@@ -141,7 +141,20 @@
     "morning": "Bom dia,",
     "afternoon": "Boa tarde,",
     "evening": "Boa noite,",
-    "tryIt": "Experimente \"{{name}}\""
+    "tryIt": "Experimente \"{{name}}\"",
+    "topRated": "Os mais bem avaliados",
+    "byCity": "Explore por cidade",
+    "guides": "Guias locais recomendados",
+    "nature": "Joias da natureza",
+    "food": "Sabores da Colômbia",
+    "culture": "Cultura e tradição",
+    "nightlife": "Noites inesquecíveis",
+    "placesCount_one": "{{count}} lugar",
+    "placesCount_other": "{{count}} lugares",
+    "aiBannerTitle": "Monte sua viagem com IA",
+    "aiBannerText": "Diga os dias, o orçamento e o que você gosta: montamos o roteiro.",
+    "aiBannerCta": "Começar",
+    "new": "Novo"
   },
   "explore": {
     "title": "Explorar",

@@ -141,7 +141,20 @@
     "morning": "Good morning,",
     "afternoon": "Good afternoon,",
     "evening": "Good evening,",
-    "tryIt": "Try \"{{name}}\""
+    "tryIt": "Try \"{{name}}\"",
+    "topRated": "Top rated",
+    "byCity": "Explore by city",
+    "guides": "Recommended local guides",
+    "nature": "Nature gems",
+    "food": "Flavors of Colombia",
+    "culture": "Culture & tradition",
+    "nightlife": "Nights to remember",
+    "placesCount_one": "{{count}} place",
+    "placesCount_other": "{{count}} places",
+    "aiBannerTitle": "Plan your trip with AI",
+    "aiBannerText": "Tell us your days, budget and interests and we build your itinerary.",
+    "aiBannerCta": "Start",
+    "new": "New"
   },
   "explore": {
     "title": "Explore",

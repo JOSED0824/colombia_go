@@ -141,7 +141,20 @@
     "morning": "Bonjour,",
     "afternoon": "Bon après-midi,",
     "evening": "Bonsoir,",
-    "tryIt": "Essayez « {{name}} »"
+    "tryIt": "Essayez « {{name}} »",
+    "topRated": "Les mieux notés",
+    "byCity": "Explorer par ville",
+    "guides": "Guides locaux recommandés",
+    "nature": "Joyaux de la nature",
+    "food": "Saveurs de Colombie",
+    "culture": "Culture et tradition",
+    "nightlife": "Des nuits inoubliables",
+    "placesCount_one": "{{count}} lieu",
+    "placesCount_other": "{{count}} lieux",
+    "aiBannerTitle": "Planifiez avec l’IA",
+    "aiBannerText": "Indiquez vos jours, votre budget et vos goûts : on prépare l’itinéraire.",
+    "aiBannerCta": "Commencer",
+    "new": "Nouveau"
   },
   "explore": {
     "title": "Explorer",

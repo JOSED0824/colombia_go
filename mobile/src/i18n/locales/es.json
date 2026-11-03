@@ -141,7 +141,20 @@
     "morning": "Buenos días,",
     "afternoon": "Buenas tardes,",
     "evening": "Buenas noches,",
-    "tryIt": "Prueba \"{{name}}\""
+    "tryIt": "Prueba \"{{name}}\"",
+    "topRated": "Los mejor calificados",
+    "byCity": "Explora por ciudad",
+    "guides": "Guías locales recomendados",
+    "nature": "Joyas de la naturaleza",
+    "food": "Sabores de Colombia",
+    "culture": "Cultura y tradición",
+    "nightlife": "Noches para recordar",
+    "placesCount_one": "{{count}} lugar",
+    "placesCount_other": "{{count}} lugares",
+    "aiBannerTitle": "Arma tu viaje con IA",
+    "aiBannerText": "Dinos cuántos días, tu presupuesto y lo que te gusta: te armamos el itinerario.",
+    "aiBannerCta": "Empezar",
+    "new": "Nuevo"
   },
   "explore": {
     "title": "Explorar",

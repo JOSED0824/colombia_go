@@ -593,6 +593,11 @@ export default function App() {
             onCategory={goCategory}
             onNotifications={() => setStackScreen('Notificaciones')}
             onSelect={selectDestination}
+            onOpenGuide={(guide: Guia) => {
+              setSelectedGuide(guide)
+              setStackScreen('Guía')
+            }}
+            onOpenAi={() => navigate('IA')}
           />
         )
       case 'Explorar':

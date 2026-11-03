@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useApi } from '../lib/useApi'
 import { prefetch } from '../lib/api'
 import { PressableScale } from '../components/Transitions'
+import { HomeSections } from '../components/HomeSections'
 import { useNotifications } from '../lib/notifications'
 import { toDestination } from '../lib/mappers'
 import type { Destination, LugarResumenDto, PagedResult } from '../lib/types'
@@ -36,7 +37,7 @@ function partOfDay() {
   return h < 12 ? 'morning' : h < 19 ? 'afternoon' : 'evening'
 }
 
-export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, onNotifications, onSelect }: any) {
+export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, onNotifications, onSelect, onOpenGuide, onOpenAi }: any) {
   const { t } = useTranslation()
   const [activeSlide, setActiveSlide] = useState(0)
   const [search, setSearch] = useState('')
@@ -181,6 +182,16 @@ export function HomeScreen({ profileName, profilePhoto, onExplore, onCategory, o
           </FadeIn>
         ))}
       </ScrollView>
+
+      <HomeSections
+        seed={SESSION_SEED}
+        shuffle={shuffle}
+        onSelect={onSelect}
+        onCategory={onCategory}
+        onExplore={onExplore}
+        onOpenGuide={onOpenGuide}
+        onOpenAi={onOpenAi}
+      />
     </View>
   )
 }
