@@ -14,7 +14,7 @@ import type { CalificacionPendienteDto, GuiaDto, LugarPendienteDto, PagedResult 
 type Tab = 'places' | 'guides' | 'reviews'
 
 /** Panel de administración: aprobar lugares de negocios, verificar guías y moderar reseñas. */
-export function AdminScreen({ onBack }: { onBack: () => void }) {
+export function AdminScreen({ onBack }: { onBack?: () => void }) {
   const { t } = useTranslation()
   const [tab, setTab] = useState<Tab>('places')
   const [places, setPlaces] = useState<LugarPendienteDto[] | null>(null)
@@ -58,17 +58,24 @@ export function AdminScreen({ onBack }: { onBack: () => void }) {
       setReviews((cur) => cur?.filter((r) => r.id !== id) ?? null),
     )
 
+  // Como pestaña ya está dentro del scroll de la pestaña; como pantalla aparte necesita el suyo.
+  const Body = onBack ? ScrollBody : PlainBody
+
   const counts: Record<Tab, number | undefined> = { places: places?.length, guides: guides?.length, reviews: reviews?.length }
   const list = tab === 'places' ? places : tab === 'guides' ? guides : reviews
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.settingsHeader}>
-        <Pressable style={styles.backBtnSmall} onPress={onBack}>
-          <Ionicons name="chevron-back" size={20} color={COLORS.BLUE} />
-        </Pressable>
-        <Text style={styles.settingsHeaderTitle}>{t('admin.title')}</Text>
-      </View>
+    <View style={onBack ? { flex: 1 } : undefined}>
+      {onBack ? (
+        <View style={styles.settingsHeader}>
+          <Pressable style={styles.backBtnSmall} onPress={onBack}>
+            <Ionicons name="chevron-back" size={20} color={COLORS.BLUE} />
+          </Pressable>
+          <Text style={styles.settingsHeaderTitle}>{t('admin.title')}</Text>
+        </View>
+      ) : (
+        <Text style={styles.pageTitle}>{t('admin.title')}</Text>
+      )}
 
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
         {(['places', 'guides', 'reviews'] as Tab[]).map((k) => (
@@ -80,7 +87,7 @@ export function AdminScreen({ onBack }: { onBack: () => void }) {
         ))}
       </View>
 
-      <KeyboardScroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 130 }}>
+      <Body>
         {list === null ? (
           <ActivityIndicator color={COLORS.BLUE} style={{ marginTop: 30 }} />
         ) : list.length === 0 ? (
@@ -160,9 +167,22 @@ export function AdminScreen({ onBack }: { onBack: () => void }) {
             </View>
           ))
         )}
-      </KeyboardScroll>
+      </Body>
     </View>
   )
+}
+
+// Componentes fijos (no creados dentro del render) para que escribir el motivo de rechazo no pierda el foco.
+function ScrollBody({ children }: { children: React.ReactNode }) {
+  return (
+    <KeyboardScroll showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 130 }}>
+      {children}
+    </KeyboardScroll>
+  )
+}
+
+function PlainBody({ children }: { children: React.ReactNode }) {
+  return <View>{children}</View>
 }
 
 function Actions({

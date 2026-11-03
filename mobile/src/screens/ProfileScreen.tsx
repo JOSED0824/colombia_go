@@ -40,6 +40,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
     apiGet<LogroDto[]>('/api/v1/perfil/logros').then(setLogros).catch(() => {})
   }, [favorites?.length, i18n.language])
 
+  const isTourist = !perfil?.role || perfil.role === 'turista'
   const nivel = perfil?.level.match(/\d+/)?.[0]
   const levelLabel = nivel ? t('profile.level', { n: nivel }) : t('profile.traveler')
 
@@ -72,6 +73,7 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
           </View>
         )}
 
+        {isTourist && (<>
         <View style={styles.statsPanel}>
           <View style={styles.statBox}><Text style={styles.statVal}>{perfil?.places ?? '–'}</Text><View style={styles.statLabelRow}><Ionicons name="location" size={12} color="#10B981" /><Text style={styles.statLabelText}>{t('profile.places')}</Text></View></View>
           <View style={styles.dividerV} />
@@ -103,22 +105,20 @@ export function ProfileScreen({ favorites, profileName, profileBio, profilePhoto
             />
           ))}
         </ScrollView>
+        </>)}
 
         <View style={styles.profileMenu}>
           {perfil?.role === 'guia' && (
-            <MenuRow icon="person-circle" label={t('profile.guidePanel')} sub={t('profile.guidePanelSub')} color="#E8F5E9" iconCol="#10B981" onPress={() => onNavigate('PanelGuia')} />
+            <MenuRow icon="person-circle" label={t('profile.guidePanel')} sub={t('profile.guidePanelSub')} color="#E8F5E9" iconCol="#10B981" onPress={() => onNavigate('MiGuia')} />
           )}
           {perfil?.role === 'negocio' && (
-            <MenuRow icon="storefront" label={t('profile.business')} sub={t('profile.businessSub')} color="#FFF8E1" iconCol="#F59E0B" onPress={() => onNavigate('Negocios')} />
+            <MenuRow icon="storefront" label={t('profile.business')} sub={t('profile.businessSub')} color="#FFF8E1" iconCol="#F59E0B" onPress={() => onNavigate(perfil?.role === 'admin' ? 'Moderar' : 'MiNegocio')} />
           )}
           {perfil?.role === 'admin' && (
-            <>
-              <MenuRow icon="shield-checkmark" label={t('profile.admin')} sub={t('profile.adminSub')} color="#E3F2FD" iconCol="#003B7D" onPress={() => onNavigate('Admin')} />
-              <MenuRow icon="storefront" label={t('profile.business')} sub={t('profile.businessSub')} color="#FFF8E1" iconCol="#F59E0B" onPress={() => onNavigate('Negocios')} />
-            </>
+            <MenuRow icon="shield-checkmark" label={t('profile.admin')} sub={t('profile.adminSub')} color="#E3F2FD" iconCol="#003B7D" onPress={() => onNavigate('Moderar')} />
           )}
-          <MenuRow icon="heart" label={t('profile.favorites')} sub={t('profile.favoritesSub')} color="#FFEBEE" iconCol="#E63946" onPress={() => onNavigate('Favoritos')} />
-          <MenuRow icon="map" label={t('profile.routes')} sub={t('profile.routesSub')} color="#E3F2FD" iconCol="#2196F3" onPress={() => onNavigate('Viajes')} />
+          {isTourist && <MenuRow icon="heart" label={t('profile.favorites')} sub={t('profile.favoritesSub')} color="#FFEBEE" iconCol="#E63946" onPress={() => onNavigate('Favoritos')} />}
+          {isTourist && <MenuRow icon="map" label={t('profile.routes')} sub={t('profile.routesSub')} color="#E3F2FD" iconCol="#2196F3" onPress={() => onNavigate('Viajes')} />}
           <MenuRow icon="settings" label={t('profile.settings')} sub={t('profile.settingsSub')} color="#F3E5F5" iconCol="#9C27B0" onPress={() => onNavigate('Configuración')} />
         </View>
       </View>

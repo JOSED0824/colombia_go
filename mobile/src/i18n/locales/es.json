@@ -23,7 +23,11 @@
     "guides": "Guías",
     "ai": "IA",
     "favorites": "Favoritos",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "myGuide": "Mi perfil",
+    "myBusiness": "Mi negocio",
+    "publish": "Publicar",
+    "moderate": "Moderar"
   },
   "categories": {
     "all": "Todos",
@@ -506,5 +510,31 @@
     "rejectReasonPh": "Motivo del rechazo (lo verá el negocio)",
     "confirmReject": "Rechazar",
     "failed": "No se pudo completar. Intenta de nuevo."
+  },
+  "select": {
+    "placeholder": "Selecciona…",
+    "search": "Buscar…",
+    "other": "Otra (escribirla)",
+    "typeOther": "Escribe el nombre",
+    "none": "Sin resultados",
+    "pickRegionFirst": "Primero elige el departamento"
+  },
+  "guideHome": {
+    "hello": "Hola, {{name}}",
+    "subtitle": "Tu panel de guía local",
+    "noProfileTitle": "Aún no tienes perfil de guía",
+    "create": "Crear mi perfil",
+    "preview": "Así te ven los turistas",
+    "reviews": "Reseñas",
+    "edit": "Editar mi perfil"
+  },
+  "businessHome": {
+    "hello": "Hola, {{name}}",
+    "subtitle": "El panel de tu negocio",
+    "published": "Publicados",
+    "inReview": "En revisión",
+    "rejected": "Rechazados",
+    "rating": "Calificación",
+    "places": "Tus lugares"
   }
 }

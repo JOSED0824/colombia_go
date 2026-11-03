@@ -23,7 +23,11 @@
     "guides": "向导",
     "ai": "AI",
     "favorites": "收藏",
-    "profile": "我的"
+    "profile": "我的",
+    "myGuide": "我的资料",
+    "myBusiness": "我的商家",
+    "publish": "发布",
+    "moderate": "审核"
   },
   "categories": {
     "all": "全部",
@@ -506,5 +510,31 @@
     "rejectReasonPh": "拒绝原因（商家可见）",
     "confirmReject": "拒绝",
     "failed": "操作失败，请重试。"
+  },
+  "select": {
+    "placeholder": "请选择…",
+    "search": "搜索…",
+    "other": "其他（手动输入）",
+    "typeOther": "输入名称",
+    "none": "无结果",
+    "pickRegionFirst": "请先选择省份"
+  },
+  "guideHome": {
+    "hello": "你好，{{name}}",
+    "subtitle": "您的本地向导面板",
+    "noProfileTitle": "您还没有向导资料",
+    "create": "创建我的资料",
+    "preview": "游客看到的您",
+    "reviews": "评价",
+    "edit": "编辑我的资料"
+  },
+  "businessHome": {
+    "hello": "你好，{{name}}",
+    "subtitle": "您的商家面板",
+    "published": "已发布",
+    "inReview": "审核中",
+    "rejected": "已拒绝",
+    "rating": "评分",
+    "places": "您的地点"
   }
 }

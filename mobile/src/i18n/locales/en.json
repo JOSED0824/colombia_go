@@ -23,7 +23,11 @@
     "guides": "Guides",
     "ai": "AI",
     "favorites": "Favorites",
-    "profile": "Profile"
+    "profile": "Profile",
+    "myGuide": "My profile",
+    "myBusiness": "My business",
+    "publish": "Publish",
+    "moderate": "Moderate"
   },
   "categories": {
     "all": "All",
@@ -506,5 +510,31 @@
     "rejectReasonPh": "Reason for rejection (the business will see it)",
     "confirmReject": "Reject",
     "failed": "Couldn't complete it. Please try again."
+  },
+  "select": {
+    "placeholder": "Select…",
+    "search": "Search…",
+    "other": "Other (type it)",
+    "typeOther": "Type the name",
+    "none": "No results",
+    "pickRegionFirst": "Choose the department first"
+  },
+  "guideHome": {
+    "hello": "Hi, {{name}}",
+    "subtitle": "Your local guide dashboard",
+    "noProfileTitle": "You don't have a guide profile yet",
+    "create": "Create my profile",
+    "preview": "How travelers see you",
+    "reviews": "Reviews",
+    "edit": "Edit my profile"
+  },
+  "businessHome": {
+    "hello": "Hi, {{name}}",
+    "subtitle": "Your business dashboard",
+    "published": "Published",
+    "inReview": "Under review",
+    "rejected": "Rejected",
+    "rating": "Rating",
+    "places": "Your places"
   }
 }

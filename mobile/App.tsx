@@ -23,7 +23,8 @@ import { apiGet, apiSend, pingApi, prefetch, API_BASE } from './src/lib/api'
 import { authFlow } from './src/lib/authFlow'
 import { notify } from './src/lib/notify'
 import { toDestination } from './src/lib/mappers'
-import type { ConfiguracionDto, Destination, LugarResumenDto, PagedResult, RutaDto } from './src/lib/types'
+import type { ConfiguracionDto, Destination, LugarResumenDto, MiLugarDto, PagedResult, PerfilDto, Role, RutaDto } from './src/lib/types'
+import { ALL_TAB_IDS, tabsForRole } from './src/lib/roleNav'
 import { getAssuranceLevel, listFactors } from './src/lib/mfa'
 import { AuthScreen } from './src/screens/AuthScreen'
 import { MfaChallengeScreen } from './src/screens/MfaChallengeScreen'
@@ -44,15 +45,16 @@ import { KeyboardScroll } from './src/components/KeyboardScroll'
 import { GuideDetailScreen } from './src/screens/GuideDetailScreen'
 import { NotificationsScreen } from './src/screens/NotificationsScreen'
 import { GuidePanelScreen } from './src/screens/GuidePanelScreen'
-import { BusinessScreen } from './src/screens/BusinessScreen'
+import { BusinessDashboard, BusinessForm } from './src/screens/BusinessScreen'
+import { GuideHomeScreen } from './src/screens/GuideHomeScreen'
 import { AdminScreen } from './src/screens/AdminScreen'
 import type { Guia } from './src/lib/guides'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
-const TABS = ['Inicio', 'Explorar', 'Guías', 'IA', 'Favoritos', 'Perfil'] as const
-type Tab = (typeof TABS)[number]
-type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | 'Notificaciones' | 'PanelGuia' | 'Negocios' | 'Admin' | null
+// Las pestañas dependen del tipo de cuenta (turista, guía, negocio, admin): ver src/lib/roleNav.ts.
+type Tab = string
+type StackScreen = 'Viajes' | 'Configuración' | 'Detalle' | 'Mapa' | 'Guía' | 'Notificaciones' | 'PanelGuia' | 'NegocioEditar' | null
 
 // loading: leyendo la configuración del servidor · onboarding: bienvenida + tour + intereses ·
 // coach: tooltips sobre la barra inferior · done: app normal.
@@ -142,6 +144,20 @@ export default function App() {
   const [profileBio, setProfileBio] = useState<string | null>(null)
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
 
+  // Tipo de cuenta. Mientras llega el perfil se usa el que eligió al registrarse (user_metadata.tipo_cuenta); el perfil
+  // de la API es el que manda (incluye "admin", que no se elige desde la app).
+  const [role, setRole] = useState<Role>('turista')
+  useEffect(() => {
+    const meta = session?.user?.user_metadata?.tipo_cuenta
+    setRole(meta === 'guia' || meta === 'negocio' ? meta : 'turista')
+  }, [session?.user?.id])
+  const tabs = tabsForRole(role)
+
+  // Paneles de guía y negocio: cambian estos números para que vuelvan a pedir sus datos tras guardar.
+  const [guideRefresh, setGuideRefresh] = useState(0)
+  const [businessRefresh, setBusinessRefresh] = useState(0)
+  const [selectedPlace, setSelectedPlace] = useState<MiLugarDto | null>(null)
+
   const [activeTab, setActiveTab] = useState<Tab>('Inicio')
   const [stackScreen, setStackScreen] = useState<StackScreen>(null)
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
@@ -154,6 +170,14 @@ export default function App() {
   useEffect(() => {
     setVisited((v) => (v.has(activeTab) ? v : new Set(v).add(activeTab)))
   }, [activeTab])
+
+  // Al conocer el tipo de cuenta, la app abre en la primera pestaña de ese rol (p. ej. "Mi negocio").
+  useEffect(() => {
+    if (tabs.some((tab) => tab.id === activeTab)) return
+    setActiveTab(tabs[0].id)
+    setVisited(new Set([tabs[0].id]))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role])
 
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
@@ -180,11 +204,12 @@ export default function App() {
   // carga sus datos en segundo plano y cuando la persona la abre por primera vez ya está lista, sin spinner de "cargando".
   useEffect(() => {
     if (phase !== 'done' || !session?.user) return
-    const timers = TABS.map((tab, i) =>
-      setTimeout(() => setVisited((v) => (v.has(tab) ? v : new Set(v).add(tab))), 900 + i * 400),
+    const timers = tabs.map(({ id }, i) =>
+      setTimeout(() => setVisited((v) => (v.has(id) ? v : new Set(v).add(id))), 900 + i * 400),
     )
     return () => timers.forEach(clearTimeout)
-  }, [phase, session?.user?.id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, session?.user?.id, role])
 
   function showOnMap(points: Destination[], title: string, drawRoute = false) {
     setMapPoints(points)
@@ -214,8 +239,12 @@ export default function App() {
     let cancelled = false
     ;(async () => {
       try {
-        const config = await apiGet<ConfiguracionDto>('/api/v1/perfil/configuracion')
+        const [config, perfil] = await Promise.all([
+          apiGet<ConfiguracionDto>('/api/v1/perfil/configuracion'),
+          apiGet<PerfilDto>('/api/v1/perfil').catch(() => null),
+        ])
         if (cancelled) return
+        if (perfil?.role) setRole(perfil.role)
         const serverLanguage = normalizeLanguage(config.language)
         if (!(await hasSavedLanguage())) {
           await setLanguage(serverLanguage)
@@ -227,7 +256,9 @@ export default function App() {
             language: getLanguage(),
           }).catch(() => {})
         }
-        if (!cancelled) setPhase(config.onboardingCompleted ? 'done' : 'onboarding')
+        // El recorrido de bienvenida (intereses, pestañas de turista) es solo para turistas.
+        const isTourist = !perfil?.role || perfil.role === 'turista'
+        if (!cancelled) setPhase(config.onboardingCompleted || !isTourist ? 'done' : 'onboarding')
       } catch {
         // Sin conexión con la API: no se bloquea la app con un tutorial que no se podría marcar como visto.
         if (!cancelled) setPhase('done')
@@ -277,7 +308,7 @@ export default function App() {
   if (!fontsLoaded || !languageReady || !themeReady || session === undefined) return null
 
   function navigate(target: string) {
-    if ((TABS as readonly string[]).includes(target)) {
+    if (ALL_TAB_IDS.has(target)) {
       setStackScreen(null)
       setActiveTab(target as Tab)
     } else {
@@ -479,17 +510,55 @@ export default function App() {
     content = <NotificationsScreen onBack={() => setStackScreen(null)} onNavigate={navigate} />
   } else if (stackScreen === 'PanelGuia') {
     padStack = true
-    content = <GuidePanelScreen onBack={() => setStackScreen(null)} />
-  } else if (stackScreen === 'Negocios') {
+    content = (
+      <GuidePanelScreen
+        onBack={() => setStackScreen(null)}
+        onSaved={() => setGuideRefresh((n) => n + 1)}
+      />
+    )
+  } else if (stackScreen === 'NegocioEditar' && selectedPlace) {
     padStack = true
-    content = <BusinessScreen onBack={() => setStackScreen(null)} />
-  } else if (stackScreen === 'Admin') {
-    padStack = true
-    content = <AdminScreen onBack={() => setStackScreen(null)} />
+    content = (
+      <BusinessForm
+        place={selectedPlace}
+        onBack={() => setStackScreen(null)}
+        onSaved={() => {
+          setBusinessRefresh((n) => n + 1)
+          setStackScreen(null)
+        }}
+      />
+    )
   }
 
   function renderTab(tab: Tab): React.ReactNode {
     switch (tab) {
+      case 'MiGuia':
+        return <GuideHomeScreen name={profileName} refreshKey={guideRefresh} onEdit={() => setStackScreen('PanelGuia')} />
+      case 'MiNegocio':
+        return (
+          <BusinessDashboard
+            name={profileName}
+            refreshKey={businessRefresh}
+            onNew={() => navigate('Publicar')}
+            onEdit={(place) => {
+              setSelectedPlace(place)
+              setStackScreen('NegocioEditar')
+            }}
+          />
+        )
+      case 'Publicar':
+        return (
+          <BusinessForm
+            key={businessRefresh}
+            place={null}
+            onSaved={() => {
+              setBusinessRefresh((n) => n + 1) // recarga "Mi negocio" y deja este formulario vacío
+              navigate('MiNegocio')
+            }}
+          />
+        )
+      case 'Moderar':
+        return <AdminScreen />
       case 'IA':
         return (
           <AiHubScreen
@@ -575,7 +644,7 @@ export default function App() {
             content
           ))}
         <View style={{ flex: 1, display: content === null ? 'flex' : 'none' }}>
-          {TABS.filter((tab) => visited.has(tab) || tab === activeTab).map((tab) => (
+          {tabs.map(({ id }) => id).filter((tab) => visited.has(tab) || tab === activeTab).map((tab) => (
             <View key={tab} style={{ flex: 1, display: tab === activeTab ? 'flex' : 'none' }}>
               <SafeAreaView style={styles.safe} edges={['top']}>
                 <KeyboardScroll contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -586,6 +655,7 @@ export default function App() {
           ))}
         </View>
         <BottomNav
+          tabs={tabs}
           active={activeTab}
           onChange={navigate}
           onTabLayout={(tab, layout) => setTabLayouts((current) => ({ ...current, [tab]: layout }))}

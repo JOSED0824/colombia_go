@@ -23,7 +23,11 @@
     "guides": "Guides",
     "ai": "IA",
     "favorites": "Favoris",
-    "profile": "Profil"
+    "profile": "Profil",
+    "myGuide": "Mon profil",
+    "myBusiness": "Mon commerce",
+    "publish": "Publier",
+    "moderate": "Modérer"
   },
   "categories": {
     "all": "Tous",
@@ -506,5 +510,31 @@
     "rejectReasonPh": "Motif du refus (visible par le commerce)",
     "confirmReject": "Refuser",
     "failed": "Action impossible. Réessayez."
+  },
+  "select": {
+    "placeholder": "Choisir…",
+    "search": "Rechercher…",
+    "other": "Autre (saisir)",
+    "typeOther": "Saisissez le nom",
+    "none": "Aucun résultat",
+    "pickRegionFirst": "Choisissez d’abord le département"
+  },
+  "guideHome": {
+    "hello": "Bonjour, {{name}}",
+    "subtitle": "Votre tableau de bord de guide",
+    "noProfileTitle": "Vous n’avez pas encore de profil de guide",
+    "create": "Créer mon profil",
+    "preview": "Comme vous voient les voyageurs",
+    "reviews": "Avis",
+    "edit": "Modifier mon profil"
+  },
+  "businessHome": {
+    "hello": "Bonjour, {{name}}",
+    "subtitle": "Le tableau de bord de votre commerce",
+    "published": "Publiés",
+    "inReview": "En vérification",
+    "rejected": "Refusés",
+    "rating": "Note",
+    "places": "Vos lieux"
   }
 }

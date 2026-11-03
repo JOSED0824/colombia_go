@@ -11,11 +11,13 @@ import { ApiError, apiGet, apiSend } from '../lib/api'
 import { pickAndUploadPhoto } from '../lib/upload'
 import { notify } from '../lib/notify'
 import type { GuiaDto } from '../lib/types'
+import { Select } from '../components/Select'
+import { DEPARTAMENTOS, ciudadesDe, departamentoDe } from '../lib/colombia'
 
 const LANGS = ['ES', 'EN', 'PT', 'FR', 'ZH', 'DE', 'IT'] as const
 
 /** Panel del guía: crea o edita su perfil público. Sale en "Guías" cuando un admin lo verifica. */
-export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
+export function GuidePanelScreen({ onBack, onSaved }: { onBack: () => void; onSaved?: () => void }) {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -24,7 +26,8 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
 
   const [name, setName] = useState('')
   const [specialty, setSpecialty] = useState('')
-  const [place, setPlace] = useState('')
+  const [city, setCity] = useState('')
+  const [region, setRegion] = useState('')
   const [rate, setRate] = useState('')
   const [languages, setLanguages] = useState<string[]>(['ES'])
   const [experience, setExperience] = useState('0')
@@ -35,7 +38,10 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
     setProfile(g)
     setName(g.name)
     setSpecialty(g.specialty)
-    setPlace(g.place)
+    // "Salento, Quindío" -> ciudad y departamento; si solo viene la ciudad, se busca su departamento.
+    const [c, r] = g.place.split(',').map((x) => x.trim())
+    setCity(c ?? '')
+    setRegion(r || departamentoDe(c ?? '') || '')
     setRate(String(Math.round(Number(g.price.replace(/[^0-9]/g, '')) || 0) || ''))
     setLanguages(g.languages.length ? g.languages : ['ES'])
     setExperience(String(g.experienceYears ?? 0))
@@ -64,7 +70,8 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
 
   async function save() {
     const hourlyRate = Number(rate.replace(/[^0-9]/g, ''))
-    if (!name.trim() || !specialty.trim() || !place.trim() || !hourlyRate || languages.length === 0) {
+    const place = region && region !== 'Bogotá D.C.' && city ? `${city.trim()}, ${region}` : city.trim()
+    if (!name.trim() || !specialty.trim() || !place || !hourlyRate || languages.length === 0) {
       notify(t('guidePanel.required'))
       return
     }
@@ -73,7 +80,7 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
       const saved = await apiSend<GuiaDto>('/api/v1/guias/mi-perfil', 'PUT', {
         name: name.trim(),
         specialty: specialty.trim(),
-        place: place.trim(),
+        place,
         hourlyRate,
         languages,
         bio: bio.trim() || null,
@@ -81,6 +88,7 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
         photoUrl: photo,
       })
       fill(saved)
+      onSaved?.()
       notify(t('guidePanel.saved'))
     } catch (e) {
       notify(t('common.offlineTitle'), e instanceof ApiError && e.status === 400 ? t('guidePanel.required') : t('common.tryAgainLater'))
@@ -118,7 +126,24 @@ export function GuidePanelScreen({ onBack }: { onBack: () => void }) {
           </View>
           <Field label={t('guidePanel.name')} value={name} onChangeText={setName} />
           <Field label={t('guidePanel.specialty')} value={specialty} onChangeText={setSpecialty} placeholder={t('guidePanel.specialtyPh')} />
-          <Field label={t('guidePanel.place')} value={place} onChangeText={setPlace} placeholder="Medellín" />
+          <Select
+            label={t('business.region')}
+            value={region}
+            options={DEPARTAMENTOS.map((d) => d.nombre)}
+            onChange={(d) => {
+              setRegion(d)
+              if (!ciudadesDe(d).includes(city)) setCity('')
+            }}
+          />
+          <Select
+            label={t('business.city')}
+            value={city}
+            options={ciudadesDe(region)}
+            onChange={setCity}
+            allowOther
+            disabled={!region}
+            placeholder={region ? undefined : t('select.pickRegionFirst')}
+          />
           <Field label={t('guidePanel.rate')} value={rate} onChangeText={setRate} keyboardType="number-pad" placeholder="60000" />
           <Chips
             label={t('guidePanel.languages')}
